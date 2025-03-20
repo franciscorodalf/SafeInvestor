@@ -1,56 +1,103 @@
-**Descripción**: La aplicación de finanzas personales permite a los usuarios gestionar sus metas de ahorro, registrar ingresos y gastos, visualizar gráficas financieras y personalizar su experiencia con un modo oscuro. Además, el sistema ofrece autenticación segura mediante registro, inicio y cierre de sesión, y recuperación de contraseña. Se incluyen relaciones de **inclusión** (`<<include>>`) y **extensión** (`<<extend>>`) en ciertos casos de uso.
+<div align="justify">
 
 
-## Elementos del Diagrama de Casos de Uso
+## Introducción
+Este documento describe los casos de uso de la aplicación, explicando cómo los usuarios interactúan con el sistema y qué funciones ofrece. Se incluyen diagramas y especificaciones detalladas de cada caso de uso, con el objetivo de proporcionar una guía clara para el desarrollo y validación del sistema
+## Casos de Uso
 
-| Elemento                             | Descripción                                                                 |
-|--------------------------------------|-----------------------------------------------------------------------------|
-| **Actor: Usuario**                   | Persona que usa la aplicación para gestionar sus finanzas.                  |
-| **Caso de Uso: Registrar Meta**       | Permite al Usuario establecer metas de ahorro con un monto y fecha límite.  |
-| **Caso de Uso: Registrar Gasto**      | Permite al Usuario ingresar y categorizar sus gastos.                       |
-| **Caso de Uso: Registrar Ingreso**    | Permite al Usuario añadir un ingreso y actualizar su saldo.                 |
-| **Caso de Uso: Visualizar Gráfica**  | Permite al Usuario ver un resumen gráfico de sus gastos.                    |
-| **Caso de Uso: Editar Meta**          | Permite al Usuario modificar una meta de ahorro existente.                   |
-| **Caso de Uso: Modo Oscuro**          | Permite al Usuario cambiar entre modo claro y oscuro en la aplicación.       |
-| **Caso de Uso: Registro de Usuario**  | Permite a un nuevo Usuario crear una cuenta en la aplicación.                |
-| **Caso de Uso: Inicio de Sesión**     | Permite al Usuario autenticarse en la aplicación.                            |
-| **Caso de Uso: Cierre de Sesión**     | Permite al Usuario cerrar sesión de manera segura.                           |
-| **Caso de Uso: Recuperar Contraseña** | Permite al Usuario restablecer su contraseña en caso de olvido.              |
+### **1. Iniciar Sesión**
 
+|  Caso de Uso CU | Iniciar Sesión |
+|---|---|
+| Fuentes  | Documentación de requisitos |
+| Actor  | Usuario |
+| Descripción | Permite al usuario autenticarse en la aplicación. |
+| Flujo básico | 1. El usuario ingresa su correo y contraseña. <br> 2. El sistema verifica las credenciales. <br> 3. Se concede acceso al usuario. |
+| Pre-condiciones | El usuario debe estar registrado. |
+| Post-condiciones | El usuario accede a su cuenta. |
+| Requerimientos | Cuenta de usuario activa. |
+| Notas | Si la contraseña es incorrecta, el usuario puede recuperarla. |
+| Autor | franciscorodalf |
+| Fecha | Fecha de la especificación |
 
-## Relaciones entre los Elementos
+### **2. Recuperar Contraseña**
 
-| Relación                                         | Descripción                                                                                     |
-|--------------------------------------------------|-------------------------------------------------------------------------------------------------|
-| **Usuario → Registrar Meta**                     | Asociación: El Usuario crea metas de ahorro con un objetivo y fecha límite.                     |
-| **Usuario → Registrar Gasto**                    | Asociación: El Usuario registra sus gastos y los categoriza.                                    |
-| **Usuario → Registrar Ingreso**                  | Asociación: El Usuario introduce sus ingresos para actualizar su saldo.                         |
-| **Usuario → Visualizar Gráfica**                | Asociación: El Usuario consulta gráficos y estadísticas de sus finanzas.                        |
-| **Registrar Meta → Editar Meta**                 | **Extensión** (`<<extend>>`): El Usuario puede modificar una meta previamente creada.           |
-| **Registrar Gasto → Visualizar Gráfica**        | **Inclusión** (`<<include>>`): Cada gasto registrado impacta en los reportes financieros.       |
-| **Registrar Ingreso → Visualizar Gráfica**      | **Inclusión** (`<<include>>`): Cada ingreso registrado se refleja en los reportes.              |
-| **Registro de Usuario → Inicio de Sesión**       | **Inclusión** (`<<include>>`): Un Usuario registrado debe iniciar sesión para acceder a la app. |
-| **Inicio de Sesión → Cierre de Sesión**          | **Extensión** (`<<extend>>`): Un usuario autenticado puede cerrar sesión en cualquier momento.  |
-| **Inicio de Sesión → Recuperar Contraseña**      | **Extensión** (`<<extend>>`): Si el Usuario olvida su contraseña, puede recuperarla.           |
+|  Caso de Uso CU | Recuperar Contraseña |
+|---|---|
+| Fuentes  | Documentación de requisitos |
+| Actor  | Usuario |
+| Descripción | Permite al usuario recuperar su contraseña en caso de olvido. |
+| Flujo básico | 1. El usuario solicita recuperar su contraseña. <br> 2. El sistema envía un correo de recuperación. <br> 3. El usuario sigue las instrucciones y establece una nueva contraseña. |
+| Pre-condiciones | El usuario debe haber proporcionado un correo válido. |
+| Post-condiciones | El usuario puede acceder con la nueva contraseña. |
+| Requerimientos | Correo electrónico registrado. |
+| Notas | Incluye el caso de uso "Enviar Correo". |
+| Autor | franciscorodalf |
+| Fecha | Fecha de la especificación |
 
+### **3. Enviar Correo**
 
-## Explicación de las Relaciones de Inclusión (`<<include>>`) y Extensión (`<<extend>>`)
+|  Caso de Uso CU | Enviar Correo |
+|---|---|
+| Fuentes  | Documentación de requisitos |
+| Actor  | Sistema |
+| Descripción | Envía un correo electrónico a los usuarios cuando es necesario. |
+| Flujo básico | 1. Se envia un correo al usuario. <br> 2. El sistema genera el mensaje y lo envía al destinatario. |
+| Pre-condiciones | El correo debe de tener un nombre de usuario asociado |
+| Post-condiciones | El usuario recibe el correo en su bandeja de entrada. |
+| Requerimientos | Tener iniciada la sesión. |
+| Notas | Incluido en "Recuperar Contraseña". |
+| Autor | franciscorodalf |
+| Fecha | Fecha de la especificación |
 
-- **Incluir Visualizar Gráfica**: Cada vez que un Usuario registra un gasto o un ingreso, este se refleja automáticamente en los reportes financieros (`<<include>>`).
-  
-- **Extender Editar Meta**: La opción de modificar una meta de ahorro (`<<extend>>`) solo se activa si el Usuario desea cambiarla después de haberla creada.
-  
-- **Extender Cierre de Sesión**: Cerrar sesión (`<<extend>>`) es una acción opcional después de iniciar sesión, pero no obligatoria.
-  
-- **Extender Recuperar Contraseña**: Si el Usuario olvida su clave, puede activar la función de recuperación (`<<extend>>`).
+### **4. Registrar Ingreso**
 
+|  Caso de Uso CU | Registrar Ingreso |
+|---|---|
+| Fuentes  | Documentación de requisitos |
+| Actor  | Usuario |
+| Descripción | Permite al usuario registrar un ingreso en su cuenta. |
+| Flujo básico | 1. El usuario accede a la sección de ingresos. <br> 2. Introduce el monto y la fuente del ingreso. <br> 3. Guarda el ingreso. |
+| Pre-condiciones | El usuario debe haber iniciado sesión. |
+| Post-condiciones | El saldo del usuario se actualiza. |
+| Requerimientos | Cuenta de usuario activa. |
+| Notas | Incluye el caso de uso "Visualizar Gráfica". |
+| Autor | franciscorodalf |
+| Fecha | Fecha de la especificación |
 
-## Diagrama Completo
+### **5. Registrar Gasto**
 
-**Descripción**: A continuación, se representa el diagrama de casos de uso con los actores, casos de uso y las relaciones de asociación, inclusión y extensión.
+|  Caso de Uso CU | Registrar Gasto |
+|---|---|
+| Fuentes  | Documentación de requisitos |
+| Actor  | Usuario |
+| Descripción | Permite al usuario registrar un gasto en su cuenta. |
+| Flujo básico | 1. El usuario accede a la sección de gastos. <br> 2. Introduce el monto, categoría y descripción. <br> 3. Guarda el gasto. |
+| Pre-condiciones | El usuario debe haber iniciado sesión. |
+| Post-condiciones | El saldo del usuario se actualiza. |
+| Requerimientos | Cuenta de usuario activa. |
+| Notas | Incluye el caso de uso "Visualizar Gráfica". |
+| Autor | franciscorodalf |
+| Fecha | Fecha de la especificación |
 
-<img src="../images/CasosdeUso.png">
+### **6. Visualizar Gráfica**
 
----
+|  Caso de Uso CU | Visualizar Gráfica |
+|---|---|
+| Fuentes  | Documentación de requisitos |
+| Actor  | Usuario |
+| Descripción | Permite al usuario ver un resumen gráfico de sus ingresos y gastos. |
+| Flujo básico | 1. El usuario accede a la sección de reportes. <br> 2. El sistema genera gráficos con el desglose de ingresos y gastos. |
+| Pre-condiciones | Debe haber ingresos o gastos registrados. |
+| Post-condiciones | El usuario visualiza su información financiera. |
+| Requerimientos | Cuenta de usuario activa. |
+| Notas | Se actualiza en tiempo real. |
+| Autor | franciscorodalf |
+| Fecha | Fecha de la especificación |
 
-Este modelo de diagrama de casos de uso permite visualizar cómo interactúa el Usuario con la aplicación, destacando las funciones clave y las relaciones opcionales que amplían la funcionalidad principal.
+## Diagrama de Casos de Uso
+
+**Descripción Visual**: A continuación, se representa el diagrama de casos de uso con los actores, casos de uso y las relaciones de asociación, inclusión y extensión.
+<img src="../images/CasosdeUso_V1.0.png">
+
+</div>
