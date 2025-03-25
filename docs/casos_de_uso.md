@@ -99,5 +99,4 @@ Este documento describe los casos de uso de la aplicación, explicando cómo los
 
 **Descripción Visual**: A continuación, se representa el diagrama de casos de uso con los actores, casos de uso y las relaciones de asociación, inclusión y extensión.
 <img src="../images/CasosdeUso_V1.0.png">
-
 </div>
