@@ -1,0 +1,37 @@
+# ⚙️ Archivos Java
+*.class
+
+# Carpetas de compilación
+/bin/
+/target/
+/build/
+
+# ☕ Maven & Gradle
+.mvn/
+mvnw
+mvnw.cmd
+.gradle/
+
+# Archivos de logs
+
+*.log
+
+# Variables de entorno
+*.env
+
+# Entornos virtuales de Python
+venv/
+
+# Node.js
+node_modules/
+
+# Archivos del sistema y del editor
+.DS_Store
+.idea/
+*.iml
+.vscode/
+
+# Archivos temporales / respaldo
+*~
+*.swp
+*.swo
