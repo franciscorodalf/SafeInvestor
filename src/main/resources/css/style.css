@@ -1,0 +1,59 @@
+/* Fondo del AnchorPane principal */
+.anchor-pane {
+    -fx-background-color: #f9f9f9;
+}
+
+/* Imagen del logo (con sombra sutil opcional) */
+.image-view {
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.1), 5, 0.3, 0, 2);
+}
+
+/* Etiquetas generales */
+.label {
+    -fx-text-fill: #333;
+    -fx-font-size: 18px;
+    -fx-font-weight: bold;
+}
+
+/* TextFields y PasswordFields */
+.text-field, .password-field {
+    -fx-background-radius: 5;
+    -fx-border-radius: 5;
+    -fx-border-color: #ccc;
+    -fx-border-width: 1;
+    -fx-padding: 6 12;
+    -fx-font-size: 13px;
+}
+
+/* Hipervínculo "¿Olvidaste tu contraseña?" */
+.hyperlink {
+    -fx-text-fill: #5fab2c;
+    -fx-font-size: 11px;
+}
+
+/* Botones generales */
+.button {
+    -fx-background-color: white;
+    -fx-border-color: black;
+    -fx-border-radius: 8;
+    -fx-background-radius: 8;
+    -fx-font-weight: bold;
+    -fx-padding: 6 20;
+    -fx-font-size: 13px;
+}
+
+/* Botón con defaultButton="true" (Aceptar) */
+.button:default {
+    -fx-background-color: #27ae60;
+    -fx-text-fill: white;
+    -fx-border-color: transparent;
+}
+
+/* ComboBox de idiomas */
+.combo-box {
+    -fx-background-radius: 5;
+    -fx-border-radius: 5;
+    -fx-border-color: #ccc;
+    -fx-padding: 4 8;
+    -fx-font-size: 12px;
+}

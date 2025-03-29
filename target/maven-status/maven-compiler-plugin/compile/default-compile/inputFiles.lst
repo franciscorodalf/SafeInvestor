@@ -1,1 +1,6 @@
 /Users/fran/Documents/GitHub/SafeInvestor/src/main/java/es/franciscorodalf/saveinvestor/Main.java
+/Users/fran/Documents/GitHub/SafeInvestor/src/main/java/es/franciscorodalf/saveinvestor/backend/model/categoria.java
+/Users/fran/Documents/GitHub/SafeInvestor/src/main/java/es/franciscorodalf/saveinvestor/backend/model/estadistica.java
+/Users/fran/Documents/GitHub/SafeInvestor/src/main/java/es/franciscorodalf/saveinvestor/backend/model/tarea.java
+/Users/fran/Documents/GitHub/SafeInvestor/src/main/java/es/franciscorodalf/saveinvestor/backend/model/usuario.java
+/Users/fran/Documents/GitHub/SafeInvestor/src/main/java/es/franciscorodalf/saveinvestor/frontend/controller/loginController.java
