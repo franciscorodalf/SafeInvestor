@@ -7,56 +7,76 @@
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.PasswordField?>
 <?import javafx.scene.control.TextField?>
+<?import javafx.scene.effect.Blend?>
 <?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.FlowPane?>
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane prefHeight="400.0" prefWidth="389.0" stylesheets="@../../../css/style.css" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1">
+<AnchorPane prefHeight="529.0" prefWidth="547.0" styleClass="anchor-pane" stylesheets="@../../../css/style.css" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="es.franciscorodalf.saveinvestor.frontend.controller.loginController">
+
 
    <children>
-      <ComboBox layoutX="14.0" layoutY="14.0" prefHeight="33.0" prefWidth="96.0" promptText="Idioma">
-         <opaqueInsets>
-            <Insets />
-         </opaqueInsets>
-      </ComboBox>
-      <Button alignment="TOP_LEFT" defaultButton="true" layoutX="284.0" layoutY="14.0" prefHeight="33.0" prefWidth="91.0" text="Registrar" />
 
       <!-- Contenedor principal -->
-      <VBox alignment="TOP_CENTER" layoutY="47.0" prefHeight="368.0" prefWidth="387.0" spacing="10.0" AnchorPane.bottomAnchor="-17.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="47.0">
+      <VBox alignment="TOP_CENTER" layoutX="-2.0" layoutY="-1.0" prefHeight="496.0" prefWidth="540.0" spacing="10.0" AnchorPane.bottomAnchor="34.0" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="9.0" AnchorPane.topAnchor="35.0">
          <children>
-            <ImageView fitHeight="120.0" fitWidth="120.0" pickOnBounds="true" preserveRatio="true">
+            <FlowPane alignment="CENTER">
+               <children>
+                  <ComboBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="33.0" prefWidth="96.0" promptText="Idioma">
+                     <opaqueInsets>
+                        <Insets />
+                     </opaqueInsets>
+                     <FlowPane.margin>
+                        <Insets />
+                     </FlowPane.margin>
+                  </ComboBox>
+                  <Button fx:id="buttonLoginRegistrar" alignment="TOP_LEFT" defaultButton="true" prefHeight="33.0" prefWidth="91.0" text="Registrar">
+                     <FlowPane.margin>
+                        <Insets left="170.0" />
+                     </FlowPane.margin>
+                  </Button>
+               </children>
+               <VBox.margin>
+                  <Insets />
+               </VBox.margin>
+            </FlowPane>
+            <ImageView fx:id="imageLogoLogin" fitHeight="120.0" fitWidth="120.0" pickOnBounds="true" preserveRatio="true">
                <image>
                   <Image url="@../../../images/Logo%20Save%20Investor.png" />
                </image>
+               <effect>
+                  <Blend />
+               </effect>
             </ImageView>
 
-            <Label text="Bienvenido!">
+            <Label fx:id="textBienvenidoLogin" text="Bienvenido!">
                <font>
                   <Font name="System Bold" size="18.0" />
                </font>
             </Label>
 
-            <TextField maxWidth="-Infinity" prefWidth="200.0" promptText="Usuario">
+            <TextField fx:id="textLabelUsuario" maxWidth="-Infinity" prefWidth="200.0" promptText="Usuario">
                <VBox.margin>
                   <Insets top="10.0" />
                </VBox.margin>
             </TextField>
 
-            <PasswordField maxWidth="-Infinity" prefWidth="200.0" promptText="Contraseña">
+            <PasswordField fx:id="textLabelContrasenia" maxWidth="-Infinity" prefWidth="200.0" promptText="Contraseña">
                <VBox.margin>
                   <Insets top="10.0" />
                </VBox.margin>
             </PasswordField>
 
-            <Hyperlink text="¿Olvidaste tu Contraseña?" underline="true">
+            <Hyperlink fx:id="textLinkOlvidarContrasenia" text="¿Olvidaste tu Contraseña?" underline="true">
                <font>
                   <Font size="12.0" />
                </font>
             </Hyperlink>
 
-            <Button defaultButton="true" text="Aceptar" />
+            <Button fx:id="buttonAceptarlLogin" defaultButton="true" text="Aceptar" />
          </children>
       </VBox>
       

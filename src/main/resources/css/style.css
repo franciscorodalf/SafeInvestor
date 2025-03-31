@@ -1,22 +1,21 @@
-/* Fondo del AnchorPane principal */
 .anchor-pane {
-    -fx-background-color: #f9f9f9;
+    -fx-background-image: url("../images/fondoLogin.png");
+    -fx-background-size: cover;
+    -fx-background-position: center;
 }
 
-/* Imagen del logo (con sombra sutil opcional) */
 .image-view {
-    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.1), 5, 0.3, 0, 2);
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.1), 5, 0.3, 0, 2);
 }
 
-/* Etiquetas generales */
 .label {
-    -fx-text-fill: #333;
+    -fx-text-fill: #ffffff;
     -fx-font-size: 18px;
     -fx-font-weight: bold;
 }
 
-/* TextFields y PasswordFields */
-.text-field, .password-field {
+.text-field,
+.password-field {
     -fx-background-radius: 5;
     -fx-border-radius: 5;
     -fx-border-color: #ccc;
@@ -25,13 +24,16 @@
     -fx-font-size: 13px;
 }
 
-/* Hipervínculo "¿Olvidaste tu contraseña?" */
 .hyperlink {
-    -fx-text-fill: #5fab2c;
+    -fx-text-fill: #000000;
     -fx-font-size: 11px;
 }
 
-/* Botones generales */
+.hyperlink:focused {
+    -fx-focus-color: transparent;
+    -fx-faint-focus-color: transparent;
+}
+
 .button {
     -fx-background-color: white;
     -fx-border-color: black;
@@ -57,3 +59,4 @@
     -fx-padding: 4 8;
     -fx-font-size: 12px;
 }
+
