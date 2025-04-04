@@ -5,7 +5,6 @@ import java.util.Objects;
 
 public class tarea {
     private String concepto;
-    private categoria categoria;
     private double cantidad;
     private Date fecha;
     private String estado;
@@ -13,9 +12,8 @@ public class tarea {
     public tarea() {
     }
 
-    public tarea(String concepto, categoria categoria, double cantidad, Date fecha, String estado) {
+    public tarea(String concepto, double cantidad, Date fecha, String estado) {
         this.concepto = concepto;
-        this.categoria = categoria;
         this.cantidad = cantidad;
         this.fecha = fecha;
         this.estado = estado;
@@ -29,13 +27,6 @@ public class tarea {
         this.concepto = concepto;
     }
 
-    public categoria getCategoria() {
-        return this.categoria;
-    }
-
-    public void setCategoria(categoria categoria) {
-        this.categoria = categoria;
-    }
 
     public double getCantidad() {
         return this.cantidad;
@@ -63,11 +54,6 @@ public class tarea {
 
     public tarea concepto(String concepto) {
         setConcepto(concepto);
-        return this;
-    }
-
-    public tarea categoria(categoria categoria) {
-        setCategoria(categoria);
         return this;
     }
 
@@ -104,7 +90,7 @@ public class tarea {
 
     @Override
     public String toString() {
-        return getConcepto() + ", " + getCategoria() + ", " + getCantidad() + ", " + getFecha() + ", " + getEstado();
+        return getConcepto() + ", " + getCantidad() + ", " + getFecha() + ", " + getEstado();
     }
 
 }

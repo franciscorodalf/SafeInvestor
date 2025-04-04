@@ -1,14 +1,24 @@
 package es.franciscorodalf.saveinvestor.frontend.controller;
 
+import java.io.IOException;
+
+import es.franciscorodalf.saveinvestor.backend.model.UsuarioEntity;
+import es.franciscorodalf.saveinvestor.backend.controller.AbstractController;
 import javafx.animation.*;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Node;
+import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.VBox;
+import javafx.scene.text.Text;
+import javafx.stage.Stage;
 import javafx.util.Duration;
 import javafx.scene.input.MouseEvent;
 
-public class loginController {
+public class loginController extends AbstractController {
 
     @FXML
     private VBox rootVBox;
@@ -23,11 +33,15 @@ public class loginController {
     @FXML
     private Label textBienvenidoLogin;
     @FXML
-    private TextField textLabelUsuario;
+    private TextField textFieldUsuario;
+    @FXML
+    private TextField textFieldContrasenia;
     @FXML
     private PasswordField textLabelContrasenia;
     @FXML
     private Hyperlink textLinkOlvidarContrasenia;
+    @FXML
+    private Text textFieldMensaje;
 
     @FXML
     public void initialize() {
@@ -35,7 +49,33 @@ public class loginController {
         aplicarAnimacionesHover(buttonAceptarlLogin);
         aplicarAnimacionesPresion(buttonAceptarlLogin);
         aplicarAnimacionesPresion(buttonLoginRegistrar);
+    }
 
+    @FXML
+    protected void buttonAceptarLogin() {
+        textFieldMensaje.setVisible(true);
+
+        if (textFieldUsuario == null || textFieldUsuario.getText().isEmpty() ||
+                textFieldContrasenia == null || textFieldContrasenia.getText().isEmpty()) {
+            textFieldMensaje.setText("Credenciales null o vacias");
+            return;
+        }
+
+        UsuarioEntity usuarioEntity = getUsuarioServiceModel().obtenerDatosUsuario(textFieldUsuario.getText());
+
+        if (usuarioEntity == null) {
+            textFieldMensaje.setText("El usuario no existe");
+            return;
+        }
+
+        if ((textFieldUsuario.getText().equals(usuarioEntity.getEmail())
+                || textFieldUsuario.getText().equals(usuarioEntity.getNombre()))
+                && textFieldContrasenia.getText().equals(usuarioEntity.getContrasenia())) {
+            textFieldMensaje.setText("Usuario validado correctamente");
+            return;
+
+        }
+        textFieldMensaje.setText("Credenciales invalidas");
     }
 
     private void aplicarAnimacionesEntrada() {
@@ -83,6 +123,39 @@ public class loginController {
             scaleTransition.setToY(1.0);
             scaleTransition.play();
         });
+    }
+
+    @FXML
+    private void clickButtonRegistrar(ActionEvent event) {
+        try {
+            FXMLLoader fxmlLoader = new FXMLLoader(
+                    getClass().getResource("/es/franciscorodalf/saveinvestor/registro.fxml"));
+            Scene scene = new Scene(fxmlLoader.load());
+            RegistroController registroController = fxmlLoader.getController();
+            Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+            stage.setScene(scene);
+            stage.setTitle("Registro");
+            stage.show();
+        } catch (IOException e) {
+            System.err.println("❌ Error al volver a la pantalla de login: " + e.getMessage());
+            e.printStackTrace();
+        }
+    }
+
+    @FXML
+    private void clickLinkOlvidarContrasenia(ActionEvent event) {
+        try {
+            FXMLLoader fxmlLoader = new FXMLLoader(
+                    getClass().getResource("/es/franciscorodalf/saveinvestor/olvidarContrasenia.fxml"));
+            Scene scene = new Scene(fxmlLoader.load());
+            RecuperarContraseniaController recuperarContraseniaController = fxmlLoader.getController();
+            Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+            stage.setScene(scene);
+            stage.setTitle("Recuperar Contraseña");
+            stage.show();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
 }

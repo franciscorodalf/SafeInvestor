@@ -1,6 +1,12 @@
-es/franciscorodalf/saveinvestor/backend/model/usuario.class
+es/franciscorodalf/saveinvestor/frontend/controller/RecuperarContraseniaController.class
+es/franciscorodalf/saveinvestor/config/ConfigManager.class
 es/franciscorodalf/saveinvestor/frontend/controller/loginController.class
-es/franciscorodalf/saveinvestor/backend/model/categoria.class
+es/franciscorodalf/saveinvestor/backend/model/tarea.class
+es/franciscorodalf/saveinvestor/config/ConfigManager$ConfigProperties.class
 es/franciscorodalf/saveinvestor/Main.class
 es/franciscorodalf/saveinvestor/backend/model/estadistica.class
-es/franciscorodalf/saveinvestor/backend/model/tarea.class
+es/franciscorodalf/saveinvestor/backend/model/UsuarioEntity.class
+es/franciscorodalf/saveinvestor/backend/model/abstractas/Conexion.class
+es/franciscorodalf/saveinvestor/frontend/controller/RegistroController.class
+es/franciscorodalf/saveinvestor/backend/model/UsuarioServiceModel.class
+es/franciscorodalf/saveinvestor/backend/controller/AbstractController.class

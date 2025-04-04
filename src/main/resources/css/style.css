@@ -1,19 +1,23 @@
+/* Fondo de la pantalla de login */
 .anchor-pane {
     -fx-background-image: url("../images/fondoLogin.png");
     -fx-background-size: cover;
     -fx-background-position: center;
 }
 
+/* Sombra en el logo o imagen */
 .image-view {
     -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.1), 5, 0.3, 0, 2);
 }
 
+/* Etiquetas */
 .label {
     -fx-text-fill: #ffffff;
     -fx-font-size: 18px;
     -fx-font-weight: bold;
 }
 
+/* Campos de entrada */
 .text-field,
 .password-field {
     -fx-background-radius: 5;
@@ -24,16 +28,25 @@
     -fx-font-size: 13px;
 }
 
-.hyperlink {
-    -fx-text-fill: #000000;
-    -fx-font-size: 11px;
+/* Texto de bienvenida */
+#textBienvenidoLogin {
+    -fx-fill: white;
+    -fx-font-size: 24px;
+    -fx-font-weight: bold;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.4), 4, 0.3, 0, 1);
 }
 
+/* Links */
+.hyperlink {
+    -fx-text-fill: #ffffff;
+    -fx-font-size: 14px;
+}
 .hyperlink:focused {
     -fx-focus-color: transparent;
     -fx-faint-focus-color: transparent;
 }
 
+/* Botones */
 .button {
     -fx-background-color: white;
     -fx-border-color: black;
@@ -44,14 +57,14 @@
     -fx-font-size: 13px;
 }
 
-/* Botón con defaultButton="true" (Aceptar) */
+/* Botón por defecto (ej. iniciar sesión) */
 .button:default {
     -fx-background-color: #27ae60;
     -fx-text-fill: white;
     -fx-border-color: transparent;
 }
 
-/* ComboBox de idiomas */
+/* ComboBox (ej. selector de idioma) */
 .combo-box {
     -fx-background-radius: 5;
     -fx-border-radius: 5;
@@ -59,4 +72,3 @@
     -fx-padding: 4 8;
     -fx-font-size: 12px;
 }
-

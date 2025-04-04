@@ -14,8 +14,9 @@
 <?import javafx.scene.layout.FlowPane?>
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
+<?import javafx.scene.text.Text?>
 
-<AnchorPane prefHeight="529.0" prefWidth="547.0" styleClass="anchor-pane" stylesheets="@../../../css/style.css" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="es.franciscorodalf.saveinvestor.frontend.controller.loginController">
+<AnchorPane prefHeight="496.0" prefWidth="491.0" styleClass="anchor-pane" stylesheets="@../../../css/style.css" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="es.franciscorodalf.saveinvestor.frontend.controller.loginController">
 
 
    <children>
@@ -25,7 +26,7 @@
          <children>
             <FlowPane alignment="CENTER">
                <children>
-                  <ComboBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="33.0" prefWidth="96.0" promptText="Idioma">
+                  <ComboBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="33.0" prefWidth="107.0" promptText="Idioma">
                      <opaqueInsets>
                         <Insets />
                      </opaqueInsets>
@@ -33,7 +34,7 @@
                         <Insets />
                      </FlowPane.margin>
                   </ComboBox>
-                  <Button fx:id="buttonLoginRegistrar" alignment="TOP_LEFT" defaultButton="true" prefHeight="33.0" prefWidth="91.0" text="Registrar">
+                  <Button fx:id="buttonLoginRegistrar" alignment="TOP_LEFT" defaultButton="true" onAction="#clickButtonRegistrar" prefHeight="33.0" prefWidth="91.0" text="Registrar">
                      <FlowPane.margin>
                         <Insets left="170.0" />
                      </FlowPane.margin>
@@ -52,31 +53,36 @@
                </effect>
             </ImageView>
 
-            <Label fx:id="textBienvenidoLogin" text="Bienvenido!">
+            <Label fx:id="textBienvenidoLogin" styleClass="titulo-principal" text="Bienvenido!" textFill="WHITE">
                <font>
                   <Font name="System Bold" size="18.0" />
                </font>
             </Label>
 
-            <TextField fx:id="textLabelUsuario" maxWidth="-Infinity" prefWidth="200.0" promptText="Usuario">
+            <TextField fx:id="textFieldUsuario" maxWidth="-Infinity" prefWidth="200.0" promptText="Usuario">
                <VBox.margin>
                   <Insets top="10.0" />
                </VBox.margin>
             </TextField>
 
-            <PasswordField fx:id="textLabelContrasenia" maxWidth="-Infinity" prefWidth="200.0" promptText="Contraseña">
+            <PasswordField fx:id="textFieldContrasenia" maxWidth="-Infinity" prefWidth="200.0" promptText="Contraseña">
                <VBox.margin>
                   <Insets top="10.0" />
                </VBox.margin>
             </PasswordField>
-
-            <Hyperlink fx:id="textLinkOlvidarContrasenia" text="¿Olvidaste tu Contraseña?" underline="true">
+            <Text fx:id="textFieldMensaje" fill="WHITE" strokeType="OUTSIDE" strokeWidth="0.0" text="Text" visible="false">
                <font>
-                  <Font size="12.0" />
+                  <Font size="20.0" />
+               </font>
+            </Text>
+
+            <Hyperlink fx:id="textLinkOlvidarContrasenia" onAction="#clickLinkOlvidarContrasenia" text="¿Olvidaste tu Contraseña?" underline="true">
+               <font>
+                  <Font size="17.0" />
                </font>
             </Hyperlink>
 
-            <Button fx:id="buttonAceptarlLogin" defaultButton="true" text="Aceptar" />
+            <Button fx:id="buttonAceptarlLogin" defaultButton="true" onAction="#buttonAceptarLogin" text="Aceptar" />
          </children>
       </VBox>
       

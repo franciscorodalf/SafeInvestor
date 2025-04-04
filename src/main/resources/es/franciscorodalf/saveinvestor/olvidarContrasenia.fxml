@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+<?import javafx.scene.text.Text?>
+
+<AnchorPane prefHeight="280.0" prefWidth="402.0" stylesheets="@../../../css/recuperarContraseniaStyle.css" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="es.franciscorodalf.saveinvestor.frontend.controller.RecuperarContraseniaController">
+    
+   <VBox alignment="CENTER" layoutX="40.0" layoutY="53.0" prefHeight="202.0" prefWidth="400.0" spacing="10.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+    <Label prefHeight="23.0" prefWidth="143.0" styleClass="titulo-principal" text="Recuperar Contraseña">
+         <VBox.margin>
+            <Insets />
+         </VBox.margin>
+         <font>
+            <Font size="12.0" />
+         </font></Label>
+      <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Inserte su correo electronico" />
+
+    <TextField fx:id="emailField" maxWidth="-Infinity" prefHeight="26.0" prefWidth="201.0" promptText="Correo electrónico" />
+
+    <Label fx:id="mensajeLabel" alignment="CENTER" prefHeight="29.0" prefWidth="315.0" textFill="red">
+         <VBox.margin>
+            <Insets />
+         </VBox.margin></Label>
+      <HBox>
+         <children>
+          <Button id="buttonVolver" fx:id="buttonVolverRecuperarContrasenia" maxWidth="-Infinity" onAction="#clickVolverRecuperarContrasenia" prefHeight="34.0" prefWidth="87.0" text="Volver">
+               <HBox.margin>
+                  <Insets />
+               </HBox.margin>
+            </Button>
+      
+          <Button id="buttonEnviar" fx:id="enviarButton" maxWidth="-Infinity" onAction="#clickButtonEnviar" prefHeight="34.0" prefWidth="85.0" text="Enviar">
+               <HBox.margin>
+                  <Insets left="87.0" />
+               </HBox.margin>
+            </Button>
+         </children>
+         <VBox.margin>
+            <Insets />
+         </VBox.margin>
+         <padding>
+            <Insets left="30.0" />
+         </padding>
+      </HBox>
+</VBox>
+
+</AnchorPane>
