@@ -46,7 +46,7 @@
             </FlowPane>
             <ImageView fx:id="imageLogoLogin" fitHeight="120.0" fitWidth="120.0" pickOnBounds="true" preserveRatio="true">
                <image>
-                  <Image url="@../../../images/Logo%20Save%20Investor.png" />
+                  <Image url="@../../../images/logo-saveInvestor.png" />
                </image>
                <effect>
                   <Blend />
