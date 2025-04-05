@@ -4,7 +4,6 @@ import java.io.IOException;
 
 import es.franciscorodalf.saveinvestor.backend.model.UsuarioEntity;
 import es.franciscorodalf.saveinvestor.backend.controller.AbstractController;
-import javafx.animation.*;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -15,8 +14,6 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
-import javafx.util.Duration;
-import javafx.scene.input.MouseEvent;
 
 public class loginController extends AbstractController {
 
@@ -45,10 +42,7 @@ public class loginController extends AbstractController {
 
     @FXML
     public void initialize() {
-        aplicarAnimacionesEntrada();
-        aplicarAnimacionesHover(buttonAceptarlLogin);
-        aplicarAnimacionesPresion(buttonAceptarlLogin);
-        aplicarAnimacionesPresion(buttonLoginRegistrar);
+ 
     }
 
     @FXML
@@ -57,7 +51,8 @@ public class loginController extends AbstractController {
 
         if (textFieldUsuario == null || textFieldUsuario.getText().isEmpty() ||
                 textFieldContrasenia == null || textFieldContrasenia.getText().isEmpty()) {
-            textFieldMensaje.setText("Credenciales null o vacias");
+            textFieldMensaje.setText("Credenciales null o vacías");
+            textFieldMensaje.setStyle("-fx-fill: red;");
             return;
         }
 
@@ -65,6 +60,7 @@ public class loginController extends AbstractController {
 
         if (usuarioEntity == null) {
             textFieldMensaje.setText("El usuario no existe");
+            textFieldMensaje.setStyle("-fx-fill: red;");
             return;
         }
 
@@ -72,57 +68,13 @@ public class loginController extends AbstractController {
                 || textFieldUsuario.getText().equals(usuarioEntity.getNombre()))
                 && textFieldContrasenia.getText().equals(usuarioEntity.getContrasenia())) {
             textFieldMensaje.setText("Usuario validado correctamente");
+            textFieldMensaje.setStyle("-fx-fill: green;");
+
             return;
-
         }
-        textFieldMensaje.setText("Credenciales invalidas");
-    }
 
-    private void aplicarAnimacionesEntrada() {
-        FadeTransition fadeTransition = new FadeTransition(Duration.millis(1500), rootVBox);
-        fadeTransition.setFromValue(0);
-        fadeTransition.setToValue(1);
-        fadeTransition.play();
-
-        TranslateTransition translateTransition = new TranslateTransition(Duration.millis(2200), imageLogoLogin);
-        translateTransition.setFromY(-50);
-        translateTransition.setToY(0);
-        translateTransition.setInterpolator(Interpolator.EASE_OUT);
-        translateTransition.play();
-
-    }
-
-    private void aplicarAnimacionesHover(Button boton) {
-        boton.setOnMouseEntered(e -> {
-            ScaleTransition scaleTransition = new ScaleTransition(Duration.millis(300), boton);
-            scaleTransition.setToX(1.07);
-            scaleTransition.setToY(1.07);
-            scaleTransition.play();
-        });
-
-        boton.setOnMouseExited(e -> {
-            ScaleTransition scaleTransition = new ScaleTransition(Duration.millis(300), boton);
-            scaleTransition.setToX(1.0);
-            scaleTransition.setToY(1.0);
-            scaleTransition.play();
-        });
-    }
-
-    // --- Animación de presión al hacer clic
-    private void aplicarAnimacionesPresion(Button boton) {
-        boton.addEventHandler(MouseEvent.MOUSE_PRESSED, e -> {
-            ScaleTransition scaleTransition = new ScaleTransition(Duration.millis(80), boton);
-            scaleTransition.setToX(0.95);
-            scaleTransition.setToY(0.95);
-            scaleTransition.play();
-        });
-
-        boton.addEventHandler(MouseEvent.MOUSE_RELEASED, e -> {
-            ScaleTransition scaleTransition = new ScaleTransition(Duration.millis(150), boton);
-            scaleTransition.setToX(1.0);
-            scaleTransition.setToY(1.0);
-            scaleTransition.play();
-        });
+        textFieldMensaje.setText("Credenciales inválidas");
+        textFieldMensaje.setStyle("-fx-fill: red;");
     }
 
     @FXML
@@ -137,7 +89,6 @@ public class loginController extends AbstractController {
             stage.setTitle("Registro");
             stage.show();
         } catch (IOException e) {
-            System.err.println("❌ Error al volver a la pantalla de login: " + e.getMessage());
             e.printStackTrace();
         }
     }
@@ -157,5 +108,4 @@ public class loginController extends AbstractController {
             e.printStackTrace();
         }
     }
-
 }

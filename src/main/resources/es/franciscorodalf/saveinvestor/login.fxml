@@ -22,7 +22,7 @@
    <children>
 
       <!-- Contenedor principal -->
-      <VBox alignment="TOP_CENTER" layoutX="-2.0" layoutY="-1.0" prefHeight="496.0" prefWidth="540.0" spacing="10.0" AnchorPane.bottomAnchor="34.0" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="9.0" AnchorPane.topAnchor="35.0">
+      <VBox fx:id="rootVBox" alignment="TOP_CENTER" layoutX="-2.0" layoutY="-1.0" prefHeight="496.0" prefWidth="540.0" spacing="10.0" AnchorPane.bottomAnchor="34.0" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="9.0" AnchorPane.topAnchor="35.0">
          <children>
             <FlowPane alignment="CENTER">
                <children>

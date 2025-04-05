@@ -1,0 +1,91 @@
+.root {
+    -fx-background-color: linear-gradient(to bottom, #f1f1f1, #d9d9d9);
+    -fx-padding: 30px;
+    -fx-font-family: "Segoe UI", sans-serif;
+}
+
+#mainContainer {
+    -fx-background-color: #fefefe;
+    -fx-background-radius: 12;
+    -fx-padding: 30px;
+    -fx-spacing: 15;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.15), 8, 0.2, 0, 2);
+}
+
+.label {
+    -fx-font-size: 14px;
+    -fx-text-fill: #333;
+    -fx-font-weight: bold;
+}
+
+.section-label {
+    -fx-padding: 20 0 8 0;
+    -fx-font-size: 15px;
+    -fx-text-fill: #2e2e2e;
+    -fx-font-weight: bold;
+}
+
+.text-field,
+.password-field {
+    -fx-background-radius: 8;
+    -fx-border-radius: 8;
+    -fx-padding: 10px;
+    -fx-border-color: #ccc;
+    -fx-background-color: white;
+    -fx-font-size: 13px;
+    -fx-prompt-text-fill: #999;
+}
+
+.text-field:focused,
+.password-field:focused {
+    -fx-border-color: #4CAF50;
+    -fx-effect: dropshadow(gaussian, #4CAF50, 5, 0.1, 0, 0);
+}
+
+.button {
+    -fx-background-radius: 10;
+    -fx-font-weight: bold;
+    -fx-font-size: 15px;
+    -fx-padding: 10px 22px;
+    -fx-cursor: hand;
+    -fx-text-fill: white;
+    -fx-background-color: #4CAF50;
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.2), 4, 0.3, 0, 1);
+}
+
+.button:hover {
+    -fx-background-color: #45a049;
+}
+
+.button:pressed {
+    -fx-background-color: #388E3C;
+}
+
+.button.volver {
+    -fx-background-color: #bdbdbd;
+    -fx-text-fill: black;
+}
+
+.button.volver:hover {
+    -fx-background-color: #9e9e9e;
+}
+
+.title-label {
+    -fx-font-size: 20px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #333;
+    -fx-effect: dropshadow(one-pass-box, rgba(0,0,0,0.2), 2, 0, 0, 1);
+    -fx-padding: 10 0 25 0;
+}
+
+.text-error {
+    -fx-fill: red;
+    -fx-font-size: 12px;
+    -fx-font-style: italic;
+}
+
+.text-success {
+    -fx-fill: green;
+    -fx-font-size: 12px;
+    -fx-font-style: italic;
+}

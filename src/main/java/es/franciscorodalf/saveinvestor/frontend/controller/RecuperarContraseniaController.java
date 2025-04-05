@@ -69,13 +69,7 @@ public class RecuperarContraseniaController extends AbstractController {
             System.out.println("Volviendo a la pantalla de login...");
 
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/es/franciscorodalf/saveinvestor/login.fxml"));
-
-            if (loader.getLocation() == null) {
-                throw new IOException("No se encontró login.fxml en el classpath.");
-            }
-
             Scene scene = new Scene(loader.load());
-
             Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
             stage.setScene(scene);
             stage.setTitle("Login");

@@ -10,41 +10,38 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
-import javafx.scene.control.Label;
-import javafx.scene.control.PasswordField;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
 import javafx.stage.Stage;
 
 public class RegistroController extends AbstractController {
 
     @FXML
-    Button buttonVolver;
+    private Button buttonVolver;
 
     @FXML
-    Button ButtonRegistrarse;
+    private Button ButtonRegistrarse;
 
     @FXML
-    Label textMensajeRegistro;
+    private Label textMensajeRegistro;
 
     @FXML
-    TextField textFieldUsuarioRegistro;
+    private TextField textFieldUsuarioRegistro;
 
     @FXML
-    PasswordField textFieldContraseniaRegistro;
+    private PasswordField textFieldContraseniaRegistro;
 
     @FXML
-    PasswordField textFieldRepetirContraseniaRegistro;
+    private PasswordField textFieldRepetirContraseniaRegistro;
 
     @FXML
-    TextField textFieldEmailRegistro;
+    private TextField textFieldEmailRegistro;
 
     @FXML
-    TextField textFieldRepetirEmail;
+    private TextField textFieldRepetirEmail;
 
     @FXML
     private void initialize() {
-        textMensajeRegistro.setVisible(false);
+    
     }
 
     @FXML
@@ -98,20 +95,14 @@ public class RegistroController extends AbstractController {
             textMensajeRegistro.getStyleClass().add("text-success");
         } else {
             textMensajeRegistro.getStyleClass().add("text-error");
+
         }
     }
 
     @FXML
     private void clickButtonVolver(ActionEvent event) {
         try {
-            System.out.println("Volviendo a la pantalla de login...");
-
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/es/franciscorodalf/saveinvestor/login.fxml"));
-
-            if (loader.getLocation() == null) {
-                throw new IOException("No se encontró login.fxml en el classpath.");
-            }
-
             Scene scene = new Scene(loader.load());
 
             Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
@@ -123,5 +114,4 @@ public class RegistroController extends AbstractController {
             e.printStackTrace();
         }
     }
-
 }
