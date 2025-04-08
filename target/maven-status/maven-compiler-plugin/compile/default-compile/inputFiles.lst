@@ -8,4 +8,5 @@
 /Users/fran/Documents/GitHub/SafeInvestor/src/main/java/es/franciscorodalf/saveinvestor/frontend/controller/RecuperarContraseniaController.java
 /Users/fran/Documents/GitHub/SafeInvestor/src/main/java/es/franciscorodalf/saveinvestor/backend/model/UsuarioServiceModel.java
 /Users/fran/Documents/GitHub/SafeInvestor/src/main/java/es/franciscorodalf/saveinvestor/frontend/controller/RegistroController.java
+/Users/fran/Documents/GitHub/SafeInvestor/src/main/java/es/franciscorodalf/saveinvestor/frontend/controller/cambiarContraseniaController.java
 /Users/fran/Documents/GitHub/SafeInvestor/src/main/java/es/franciscorodalf/saveinvestor/backend/controller/AbstractController.java
