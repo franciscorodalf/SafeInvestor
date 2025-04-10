@@ -1,4 +1,8 @@
 # SafeInvestor 🛡️📈  
+<p align="center">
+  <img src="https://raw.githubusercontent.com/franciscorodalf/SafeInvestor/main/src/main/resources/images/logo-saveInvestor.png" alt="Logo SafeInvestor" width="200"/>
+</p>
+
 > Tu asistente personal para inversiones seguras y finanzas inteligentes.
 ---
 
