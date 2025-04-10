@@ -12,11 +12,11 @@ Lo que diferencia a **SafeInvestor** de otras soluciones es su enfoque en simpli
 
 ---
 
-## Contenido Visual 
+## Contenido Visual
 
-- 📸  Maqueta de la aplicacion: [Click aqui para ver la imagen](https://github.com/franciscorodalf/SafeInvestor/blob/main/images/mooks-pantalla.drawio.png)
-
-- 📸  Pestaña de inicio o Login: [Click aqui para ver la imagen de la pestaña de Login](https://github.com/franciscorodalf/SafeInvestor/blob/main/images/Login.png)
+| ![Maqueta de la aplicación](https://raw.githubusercontent.com/franciscorodalf/SafeInvestor/main/images/mooks-pantalla.drawio.png) | ![Pestaña de Login](https://raw.githubusercontent.com/franciscorodalf/SafeInvestor/main/images/Login.png) | ![Pestaña de Registro](https://raw.githubusercontent.com/franciscorodalf/SafeInvestor/main/images/Registro.png) |
+|:--:|:--:|:--:|
+| 📸 **Maqueta de la aplicación**<br>[Click aquí para ver la imagen](https://github.com/franciscorodalf/SafeInvestor/blob/main/images/mooks-pantalla.drawio.png) | 📸 **Pestaña de inicio o Login**<br>[Click aquí para ver la imagen](https://github.com/franciscorodalf/SafeInvestor/blob/main/images/Login.png) | 📸 **Pestaña de Registro**<br>[Click aquí para ver la imagen](https://github.com/franciscorodalf/SafeInvestor/blob/main/images/Registro.png) |
 
 ---
 
