@@ -4,6 +4,11 @@ import java.util.Date;
 import java.util.Objects;
 
 public class tarea {
+    public static final String ESTADO_INGRESO = "INGRESO";
+    public static final String ESTADO_GASTO = "GASTO";
+
+    private Integer id;
+    private Integer usuarioId;
     private String concepto;
     private double cantidad;
     private Date fecha;
@@ -12,11 +17,12 @@ public class tarea {
     public tarea() {
     }
 
-    public tarea(String concepto, double cantidad, Date fecha, String estado) {
+    public tarea(String concepto, double cantidad, Date fecha, String estado, Integer usuarioId) {
         this.concepto = concepto;
         this.cantidad = cantidad;
         this.fecha = fecha;
         this.estado = estado;
+        this.usuarioId = usuarioId;
     }
 
     public String getConcepto() {
@@ -27,12 +33,14 @@ public class tarea {
         this.concepto = concepto;
     }
 
-
     public double getCantidad() {
         return this.cantidad;
     }
 
     public void setCantidad(double cantidad) {
+        if (cantidad == 0) {
+            throw new IllegalArgumentException("La cantidad no puede ser cero");
+        }
         this.cantidad = cantidad;
     }
 
@@ -49,7 +57,26 @@ public class tarea {
     }
 
     public void setEstado(String estado) {
+        if (!estado.equals(ESTADO_INGRESO) && !estado.equals(ESTADO_GASTO)) {
+            throw new IllegalArgumentException("Estado debe ser INGRESO o GASTO");
+        }
         this.estado = estado;
+    }
+
+    public Integer getId() {
+        return this.id;
+    }
+
+    public void setId(Integer id) {
+        this.id = id;
+    }
+
+    public Integer getUsuarioId() {
+        return this.usuarioId;
+    }
+
+    public void setUsuarioId(Integer usuarioId) {
+        this.usuarioId = usuarioId;
     }
 
     public tarea concepto(String concepto) {

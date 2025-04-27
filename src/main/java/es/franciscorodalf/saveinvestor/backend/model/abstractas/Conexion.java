@@ -11,7 +11,7 @@ public abstract class Conexion {
     private static Connection connection;
 
     public Conexion() {
-        this.rutaArchivoBD = "../src/main/resources/database/usuarios.db";
+        this.rutaArchivoBD = "src/main/resources/database/saveinvestor.db";
     }
 
     public Conexion(String unaRutaArchivoBD) throws SQLException {

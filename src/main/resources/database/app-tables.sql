@@ -1,50 +1,37 @@
--- Eliminar la tabla usuario_rol si existe
-DROP TABLE IF EXISTS usuario_rol;
-
--- Eliminar la tabla usuario si existe
+-- Eliminar tablas si existen
+DROP TABLE IF EXISTS tarea;
+DROP TABLE IF EXISTS estadistica;
 DROP TABLE IF EXISTS usuario;
 
--- Eliminar la tabla rol si existe
-DROP TABLE IF EXISTS rol;
-
--- Crear la tabla usuario
+-- Crear tabla usuario (necesaria para las relaciones)
 CREATE TABLE usuario (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     nombre TEXT NOT NULL,
-    contrasenia TEXT NOT NULL,
-    email TEXT UNIQUE NOT NULL
+    email TEXT UNIQUE NOT NULL,
+    contrasenia TEXT NOT NULL
 );
 
--- Crear la tabla rol
-CREATE TABLE rol (
+-- Crear tabla tarea
+CREATE TABLE tarea (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
-    nombre TEXT UNIQUE NOT NULL
-);
-
--- Crear la tabla intermedia usuario_rol para la relación muchos a muchos
-CREATE TABLE usuario_rol (
+    concepto TEXT NOT NULL,
+    cantidad REAL NOT NULL CHECK (cantidad != 0),
+    fecha DATE NOT NULL,
+    estado TEXT NOT NULL CHECK (estado IN ('INGRESO', 'GASTO')),
     usuario_id INTEGER,
-    rol_id INTEGER,
-    PRIMARY KEY (usuario_id, rol_id),
-    FOREIGN KEY (usuario_id) REFERENCES usuario(id) ON DELETE CASCADE,
-    FOREIGN KEY (rol_id) REFERENCES rol(id) ON DELETE CASCADE
+    FOREIGN KEY (usuario_id) REFERENCES usuario(id) ON DELETE CASCADE
 );
 
--- Insertar roles en la tabla rol
-INSERT INTO rol (nombre) VALUES
-    ('Administrador'),
-    ('Editor'),
-    ('Usuario');
+-- Crear tabla estadistica
+CREATE TABLE estadistica (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    total_ingreso REAL NOT NULL DEFAULT 0 CHECK (total_ingreso >= 0),
+    total_gasto REAL NOT NULL DEFAULT 0 CHECK (total_gasto >= 0),
+    usuario_id INTEGER UNIQUE,
+    FOREIGN KEY (usuario_id) REFERENCES usuario(id) ON DELETE CASCADE
+);
 
--- Insertar usuarios de ejemplo
-INSERT INTO usuario (nombre, contrasenia, email) VALUES
-    ('Juan Pérez', 'pass123', 'juan@example.com'),
-    ('Ana López', 'securePass', 'ana@example.com'),
-    ('Carlos Gómez', 'claveSegura', 'carlos@example.com');
-
--- Asignar roles a los usuarios (ejemplo)
-INSERT INTO usuario_rol (usuario_id, rol_id) VALUES
-    (1, 1), -- Juan Pérez es Administrador
-    (2, 2), -- Ana López es Editor
-    (3, 3), -- Carlos Gómez es Usuario
-    (2, 3); -- Ana López también es Usuario
+-- Añadir índices para mejorar el rendimiento
+CREATE INDEX idx_tarea_usuario ON tarea(usuario_id);
+CREATE INDEX idx_tarea_fecha ON tarea(fecha);
+CREATE INDEX idx_estadistica_usuario ON estadistica(usuario_id);

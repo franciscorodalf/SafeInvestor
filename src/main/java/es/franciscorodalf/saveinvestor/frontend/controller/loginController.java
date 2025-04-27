@@ -1,111 +1,114 @@
 package es.franciscorodalf.saveinvestor.frontend.controller;
 
-import java.io.IOException;
-
-import es.franciscorodalf.saveinvestor.backend.model.UsuarioEntity;
-import es.franciscorodalf.saveinvestor.backend.controller.AbstractController;
+import es.franciscorodalf.saveinvestor.backend.dao.UsuarioDAO;
+import es.franciscorodalf.saveinvestor.backend.model.Usuario;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
-import javafx.scene.image.ImageView;
-import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
+import java.io.IOException;
 
-public class loginController extends AbstractController {
-
+public class loginController {
     @FXML
-    private VBox rootVBox;
-
+    private TextField textFieldUsuario;
     @FXML
-    private ImageView imageLogoLogin;
+    private PasswordField textFieldContrasenia;
+    @FXML
+    private Text textFieldMensaje;
     @FXML
     private Button buttonAceptarlLogin;
     @FXML
     private Button buttonLoginRegistrar;
-
-    @FXML
-    private Label textBienvenidoLogin;
-    @FXML
-    private TextField textFieldUsuario;
-    @FXML
-    private TextField textFieldContrasenia;
-    @FXML
-    private PasswordField textLabelContrasenia;
     @FXML
     private Hyperlink textLinkOlvidarContrasenia;
-    @FXML
-    private Text textFieldMensaje;
 
-    @FXML
+    private UsuarioDAO usuarioDAO;
+
     public void initialize() {
- 
+        usuarioDAO = new UsuarioDAO();
+        textFieldMensaje.setVisible(false);
+    }
+
+    // Setters para testing
+    void setUsuarioDAO(UsuarioDAO usuarioDAO) {
+        this.usuarioDAO = usuarioDAO;
+    }
+
+    void setTextFieldUsuario(TextField textField) {
+        this.textFieldUsuario = textField;
+    }
+
+    void setTextFieldContrasenia(PasswordField textField) {
+        this.textFieldContrasenia = textField;
+    }
+
+    void setTextFieldMensaje(Text textFieldMensaje) {
+        this.textFieldMensaje = textFieldMensaje;
     }
 
     @FXML
-    protected void buttonAceptarLogin() {
-        textFieldMensaje.setVisible(true);
+    public void buttonAceptarLogin(ActionEvent event) {
+        try {
+            Usuario usuario = usuarioDAO.autenticar(
+                textFieldUsuario.getText(),
+                textFieldContrasenia.getText()
+            );
 
-        if (textFieldUsuario == null || textFieldUsuario.getText().isEmpty() ||
-                textFieldContrasenia == null || textFieldContrasenia.getText().isEmpty()) {
-            textFieldMensaje.setText("Credenciales null o vacías");
-            textFieldMensaje.setStyle("-fx-fill: red;");
-            return;
+            if (usuario != null) {
+                if (event != null) {
+                    cargarPantallaPrincipal(event, usuario);
+                }
+            } else {
+                textFieldMensaje.setText("Credenciales inválidas");
+                textFieldMensaje.setVisible(true);
+            }
+        } catch (Exception e) {
+            mostrarError("Error al iniciar sesión: " + e.getMessage());
         }
-
-        UsuarioEntity usuarioEntity = getUsuarioServiceModel().obtenerDatosUsuario(textFieldUsuario.getText());
-
-        if (usuarioEntity == null) {
-            textFieldMensaje.setText("El usuario no existe");
-            textFieldMensaje.setStyle("-fx-fill: red;");
-            return;
-        }
-
-        if ((textFieldUsuario.getText().equals(usuarioEntity.getEmail())
-                || textFieldUsuario.getText().equals(usuarioEntity.getNombre()))
-                && textFieldContrasenia.getText().equals(usuarioEntity.getContrasenia())) {
-            textFieldMensaje.setText("Usuario validado correctamente");
-            textFieldMensaje.setStyle("-fx-fill: green;");
-
-            return;
-        }
-
-        textFieldMensaje.setText("Credenciales inválidas");
-        textFieldMensaje.setStyle("-fx-fill: red;");
     }
 
     @FXML
     private void clickButtonRegistrar(ActionEvent event) {
         try {
-            FXMLLoader fxmlLoader = new FXMLLoader(
+            FXMLLoader loader = new FXMLLoader(
                     getClass().getResource("/es/franciscorodalf/saveinvestor/registro.fxml"));
-            Scene scene = new Scene(fxmlLoader.load());
-            RegistroController registroController = fxmlLoader.getController();
+            Scene scene = new Scene(loader.load());
             Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
             stage.setScene(scene);
-            stage.setTitle("Registro");
             stage.show();
         } catch (IOException e) {
-            e.printStackTrace();
+            mostrarError("Error al cargar pantalla de registro");
         }
     }
 
     @FXML
     private void clickLinkOlvidarContrasenia(ActionEvent event) {
         try {
-            FXMLLoader fxmlLoader = new FXMLLoader(
+            FXMLLoader loader = new FXMLLoader(
                     getClass().getResource("/es/franciscorodalf/saveinvestor/olvidarContrasenia.fxml"));
-            Scene scene = new Scene(fxmlLoader.load());
-            RecuperarContraseniaController recuperarContraseniaController = fxmlLoader.getController();
+            Scene scene = new Scene(loader.load());
             Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
             stage.setScene(scene);
-            stage.setTitle("Recuperar Contraseña");
             stage.show();
         } catch (IOException e) {
-            e.printStackTrace();
+            mostrarError("Error al cargar pantalla de recuperación");
         }
+    }
+
+    public void cargarPantallaPrincipal(ActionEvent event, Usuario usuario) throws IOException {
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("/es/franciscorodalf/saveinvestor/principal.fxml"));
+        Scene scene = new Scene(loader.load());
+        Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+        stage.setScene(scene);
+        stage.show();
+    }
+
+    private void mostrarError(String mensaje) {
+        textFieldMensaje.setText(mensaje);
+        textFieldMensaje.setVisible(true);
     }
 }

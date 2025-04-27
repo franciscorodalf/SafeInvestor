@@ -1,10 +1,7 @@
 package es.franciscorodalf.saveinvestor.frontend.controller;
 
-import java.io.IOException;
-import java.sql.SQLException;
-
-import es.franciscorodalf.saveinvestor.backend.controller.AbstractController;
-import es.franciscorodalf.saveinvestor.backend.model.UsuarioEntity;
+import es.franciscorodalf.saveinvestor.backend.dao.UsuarioDAO;
+import es.franciscorodalf.saveinvestor.backend.model.Usuario;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -12,106 +9,115 @@ import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.stage.Stage;
+import java.io.IOException;
 
-public class RegistroController extends AbstractController {
-
+public class RegistroController {
     @FXML
-    private Button buttonVolver;
-
+    private TextField textFieldUsuarioRegistro;
     @FXML
-    private Button ButtonRegistrarse;
-
+    private TextField textFieldEmailRegistro;
+    @FXML
+    private TextField textFieldRepetirEmail;
+    @FXML
+    private PasswordField textFieldContraseniaRegistro;
+    @FXML
+    private PasswordField textFieldRepetirContraseniaRegistro;
     @FXML
     private Label textMensajeRegistro;
 
-    @FXML
-    private TextField textFieldUsuarioRegistro;
+    private UsuarioDAO usuarioDAO;
 
-    @FXML
-    private PasswordField textFieldContraseniaRegistro;
+    public void initialize() {
+        usuarioDAO = new UsuarioDAO();
+        textMensajeRegistro.setVisible(false);
+    }
 
-    @FXML
-    private PasswordField textFieldRepetirContraseniaRegistro;
+    // Setters para testing
+    public void setUsuarioDAO(UsuarioDAO usuarioDAO) {
+        this.usuarioDAO = usuarioDAO;
+    }
 
-    @FXML
-    private TextField textFieldEmailRegistro;
+    public void setTextFieldUsuarioRegistro(TextField textFieldUsuarioRegistro) {
+        this.textFieldUsuarioRegistro = textFieldUsuarioRegistro;
+    }
 
-    @FXML
-    private TextField textFieldRepetirEmail;
+    public void setTextFieldEmailRegistro(TextField textFieldEmailRegistro) {
+        this.textFieldEmailRegistro = textFieldEmailRegistro;
+    }
 
-    @FXML
-    private void initialize() {
-    
+    public void setTextFieldRepetirEmail(TextField textFieldRepetirEmail) {
+        this.textFieldRepetirEmail = textFieldRepetirEmail;
+    }
+
+    public void setTextFieldContraseniaRegistro(PasswordField textFieldContraseniaRegistro) {
+        this.textFieldContraseniaRegistro = textFieldContraseniaRegistro;
+    }
+
+    public void setTextFieldRepetirContraseniaRegistro(PasswordField textFieldRepetirContraseniaRegistro) {
+        this.textFieldRepetirContraseniaRegistro = textFieldRepetirContraseniaRegistro;
+    }
+
+    public void setTextMensajeRegistro(Label textMensajeRegistro) {
+        this.textMensajeRegistro = textMensajeRegistro;
     }
 
     @FXML
-    protected void clickRegistrarse() throws SQLException {
-        textMensajeRegistro.getStyleClass().removeAll("text-error", "text-success");
+    public void clickRegistrarse(ActionEvent event) {
+        try {
+            if (!validarCampos()) {
+                return;
+            }
 
-        if (textFieldContraseniaRegistro.getText().isEmpty()
-                || textFieldRepetirContraseniaRegistro.getText().isEmpty()) {
-            mostrarMensaje("La contraseña no puede estar vacía", false);
-            return;
-        }
-
-        if (!textFieldContraseniaRegistro.getText().equals(textFieldRepetirContraseniaRegistro.getText())) {
-            mostrarMensaje("Las contraseñas deben coincidir", false);
-            return;
-        }
-
-        String email = textFieldEmailRegistro.getText();
-        String emailRepetido = textFieldRepetirEmail.getText();
-
-        String emailRegex = "^[\\w-\\.]+@([\\w-]+\\.)+[\\w-]{2,4}$";
-        if (!email.matches(emailRegex)) {
-            mostrarMensaje("El formato del correo es inválido", false);
-            return;
-        }
-
-        if (!email.equals(emailRepetido)) {
-            mostrarMensaje("Los correos electrónicos deben coincidir", false);
-            return;
-        }
-
-        UsuarioEntity usuarioNuevo = new UsuarioEntity(
-                email,
+            Usuario nuevoUsuario = new Usuario(
+                textFieldEmailRegistro.getText(),
                 textFieldUsuarioRegistro.getText(),
-                textFieldContraseniaRegistro.getText());
-
-        if (!getUsuarioServiceModel().agregarUsuario(usuarioNuevo)) {
-            mostrarMensaje("Usuario ya registrado o inválido", false);
-            return;
-        }
-
-        mostrarMensaje("Registro exitoso. Redirigiendo...", true);
-    }
-
-    private void mostrarMensaje(String mensaje, boolean esExito) {
-        textMensajeRegistro.getStyleClass().removeAll("text-error", "text-success");
-        textMensajeRegistro.setText(mensaje);
-        textMensajeRegistro.setVisible(true);
-
-        if (esExito) {
-            textMensajeRegistro.getStyleClass().add("text-success");
-        } else {
-            textMensajeRegistro.getStyleClass().add("text-error");
-
+                textFieldContraseniaRegistro.getText()
+            );
+            
+            usuarioDAO.insertar(nuevoUsuario);
+            mostrarMensaje("Usuario registrado correctamente");
+            
+            if (event != null) {
+                volverALogin(event);
+            }
+        } catch (Exception e) {
+            mostrarMensaje("Error al registrar usuario: " + e.getMessage());
         }
     }
 
     @FXML
     private void clickButtonVolver(ActionEvent event) {
         try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/es/franciscorodalf/saveinvestor/login.fxml"));
-            Scene scene = new Scene(loader.load());
-
-            Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
-            stage.setScene(scene);
-            stage.setTitle("Login");
-            stage.show();
+            volverALogin(event);
         } catch (IOException e) {
-            System.err.println("❌ Error al volver a la pantalla de login: " + e.getMessage());
-            e.printStackTrace();
+            mostrarMensaje("Error al volver a la pantalla de login");
         }
+    }
+
+    private boolean validarCampos() {
+        if (!textFieldEmailRegistro.getText().equals(textFieldRepetirEmail.getText())) {
+            mostrarMensaje("Los emails no coinciden");
+            return false;
+        }
+
+        if (!textFieldContraseniaRegistro.getText().equals(textFieldRepetirContraseniaRegistro.getText())) {
+            mostrarMensaje("Las contraseñas no coinciden");
+            return false;
+        }
+
+        return true;
+    }
+
+    private void volverALogin(ActionEvent event) throws IOException {
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("/es/franciscorodalf/saveinvestor/login.fxml"));
+        Scene scene = new Scene(loader.load());
+        Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+        stage.setScene(scene);
+        stage.show();
+    }
+
+    private void mostrarMensaje(String mensaje) {
+        textMensajeRegistro.setText(mensaje);
+        textMensajeRegistro.setVisible(true);
     }
 }
