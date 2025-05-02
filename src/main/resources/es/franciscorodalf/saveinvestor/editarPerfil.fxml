@@ -9,7 +9,7 @@
 <?import javafx.scene.layout.GridPane?>
 <?import javafx.scene.layout.HBox?>
 
-<BorderPane xmlns="http://javafx.com/javafx/23.0.1"
+<BorderPane xmlns="http://javafx.com/javafx/12.0.1"
             xmlns:fx="http://javafx.com/fxml/1"
             fx:controller="es.franciscorodalf.saveinvestor.frontend.controller.EditarPerfilController"
             style="-fx-background-color: #f5f5f5;">

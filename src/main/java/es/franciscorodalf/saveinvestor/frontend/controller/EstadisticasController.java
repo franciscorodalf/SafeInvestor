@@ -19,11 +19,18 @@ import javafx.stage.Stage;
 import java.io.IOException;
 import java.time.LocalDate;
 import java.time.YearMonth;
+import java.time.ZoneId;
 import java.time.format.TextStyle;
+import java.util.Date;
 import java.util.Locale;
-import java.util.Random;
 
 import es.franciscorodalf.saveinvestor.backend.model.Usuario;
+import es.franciscorodalf.saveinvestor.backend.model.estadistica;
+import es.franciscorodalf.saveinvestor.backend.dao.EstadisticaDAO;
+import es.franciscorodalf.saveinvestor.backend.dao.TareaDAO;
+import es.franciscorodalf.saveinvestor.backend.model.tarea;
+
+import java.sql.SQLException;
 
 /**
  * Controlador de la vista de Estadísticas.
@@ -62,13 +69,18 @@ public class EstadisticasController {
 
     private YearMonth currentYearMonth;
     private Usuario usuarioActual;
-    private Random random = new Random(); // Para generar datos aleatorios de prueba
+    private EstadisticaDAO estadisticaDAO;
+    private TareaDAO tareaDAO;
 
     /**
      * Inicializa el controlador
      */
     @FXML
     public void initialize() {
+        // Inicializar DAOs
+        estadisticaDAO = new EstadisticaDAO();
+        tareaDAO = new TareaDAO();
+        
         // Inicializar el mes actual
         currentYearMonth = YearMonth.now();
         
@@ -77,9 +89,6 @@ public class EstadisticasController {
         
         // Actualizar calendario
         actualizarCalendario();
-        
-        // Simular estadísticas
-        actualizarEstadisticas();
         
         // Configurar listeners de botones
         configurarBotones();
@@ -110,7 +119,33 @@ public class EstadisticasController {
      */
     public void setUsuario(Usuario usuario) {
         this.usuarioActual = usuario;
-        // Si se necesita, cargar datos del usuario
+        if (usuario != null) {
+            // Cargar datos del usuario
+            cargarEstadisticas();
+        }
+    }
+
+    /**
+     * Carga las estadísticas del usuario desde la base de datos
+     */
+    private void cargarEstadisticas() {
+        try {
+            if (usuarioActual != null && usuarioActual.getId() != null) {
+                // Obtener estadísticas del usuario
+                estadistica stats = estadisticaDAO.obtenerPorUsuario(usuarioActual.getId());
+                
+                if (stats != null) {
+                    // Mostrar estadísticas 
+                    mostrarEstadisticas(stats);
+                } else {
+                    // Si no existe, crear una nueva estadística
+                    stats = new estadistica(0.0, 0.0, usuarioActual.getId());
+                    estadisticaDAO.insertar(stats);
+                }
+            }
+        } catch (SQLException e) {
+            System.err.println("Error al cargar estadísticas: " + e.getMessage());
+        }
     }
 
     /**
@@ -225,21 +260,58 @@ public class EstadisticasController {
      * Actualiza las estadísticas mostradas
      */
     private void actualizarEstadisticas() {
-        // Inicialmente las barras no mostrarán datos, esto se implementará después
-        // Se establecen valores iniciales de cero
-        double ahorros = 0.0;
-        double gastos = 0.0;
+        if (usuarioActual == null || usuarioActual.getId() == null) return;
         
+        try {
+            // Obtener estadísticas del mes actual
+            LocalDate inicio = currentYearMonth.atDay(1);
+            LocalDate fin = currentYearMonth.atEndOfMonth();
+            
+            // Convertir a Date para la base de datos
+            Date fechaInicio = java.util.Date.from(inicio.atStartOfDay(ZoneId.systemDefault()).toInstant());
+            Date fechaFin = java.util.Date.from(fin.atTime(23, 59, 59).atZone(ZoneId.systemDefault()).toInstant());
+            
+            // Calcular ingresos y gastos del mes
+            double ingresos = tareaDAO.calcularTotalPorTipoYPeriodo(usuarioActual.getId(), tarea.ESTADO_INGRESO, fechaInicio, fechaFin);
+            double gastos = tareaDAO.calcularTotalPorTipoYPeriodo(usuarioActual.getId(), tarea.ESTADO_GASTO, fechaInicio, fechaFin);
+            
+            // Crear estadística temporal para mostrar
+            estadistica statsMes = new estadistica(ingresos, gastos, usuarioActual.getId());
+            
+            // Mostrar estadísticas mensuales
+            mostrarEstadisticas(statsMes);
+            
+        } catch (SQLException e) {
+            System.err.println("Error al actualizar estadísticas: " + e.getMessage());
+        }
+    }
+    
+    /**
+     * Muestra las estadísticas en la interfaz
+     */
+    private void mostrarEstadisticas(estadistica stats) {
         // Actualizar etiquetas
-        lblTotalAhorros.setText(String.format("%.2f$", ahorros));
-        lblTotalGastos.setText(String.format("%.2f$", gastos));
+        lblTotalAhorros.setText(String.format("%.2f$", stats.getTotalIngreso()));
+        lblTotalGastos.setText(String.format("%.2f$", stats.getTotalGasto()));
         
-        // Las barras comienzan con altura mínima (se expandirán cuando haya datos)
-        // No aplicamos transformaciones para evitar que se muevan
-        barAhorro.setHeight(1);
-        barGasto.setHeight(1);
+        // Actualizar barras
+        double maxValue = Math.max(stats.getTotalIngreso(), stats.getTotalGasto());
+        double maxHeight = 100.0; // Altura máxima en píxeles
         
-        // No usamos translateY para evitar movimientos
+        // Si no hay datos, mostrar un valor mínimo
+        if (maxValue == 0) {
+            barAhorro.setHeight(1);
+            barGasto.setHeight(1);
+            return;
+        }
+        
+        // Calcular alturas proporcionales
+        double ingresoHeight = Math.max(1, (stats.getTotalIngreso() / maxValue) * maxHeight);
+        double gastoHeight = Math.max(1, (stats.getTotalGasto() / maxValue) * maxHeight);
+        
+        // Aplicar alturas a las barras
+        barAhorro.setHeight(ingresoHeight);
+        barGasto.setHeight(gastoHeight);
     }
 
     /**

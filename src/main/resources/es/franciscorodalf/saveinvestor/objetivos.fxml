@@ -3,6 +3,7 @@
 <?import javafx.geometry.Insets?>
 <?import javafx.geometry.Pos?>
 <?import javafx.scene.control.Button?>
+<?import javafx.scene.control.DatePicker?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.ListView?>
 <?import javafx.scene.control.TextField?>
@@ -52,6 +53,14 @@
                     </padding>
                     <Label text="Cantidad objetivo:"/>
                     <TextField fx:id="txtCantidad" promptText="Ej: 1000.00" prefWidth="150"/>
+                </HBox>
+                
+                <HBox spacing="10" alignment="CENTER_LEFT">
+                    <padding>
+                        <Insets top="10" />
+                    </padding>
+                    <Label text="Fecha límite (opcional):"/>
+                    <DatePicker fx:id="dateFechaObjetivo" promptText="Selecciona una fecha" />
                 </HBox>
                 
                 <Label fx:id="lblMensaje" textFill="RED" visible="false">

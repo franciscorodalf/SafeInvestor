@@ -9,7 +9,7 @@
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.text.Font?>
 
-<BorderPane xmlns="http://javafx.com/javafx/23.0.1"
+<BorderPane xmlns="http://javafx.com/javafx/12.0.1"
             xmlns:fx="http://javafx.com/fxml/1"
             fx:controller="es.franciscorodalf.saveinvestor.frontend.controller.PerfilController"
             style="-fx-background-color: #f5f5f5;">
@@ -37,20 +37,15 @@
                    style="-fx-font-weight: bold;"/>
             <Label fx:id="lblNombre" text="--" GridPane.rowIndex="0" GridPane.columnIndex="1"/>
 
-            <!-- Fila 1: Apellidos -->
-            <Label text="Apellidos:" GridPane.rowIndex="1" GridPane.columnIndex="0"
+            <!-- Fila 1: Email -->
+            <Label text="Email:" GridPane.rowIndex="1" GridPane.columnIndex="0"
                    style="-fx-font-weight: bold;"/>
-            <Label fx:id="lblApellidos" text="--" GridPane.rowIndex="1" GridPane.columnIndex="1"/>
-
-            <!-- Fila 2: Email -->
-            <Label text="Email:" GridPane.rowIndex="2" GridPane.columnIndex="0"
+            <Label fx:id="lblEmail" text="--" GridPane.rowIndex="1" GridPane.columnIndex="1"/>
+            
+            <!-- Fila 2: Contraseña -->
+            <Label text="Contraseña:" GridPane.rowIndex="2" GridPane.columnIndex="0"
                    style="-fx-font-weight: bold;"/>
-            <Label fx:id="lblEmail" text="--" GridPane.rowIndex="2" GridPane.columnIndex="1"/>
-
-            <!-- Fila 3: Fecha de registro -->
-            <Label text="Registrado desde:" GridPane.rowIndex="3" GridPane.columnIndex="0"
-                   style="-fx-font-weight: bold;"/>
-            <Label fx:id="lblFechaRegistro" text="--" GridPane.rowIndex="3" GridPane.columnIndex="1"/>
+            <Label fx:id="lblContrasenia" text="" GridPane.rowIndex="2" GridPane.columnIndex="1"/>
 
         </GridPane>
     </center>

@@ -137,6 +137,20 @@
             <classifier>linux</classifier>
             <scope>test</scope>
         </dependency>
+
+        <!-- SLF4J API -->
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-api</artifactId>
+            <version>1.7.36</version>
+        </dependency>
+        
+        <!-- SLF4J Simple implementation -->
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-simple</artifactId>
+            <version>1.7.36</version>
+        </dependency>
     </dependencies>
 
     <build>
@@ -160,6 +174,10 @@
                         <id>default-cli</id>
                         <configuration>
                             <mainClass>es.franciscorodalf.saveinvestor.Main</mainClass>
+                            <options>
+                                <option>--add-exports</option>
+                                <option>javafx.base/com.sun.javafx.event=ALL-UNNAMED</option>
+                            </options>
                         </configuration>
                         <goals>
                             <goal>run</goal>

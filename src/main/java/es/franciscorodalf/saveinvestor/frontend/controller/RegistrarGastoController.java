@@ -1,11 +1,14 @@
 package es.franciscorodalf.saveinvestor.frontend.controller;
 
 import java.io.IOException;
+import java.sql.SQLException;
 import java.util.Date;
 
+import es.franciscorodalf.saveinvestor.backend.dao.EstadisticaDAO;
 import es.franciscorodalf.saveinvestor.backend.dao.TareaDAO;
 import es.franciscorodalf.saveinvestor.backend.model.tarea;
 import es.franciscorodalf.saveinvestor.backend.model.Usuario;
+import es.franciscorodalf.saveinvestor.backend.model.estadistica;
 
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -30,10 +33,12 @@ public class RegistrarGastoController {
 
     private Usuario usuarioActual;
     private TareaDAO tareaDAO;
+    private EstadisticaDAO estadisticaDAO;
 
     @FXML
     private void initialize() {
         tareaDAO = new TareaDAO();
+        estadisticaDAO = new EstadisticaDAO();
         if (lblMensaje != null) {
             lblMensaje.setVisible(false);
         }
@@ -52,18 +57,24 @@ public class RegistrarGastoController {
     private void onAceptar(ActionEvent event) {
         if (validarCampos()) {
             try {
-                double cantidad = Double.parseDouble(txtCantidad.getText());
-                String concepto = txtConcepto.getText();
+                double cantidad = Double.parseDouble(txtCantidad.getText().trim());
+                String concepto = txtConcepto.getText().trim();
                 
+                // Crear nueva tarea de tipo GASTO
                 tarea nuevoGasto = new tarea(
                     concepto,
-                    cantidad,  // La cantidad se guarda como positiva
+                    cantidad,
                     new Date(),
                     tarea.ESTADO_GASTO,
                     usuarioActual.getId()
                 );
                 
+                // Guardar en la base de datos
                 tareaDAO.insertar(nuevoGasto);
+                
+                // Actualizar estadísticas
+                actualizarEstadisticas(cantidad);
+                
                 mostrarMensaje("Gasto registrado correctamente");
                 
                 // Volver a la pantalla principal
@@ -72,8 +83,9 @@ public class RegistrarGastoController {
             } catch (NumberFormatException e) {
                 mostrarMensaje("La cantidad debe ser un número válido");
             } catch (Exception e) {
-                mostrarMensaje("Error al registrar gasto: " + e.getMessage());
-                System.err.println("Error: " + e.getMessage());
+                mostrarMensaje("Error al registrar gasto");
+                System.err.println("Error al registrar gasto: " + e.getMessage());
+                e.printStackTrace();
             }
         }
     }
@@ -126,6 +138,34 @@ public class RegistrarGastoController {
             stage.show();
         } catch (IOException e) {
             System.err.println("Error al volver a la pantalla principal: " + e.getMessage());
+        }
+    }
+
+    /**
+     * Actualiza las estadísticas del usuario añadiendo el nuevo gasto
+     */
+    private void actualizarEstadisticas(double cantidad) throws SQLException {
+        if (usuarioActual == null || usuarioActual.getId() == null) {
+            return;
+        }
+        
+        try {
+            // Obtener estadísticas actuales del usuario
+            estadistica stats = estadisticaDAO.obtenerPorUsuario(usuarioActual.getId());
+            
+            if (stats != null) {
+                // Actualizar el total de gastos
+                double nuevoTotal = stats.getTotalGasto() + cantidad;
+                stats.setTotalGasto(nuevoTotal);
+                estadisticaDAO.actualizar(stats);
+            } else {
+                // Crear nueva estadística si no existe
+                estadistica nuevaEstadistica = new estadistica(0.0, cantidad, usuarioActual.getId());
+                estadisticaDAO.insertar(nuevaEstadistica);
+            }
+        } catch (SQLException e) {
+            System.err.println("Error al actualizar estadísticas: " + e.getMessage());
+            throw e; // Relanzamos para que sea manejado por el método llamante
         }
     }
 }

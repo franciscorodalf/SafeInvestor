@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+
+<BorderPane xmlns="http://javafx.com/javafx/12.0.1" xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="es.franciscorodalf.saveinvestor.frontend.controller.AsignarAObjetivoController"
+            prefWidth="400.0" prefHeight="250.0" style="-fx-background-color: #f5f5f5;">
+   <top>
+      <Label text="Asignar a Objetivo" style="-fx-font-size: 18px; -fx-font-weight: bold;" 
+             BorderPane.alignment="CENTER">
+         <padding>
+            <Insets top="20.0" bottom="20.0" />
+         </padding>
+      </Label>
+   </top>
+   <center>
+      <VBox alignment="CENTER" spacing="15.0" BorderPane.alignment="CENTER">
+         <padding>
+            <Insets left="20.0" right="20.0" />
+         </padding>
+         <HBox alignment="CENTER" spacing="10.0">
+            <Label text="Cantidad a asignar:" />
+            <Label fx:id="lblCantidad" style="-fx-font-weight: bold;" text="0.00$" />
+         </HBox>
+         <Label text="Selecciona un objetivo:" />
+         <ComboBox fx:id="comboObjetivos" prefWidth="300.0" />
+         <Label fx:id="lblMensaje" style="-fx-text-fill: red;" text="Mensaje de error" visible="false" />
+      </VBox>
+   </center>
+   <bottom>
+      <HBox alignment="CENTER" spacing="20.0" BorderPane.alignment="CENTER">
+         <padding>
+            <Insets bottom="20.0" top="20.0" />
+         </padding>
+         <Button fx:id="btnCancelar" mnemonicParsing="false" onAction="#onCancelar" prefHeight="35.0" prefWidth="100.0" text="Cancelar" />
+         <Button fx:id="btnAsignar" mnemonicParsing="false" onAction="#onAsignar" prefHeight="35.0" prefWidth="100.0" 
+                 style="-fx-background-color: #27AE60; -fx-text-fill: white;" text="Asignar" />
+      </HBox>
+   </bottom>
+</BorderPane>

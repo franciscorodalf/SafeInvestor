@@ -6,6 +6,7 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
+import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.text.Text;
@@ -58,7 +59,7 @@ public class loginController {
             String contrasenia = textFieldContrasenia.getText();
 
             if (usuarioOEmail.isEmpty() || contrasenia.isEmpty()) {
-                System.err.println("ERROR: Por favor complete todos los campos");
+                mostrarMensajeError("Por favor complete todos los campos");
                 return;
             }
 
@@ -69,11 +70,15 @@ public class loginController {
                     cargarPantallaPrincipal(event, usuario);
                 }
             } else {
-                System.err.println("ERROR: Credenciales inválidas");
+                mostrarMensajeError("Credenciales inválidas. Revise usuario y contraseña");
             }
         } catch (Exception e) {
+            // Errores críticos o no controlados mostrados en terminal
             System.err.println("ERROR al iniciar sesión: " + e.getMessage());
             e.printStackTrace();
+            
+            // También mostrar mensaje genérico al usuario
+            mostrarMensajeError("Error al iniciar sesión. Inténtelo de nuevo");
         }
     }
 
@@ -87,7 +92,9 @@ public class loginController {
             stage.setScene(scene);
             stage.show();
         } catch (IOException e) {
-            System.err.println("ERROR: Error al cargar pantalla de registro");
+            System.err.println("ERROR: Error al cargar pantalla de registro: " + e.getMessage());
+            e.printStackTrace();
+            mostrarMensajeError("No se pudo abrir la pantalla de registro");
         }
     }
 
@@ -101,20 +108,58 @@ public class loginController {
             stage.setScene(scene);
             stage.show();
         } catch (IOException e) {
-            System.err.println("ERROR: Error al cargar pantalla de recuperación");
+            System.err.println("ERROR: Error al cargar pantalla de recuperación: " + e.getMessage());
+            e.printStackTrace();
+            mostrarMensajeError("No se pudo abrir la pantalla de recuperación");
+        }
+    }
+
+    /**
+     * Muestra un mensaje de error en la interfaz
+     * @param mensaje El mensaje de error a mostrar
+     */
+    private void mostrarMensajeError(String mensaje) {
+        if (textFieldMensaje != null) {
+            textFieldMensaje.setText(mensaje);
+            textFieldMensaje.setVisible(true);
+            
+            // Color rojo para el mensaje de error
+            textFieldMensaje.setStyle("-fx-fill: #e74c3c;");
+        }
+    }
+
+    /**
+     * Oculta el mensaje de error
+     */
+    private void ocultarMensajeError() {
+        if (textFieldMensaje != null) {
+            textFieldMensaje.setVisible(false);
         }
     }
 
     public void cargarPantallaPrincipal(ActionEvent event, Usuario usuario) throws IOException {
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("/es/franciscorodalf/saveinvestor/main.fxml"));
-        Scene scene = new Scene(loader.load());
+        try {
+            // Obtener la URL correctamente usando getClass().getResource()
+            java.net.URL url = getClass().getResource("/es/franciscorodalf/saveinvestor/main.fxml");
+            if (url == null) {
+                throw new IOException("No se pudo encontrar el archivo main.fxml");
+            }
+            
+            FXMLLoader loader = new FXMLLoader(url);
+            Parent root = loader.load();
 
-        // Opcionalmente, podemos pasar el usuario al controlador principal
-        MainController controller = loader.getController();
-        // Si necesitas pasar el usuario al controlador, puedes hacerlo aquí
+            // Pasar el usuario al controlador principal
+            MainController controller = loader.getController();
+            controller.setUsuario(usuario);
 
-        Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
-        stage.setScene(scene);
-        stage.show();
+            Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+            stage.setScene(new Scene(root));
+            stage.show();
+        } catch (IOException e) {
+            System.err.println("ERROR al cargar pantalla principal: " + e.getMessage());
+            e.printStackTrace();
+            mostrarMensajeError("Error al iniciar la aplicación: " + e.getMessage());
+            throw e; // Re-lanzamos para conservar el comportamiento original
+        }
     }
 }

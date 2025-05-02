@@ -1,9 +1,9 @@
 package es.franciscorodalf.saveinvestor.frontend.controller;
 
 import es.franciscorodalf.saveinvestor.backend.dao.TareaDAO;
+import es.franciscorodalf.saveinvestor.backend.model.Movimiento;
 import es.franciscorodalf.saveinvestor.backend.model.Usuario;
 import es.franciscorodalf.saveinvestor.backend.model.tarea;
-import es.franciscorodalf.saveinvestor.frontend.model.Movimiento;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -23,7 +23,6 @@ import java.io.IOException;
 import java.sql.SQLException;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
 import java.util.List;
 
 public class HistorialController {

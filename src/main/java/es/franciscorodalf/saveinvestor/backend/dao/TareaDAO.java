@@ -1,9 +1,11 @@
 package es.franciscorodalf.saveinvestor.backend.dao;
 
+import es.franciscorodalf.saveinvestor.backend.model.estadistica;
 import es.franciscorodalf.saveinvestor.backend.model.tarea;
 import es.franciscorodalf.saveinvestor.backend.model.abstractas.Conexion;
 import java.sql.*;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 public class TareaDAO extends Conexion implements DAO<tarea> {
@@ -26,9 +28,12 @@ public class TareaDAO extends Conexion implements DAO<tarea> {
         }
     }
 
+    /**
+     * Obtiene tareas de un usuario específico
+     */
     public List<tarea> obtenerPorUsuario(Integer usuarioId) throws SQLException {
+        String sql = "SELECT * FROM tarea WHERE usuario_id = ? ORDER BY fecha DESC";
         List<tarea> tareas = new ArrayList<>();
-        String sql = "SELECT * FROM tarea WHERE usuario_id = ?";
         try (PreparedStatement stmt = conectar().prepareStatement(sql)) {
             stmt.setInt(1, usuarioId);
             ResultSet rs = stmt.executeQuery();
@@ -44,11 +49,25 @@ public class TareaDAO extends Conexion implements DAO<tarea> {
         t.setId(rs.getInt("id"));
         t.setConcepto(rs.getString("concepto"));
         t.setCantidad(rs.getDouble("cantidad"));
-        t.setFecha(rs.getDate("fecha"));
+        
+        // Extraer fecha de forma segura
+        try {
+            t.setFecha(rs.getTimestamp("fecha"));
+        } catch (SQLException e) {
+            // Si hay error con timestamp, intentar con date
+            try {
+                t.setFecha(rs.getDate("fecha"));
+            } catch (SQLException ex) {
+                // Si falla, usar fecha actual
+                t.setFecha(new java.util.Date());
+            }
+        }
+        
         t.setEstado(rs.getString("estado"));
         t.setUsuarioId(rs.getInt("usuario_id"));
         return t;
     }
+
     @Override
     public void actualizar(tarea tarea) throws SQLException {
         String sql = "UPDATE tarea SET concepto = ?, cantidad = ?, fecha = ?, estado = ? WHERE id = ?";
@@ -96,5 +115,108 @@ public class TareaDAO extends Conexion implements DAO<tarea> {
         }
         return tareas;
     }
+
+    /**
+     * Calcula el total por tipo y período
+     */
+    public double calcularTotalPorTipoYPeriodo(Integer usuarioId, String estado, Date inicio, Date fin) throws SQLException {
+        String sql = "SELECT SUM(cantidad) as total FROM tarea WHERE usuario_id = ? AND estado = ? AND fecha BETWEEN ? AND ?";
+        try (PreparedStatement stmt = conectar().prepareStatement(sql)) {
+            stmt.setInt(1, usuarioId);
+            stmt.setString(2, estado);
+            stmt.setTimestamp(3, new Timestamp(inicio.getTime()));
+            stmt.setTimestamp(4, new Timestamp(fin.getTime()));
+            ResultSet rs = stmt.executeQuery();
+            if (rs.next()) {
+                return rs.getDouble("total");
+            }
+        }
+        return 0.0;
+    }
     
+    /**
+     * Obtiene tareas por usuario y período
+     */
+    public List<tarea> obtenerPorUsuarioYPeriodo(Integer usuarioId, Date inicio, Date fin) throws SQLException {
+        String sql = "SELECT * FROM tarea WHERE usuario_id = ? AND fecha BETWEEN ? AND ? ORDER BY fecha DESC";
+        List<tarea> tareas = new ArrayList<>();
+        try (PreparedStatement stmt = conectar().prepareStatement(sql)) {
+            stmt.setInt(1, usuarioId);
+            stmt.setTimestamp(2, new Timestamp(inicio.getTime()));
+            stmt.setTimestamp(3, new Timestamp(fin.getTime()));
+            ResultSet rs = stmt.executeQuery();
+            while (rs.next()) {
+                tareas.add(extraerTarea(rs));
+            }
+        }
+        return tareas;
+    }
+    
+    /**
+     * Obtiene las últimas N tareas de un usuario
+     */
+    public List<tarea> obtenerUltimasTareas(Integer usuarioId, int limite) throws SQLException {
+        String sql = "SELECT * FROM tarea WHERE usuario_id = ? ORDER BY fecha DESC LIMIT ?";
+        List<tarea> tareas = new ArrayList<>();
+        
+        try (Connection conn = conectar();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.setInt(1, usuarioId);
+            stmt.setInt(2, limite);
+            
+            ResultSet rs = stmt.executeQuery();
+            while (rs.next()) {
+                try {
+                    tareas.add(extraerTarea(rs));
+                } catch (Exception e) {
+                    System.err.println("Error extrayendo tarea del ResultSet: " + e.getMessage());
+                    // Continuar con la siguiente tarea
+                }
+            }
+        } catch (SQLException e) {
+            System.err.println("Error en consulta de tareas: " + e.getMessage());
+            throw e;
+        }
+        
+        return tareas;
+    }
+    
+    /**
+     * Actualiza las estadísticas del usuario basándose en sus tareas
+     */
+    public void actualizarEstadisticasUsuario(Integer usuarioId) throws SQLException {
+        // Calcular totales
+        double totalIngresos = calcularTotalPorTipo(usuarioId, tarea.ESTADO_INGRESO);
+        double totalGastos = calcularTotalPorTipo(usuarioId, tarea.ESTADO_GASTO);
+        
+        // Obtener la estadística del usuario o crear una nueva
+        EstadisticaDAO estadisticaDAO = new EstadisticaDAO();
+        estadistica stats = estadisticaDAO.obtenerPorUsuario(usuarioId);
+        
+        if (stats == null) {
+            stats = new estadistica(totalIngresos, totalGastos, usuarioId);
+            estadisticaDAO.insertar(stats);
+        } else {
+            stats.setTotalIngreso(totalIngresos);
+            stats.setTotalGasto(totalGastos);
+            estadisticaDAO.actualizar(stats);
+        }
+    }
+    
+    /**
+     * Calcula el total por tipo para todas las tareas de un usuario
+     */
+    private double calcularTotalPorTipo(Integer usuarioId, String estado) throws SQLException {
+        String sql = "SELECT SUM(cantidad) as total FROM tarea WHERE usuario_id = ? AND estado = ?";
+        try (PreparedStatement stmt = conectar().prepareStatement(sql)) {
+            stmt.setInt(1, usuarioId);
+            stmt.setString(2, estado);
+            ResultSet rs = stmt.executeQuery();
+            if (rs.next()) {
+                double total = rs.getDouble("total");
+                return rs.wasNull() ? 0 : total;
+            }
+        }
+        return 0.0;
+    }
 }

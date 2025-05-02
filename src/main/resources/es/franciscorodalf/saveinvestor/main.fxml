@@ -9,7 +9,7 @@
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
 
-<BorderPane xmlns="http://javafx.com/javafx/23.0.1"
+<BorderPane xmlns="http://javafx.com/javafx/12.0.1"
             xmlns:fx="http://javafx.com/fxml/1"
             fx:controller="es.franciscorodalf.saveinvestor.frontend.controller.MainController"
             style="-fx-background-color: #f5f5f5;">
@@ -53,10 +53,25 @@
                         prefWidth="150" prefHeight="50"
                         onAction="#onRegistrarAhorro"/>
             </HBox>
+            
+            <!-- Objetivos activos -->
+            <VBox alignment="TOP_LEFT" spacing="10" prefWidth="400">
+                <HBox alignment="CENTER_LEFT" spacing="10">
+                    <Label text="Objetivos activos:" style="-fx-font-size: 14px;"/>
+                    <Button fx:id="btnVerTodosObjetivos" text="Ver todos" 
+                            style="-fx-background-color: #3498db; -fx-text-fill: white;"
+                            onAction="#onObjetivos"/>
+                </HBox>
+                <ListView fx:id="listObjetivos" prefHeight="120" VBox.vgrow="SOMETIMES"/>
+            </VBox>
 
             <!-- Historial de movimientos -->
             <VBox alignment="TOP_LEFT" spacing="10" prefWidth="400">
-                <Label text="Últimos movimientos:" style="-fx-font-size: 14px;"/>
+                <HBox alignment="CENTER_LEFT" spacing="10">
+                    <Label text="Últimos movimientos:" style="-fx-font-size: 14px;"/>
+                    <Button fx:id="btnHistorialCompleto" text="Ver todos" 
+                            onAction="#onHistorial"/>
+                </HBox>
                 <ListView fx:id="listMovimientos" VBox.vgrow="ALWAYS"/>
             </VBox>
         </VBox>

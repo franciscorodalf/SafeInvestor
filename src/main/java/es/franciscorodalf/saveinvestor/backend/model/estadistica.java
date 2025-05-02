@@ -1,65 +1,68 @@
 package es.franciscorodalf.saveinvestor.backend.model;
 
+/**
+ * Clase que representa las estadísticas de un usuario
+ */
 public class estadistica {
     private Integer id;
+    private Double totalIngreso;
+    private Double totalGasto;
     private Integer usuarioId;
-    private double totalIngreso;
-    private double totalGasto;
-
+    
     public estadistica() {
+        this.totalIngreso = 0.0;
+        this.totalGasto = 0.0;
     }
-
-    public double calcularBalance() {
-        return totalIngreso - totalGasto;
-    }
-
-    public String generarResumen() {
-        return "Ingresos: " + totalIngreso + ", Gastos: " + totalGasto;
-    }
-
-    public estadistica(double totalIngreso, double totalGasto) {
-        this.totalIngreso = totalIngreso;
-        this.totalGasto = totalGasto;
-    }
-
-    public estadistica(double totalIngreso, double totalGasto, Integer usuarioId) {
-        this.totalIngreso = totalIngreso;
-        this.totalGasto = totalGasto;
+    
+    public estadistica(Double totalIngreso, Double totalGasto, Integer usuarioId) {
+        this.totalIngreso = totalIngreso != null ? totalIngreso : 0.0;
+        this.totalGasto = totalGasto != null ? totalGasto : 0.0;
         this.usuarioId = usuarioId;
     }
 
-    public double getTotalIngreso() {
-        return this.totalIngreso;
+    /**
+     * Calcula el balance (ingresos - gastos)
+     * @return El balance del usuario
+     */
+    public Double getBalance() {
+        return totalIngreso - totalGasto;
     }
-
-    public void setTotalIngreso(double totalIngreso) {
-        if (totalIngreso < 0) {
-            throw new IllegalArgumentException("El total de ingresos no puede ser negativo");
-        }
-        this.totalIngreso = totalIngreso;
+    
+    /**
+     * Verifica si el balance es positivo
+     * @return true si hay más ingresos que gastos
+     */
+    public boolean isBalancePositivo() {
+        return getBalance() > 0;
     }
-
-    public double getTotalGasto() {
-        return this.totalGasto;
-    }
-
-    public void setTotalGasto(double totalGasto) {
-        if (totalGasto < 0) {
-            throw new IllegalArgumentException("El total de gastos no puede ser negativo");
-        }
-        this.totalGasto = totalGasto;
-    }
-
+    
+    // Getters y setters
     public Integer getId() {
-        return this.id;
+        return id;
     }
 
     public void setId(Integer id) {
         this.id = id;
     }
 
+    public Double getTotalIngreso() {
+        return totalIngreso != null ? totalIngreso : 0.0;
+    }
+
+    public void setTotalIngreso(Double totalIngreso) {
+        this.totalIngreso = totalIngreso != null ? totalIngreso : 0.0;
+    }
+
+    public Double getTotalGasto() {
+        return totalGasto != null ? totalGasto : 0.0;
+    }
+
+    public void setTotalGasto(Double totalGasto) {
+        this.totalGasto = totalGasto != null ? totalGasto : 0.0;
+    }
+
     public Integer getUsuarioId() {
-        return this.usuarioId;
+        return usuarioId;
     }
 
     public void setUsuarioId(Integer usuarioId) {
@@ -68,11 +71,7 @@ public class estadistica {
 
     @Override
     public String toString() {
-        return "Estadistica{" +
-               "id=" + id +
-               ", usuarioId=" + usuarioId +
-               ", totalIngreso=" + totalIngreso +
-               ", totalGasto=" + totalGasto +
-               '}';
+        return "Estadistica [id=" + id + ", totalIngreso=" + totalIngreso + ", totalGasto=" + totalGasto
+                + ", balance=" + getBalance() + ", usuarioId=" + usuarioId + "]";
     }
 }
