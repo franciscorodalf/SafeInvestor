@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.geometry.Pos?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ListView?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+
+<BorderPane xmlns="http://javafx.com/javafx/23.0.1"
+            xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="es.franciscorodalf.saveinvestor.frontend.controller.MainController"
+            style="-fx-background-color: #f5f5f5;">
+
+    <!-- Barra superior -->
+    <top>
+        <HBox alignment="CENTER" spacing="20">
+            <padding>
+                <Insets top="15" right="15" bottom="15" left="15"/>
+            </padding>
+            <Button fx:id="btnPerfil"
+                    text="Perfil"
+                    onAction="#onPerfil"/>
+            <Button fx:id="btnWallet" text="Wallet" />
+            <Button fx:id="btnSettings" text="Ajustes" />
+        </HBox>
+    </top>
+
+    <!-- Centro: Ahorro, acciones e historial -->
+    <center>
+        <VBox alignment="TOP_CENTER" spacing="20">
+            <padding>
+                <Insets top="30" right="30" bottom="30" left="30"/>
+            </padding>
+
+            <!-- Total ahorrado -->
+            <VBox alignment="CENTER" spacing="5">
+                <Label text="Llevas Ahorrado:" style="-fx-font-size: 16px;"/>
+                <Label fx:id="lblTotalAhorro" text="0,00$"
+                       style="-fx-font-size: 32px; -fx-font-weight: bold;"/>
+            </VBox>
+
+            <!-- Botones de acción -->
+            <HBox alignment="CENTER" spacing="30">
+                <Button fx:id="btnGasto" text="Gasto"
+                        style="-fx-background-color: #E74C3C; -fx-text-fill: white;"
+                        prefWidth="150" prefHeight="50"
+                        onAction="#onRegistrarGasto"/>
+                <Button fx:id="btnAhorro" text="Ahorro"
+                        style="-fx-background-color: #27AE60; -fx-text-fill: white;"
+                        prefWidth="150" prefHeight="50"
+                        onAction="#onRegistrarAhorro"/>
+            </HBox>
+
+            <!-- Historial de movimientos -->
+            <VBox alignment="TOP_LEFT" spacing="10" prefWidth="400">
+                <Label text="Últimos movimientos:" style="-fx-font-size: 14px;"/>
+                <ListView fx:id="listMovimientos" VBox.vgrow="ALWAYS"/>
+            </VBox>
+        </VBox>
+    </center>
+
+    <!-- Barra inferior -->
+    <bottom>
+        <HBox alignment="CENTER" spacing="40"
+              style="-fx-border-color: #CCCCCC; -fx-border-width: 1 0 0 0;">
+            <padding>
+                <Insets top="10" right="10" bottom="10" left="10"/>
+            </padding>
+            <Button fx:id="btnCerrarSesion" text="Cerrar Sesión" onAction="#onCerrarSesion" 
+                    style="-fx-text-fill: #E74C3C;"/>
+            <Button fx:id="btnEstadisticas" text="Estadísticas" onAction="#onEstadisticas"/>
+            <Button fx:id="btnObjetivos" text="Objetivos" onAction="#onObjetivos"/>
+        </HBox>
+    </bottom>
+
+</BorderPane>

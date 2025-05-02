@@ -24,11 +24,12 @@ public class UsuarioDAO extends Conexion implements DAO<Usuario> {
         }
     }
 
-    public Usuario autenticar(String email, String contrasenia) throws SQLException {
-        String sql = "SELECT * FROM usuario WHERE email = ? AND contrasenia = ?";
+    public Usuario autenticar(String usuarioOEmail, String contrasenia) throws SQLException {
+        String sql = "SELECT * FROM usuario WHERE (email = ? OR nombre = ?) AND contrasenia = ?";
         try (PreparedStatement stmt = conectar().prepareStatement(sql)) {
-            stmt.setString(1, email);
-            stmt.setString(2, contrasenia);
+            stmt.setString(1, usuarioOEmail);
+            stmt.setString(2, usuarioOEmail);
+            stmt.setString(3, contrasenia);
             ResultSet rs = stmt.executeQuery();
             if (rs.next()) {
                 return extraerUsuario(rs);

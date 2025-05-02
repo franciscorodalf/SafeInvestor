@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.geometry.Pos?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.shape.Rectangle?>
+
+<BorderPane xmlns="http://javafx.com/javafx/23.0.1"
+            xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="es.franciscorodalf.saveinvestor.frontend.controller.EstadisticasController"
+            style="-fx-background-color: #f5f5f5;"
+            prefWidth="550" prefHeight="650">
+
+    <!-- Título -->
+    <top>
+        <HBox alignment="CENTER">
+            <padding>
+                <Insets top="20" bottom="10" left="20" right="20"/>
+            </padding>
+            <Label text="Estadísticas"
+                   style="-fx-font-size: 24px; -fx-font-weight: bold;"/>
+        </HBox>
+    </top>
+
+    <!-- Calendario y barras -->
+    <center>
+        <VBox spacing="20">
+            <padding>
+                <Insets top="20" right="30" bottom="20" left="30"/>
+            </padding>
+
+            <!-- Navegación de mes -->
+            <HBox alignment="CENTER" spacing="20">
+                <Button fx:id="btnPrevMonth" text="&lt;" onAction="#onPrevMonth" 
+                        style="-fx-font-weight: bold; -fx-background-radius: 50%; -fx-min-width: 40; -fx-min-height: 40;"/>
+                <Label fx:id="lblMonthYear" text="Mayo 2025" style="-fx-font-size: 18px; -fx-font-weight: bold;"/>
+                <Button fx:id="btnNextMonth" text="&gt;" onAction="#onNextMonth"
+                        style="-fx-font-weight: bold; -fx-background-radius: 50%; -fx-min-width: 40; -fx-min-height: 40;"/>
+            </HBox>
+
+            <!-- GridPane para cabecera de días -->
+            <GridPane fx:id="headerGrid" hgap="10" vgap="5" alignment="CENTER">
+                <padding>
+                    <Insets top="5" right="10" bottom="5" left="10"/>
+                </padding>
+            </GridPane>
+
+            <!-- GridPane para los días -->
+            <GridPane fx:id="calendarGrid" hgap="10" vgap="10" alignment="CENTER">
+                <padding>
+                    <Insets top="5" right="10" bottom="5" left="10"/>
+                </padding>
+                <!-- Las celdas se generan dinámicamente en el controlador -->
+            </GridPane>
+
+            <!-- Totales con barras -->
+            <VBox spacing="15">
+                <padding>
+                    <Insets top="10" bottom="10" />
+                </padding>
+                <Label text="Total de este mes:" style="-fx-font-size: 16px; -fx-font-weight: bold;"/>
+                <HBox alignment="CENTER" spacing="50" minHeight="120">
+                    <VBox alignment="BOTTOM_CENTER" spacing="5">
+                        <Rectangle fx:id="barAhorro" width="40" height="1" fill="green" arcWidth="5" arcHeight="5"/>
+                        <Label text="Ahorro" style="-fx-font-size: 14px;"/>
+                    </VBox>
+                    <VBox alignment="BOTTOM_CENTER" spacing="5">
+                        <Rectangle fx:id="barGasto" width="40" height="1" fill="red" arcWidth="5" arcHeight="5"/>
+                        <Label text="Gasto" style="-fx-font-size: 14px;"/>
+                    </VBox>
+                </HBox>
+                <HBox spacing="20" alignment="CENTER">
+                    <Label text="Gastos:" style="-fx-font-weight: bold; -fx-font-size: 14px;"/>
+                    <Label fx:id="lblTotalGastos" text="0.00$" textFill="red" style="-fx-font-size: 14px;"/>
+                    <Label text="Ahorros:" style="-fx-font-weight: bold; -fx-font-size: 14px;">
+                        <HBox.margin>
+                            <Insets left="30" />
+                        </HBox.margin>
+                    </Label>
+                    <Label fx:id="lblTotalAhorros" text="0.00$" textFill="green" style="-fx-font-size: 14px;"/>
+                </HBox>
+            </VBox>
+        </VBox>
+    </center>
+
+    <!-- Botón volver -->
+    <bottom>
+        <HBox alignment="CENTER">
+            <padding>
+                <Insets top="15" bottom="25" left="20" right="20"/>
+            </padding>
+            <Button fx:id="btnVolver" text="Volver" onAction="#onVolver" 
+                    style="-fx-background-color: #e0e0e0; -fx-background-radius: 5; -fx-font-size: 14px;" 
+                    prefWidth="120" prefHeight="40"/>
+        </HBox>
+    </bottom>
+
+</BorderPane>

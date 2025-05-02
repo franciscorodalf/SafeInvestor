@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.geometry.Pos?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.HBox?>
+
+<BorderPane xmlns="http://javafx.com/javafx/23.0.1"
+            xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="es.franciscorodalf.saveinvestor.frontend.controller.EditarPerfilController"
+            style="-fx-background-color: #f5f5f5;">
+
+    <!-- Título -->
+    <top>
+        <HBox alignment="CENTER">
+            <padding>
+                <Insets top="20" bottom="10" left="20" right="20"/>
+            </padding>
+            <Label text="Editar Perfil"
+                   style="-fx-font-size: 24px; -fx-font-weight: bold;"/>
+        </HBox>
+    </top>
+
+    <!-- Formulario de edición -->
+    <center>
+        <GridPane hgap="20" vgap="15" alignment="TOP_LEFT">
+            <padding>
+                <Insets top="20" left="30" right="30" bottom="20"/>
+            </padding>
+
+            <!-- Nombre -->
+            <Label text="Nombre:" GridPane.rowIndex="0" GridPane.columnIndex="0"
+                   style="-fx-font-weight: bold;"/>
+            <TextField fx:id="txtNombre" GridPane.rowIndex="0" GridPane.columnIndex="1" />
+
+            <!-- Apellidos -->
+            <Label text="Apellidos:" GridPane.rowIndex="1" GridPane.columnIndex="0"
+                   style="-fx-font-weight: bold;"/>
+            <TextField fx:id="txtApellidos" GridPane.rowIndex="1" GridPane.columnIndex="1" />
+
+            <!-- Email -->
+            <Label text="Email:" GridPane.rowIndex="2" GridPane.columnIndex="0"
+                   style="-fx-font-weight: bold;"/>
+            <TextField fx:id="txtEmail" GridPane.rowIndex="2" GridPane.columnIndex="1" />
+        </GridPane>
+    </center>
+
+    <!-- Botones Guardar y Volver -->
+    <bottom>
+        <HBox spacing="20" alignment="CENTER_RIGHT">
+            <padding>
+                <Insets top="10" bottom="20" left="20" right="30"/>
+            </padding>
+            <Button fx:id="btnVolver" text="Volver" onAction="#clickVolver"/>
+            <Button fx:id="btnGuardar" text="Guardar cambios" onAction="#clickGuardar"/>
+        </HBox>
+    </bottom>
+
+</BorderPane>

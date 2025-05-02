@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.geometry.Pos?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ListView?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.shape.Rectangle?>
+
+<BorderPane xmlns="http://javafx.com/javafx/23.0.1"
+            xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="es.franciscorodalf.saveinvestor.frontend.controller.ObjetivosController"
+            style="-fx-background-color: #f5f5f5;"
+            prefWidth="550" prefHeight="650">
+
+    <!-- Título -->
+    <top>
+        <HBox alignment="CENTER">
+            <padding>
+                <Insets top="20" bottom="10" left="20" right="20"/>
+            </padding>
+            <Label text="Mis Objetivos Financieros"
+                   style="-fx-font-size: 24px; -fx-font-weight: bold;"/>
+        </HBox>
+    </top>
+
+    <!-- Contenido principal -->
+    <center>
+        <VBox spacing="20">
+            <padding>
+                <Insets top="20" right="30" bottom="20" left="30"/>
+            </padding>
+
+            <!-- Formulario para añadir objetivo -->
+            <VBox spacing="10" style="-fx-background-color: #f0f0f0; -fx-background-radius: 5;">
+                <padding>
+                    <Insets top="15" right="15" bottom="15" left="15"/>
+                </padding>
+                <Label text="Nuevo Objetivo" style="-fx-font-size: 16px; -fx-font-weight: bold;"/>
+                
+                <Label text="Descripción:"/>
+                <TextField fx:id="txtDescripcion" promptText="Ej: Ahorrar para vacaciones"/>
+                
+                <HBox spacing="10" alignment="CENTER_LEFT">
+                    <padding>
+                        <Insets top="10" />
+                    </padding>
+                    <Label text="Cantidad objetivo:"/>
+                    <TextField fx:id="txtCantidad" promptText="Ej: 1000.00" prefWidth="150"/>
+                </HBox>
+                
+                <Label fx:id="lblMensaje" textFill="RED" visible="false">
+                    <padding>
+                        <Insets top="10" />
+                    </padding>
+                </Label>
+                
+                <Button fx:id="btnAgregarObjetivo" text="Agregar Objetivo" 
+                        style="-fx-background-color: #2980B9; -fx-text-fill: white;"
+                        prefWidth="150" prefHeight="30">
+                    <VBox.margin>
+                        <Insets top="10" />
+                    </VBox.margin>
+                </Button>
+            </VBox>
+
+            <!-- Lista de objetivos -->
+            <VBox spacing="10" VBox.vgrow="ALWAYS">
+                <Label text="Mis objetivos actuales:" style="-fx-font-size: 16px; -fx-font-weight: bold;"/>
+                <ListView fx:id="listObjetivos" VBox.vgrow="ALWAYS"/>
+            </VBox>
+
+        </VBox>
+    </center>
+
+    <!-- Botón volver -->
+    <bottom>
+        <HBox alignment="CENTER">
+            <padding>
+                <Insets top="15" bottom="25" left="20" right="20"/>
+            </padding>
+            <Button fx:id="btnVolver" text="Volver" onAction="#onVolver" 
+                    style="-fx-background-color: #e0e0e0; -fx-background-radius: 5; -fx-font-size: 14px;" 
+                    prefWidth="120" prefHeight="40"/>
+        </HBox>
+    </bottom>
+
+</BorderPane>
