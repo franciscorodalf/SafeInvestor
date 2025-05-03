@@ -9,6 +9,7 @@
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.ColumnConstraints?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.shape.Rectangle?>
@@ -69,19 +70,58 @@
                     </padding>
                 </Label>
                 
-                <Button fx:id="btnAgregarObjetivo" text="Agregar Objetivo" 
-                        style="-fx-background-color: #2980B9; -fx-text-fill: white;"
-                        prefWidth="150" prefHeight="30">
-                    <VBox.margin>
-                        <Insets top="10" />
-                    </VBox.margin>
-                </Button>
+                <HBox spacing="10">
+                    <Button fx:id="btnAgregarObjetivo" text="Agregar Objetivo" 
+                            style="-fx-background-color: #2980B9; -fx-text-fill: white;"
+                            prefWidth="150" prefHeight="30" onAction="#onAgregarObjetivo">
+                        <HBox.margin>
+                            <Insets top="10" />
+                        </HBox.margin>
+                    </Button>
+                    
+                    <Button fx:id="btnActualizarObjetivo" text="Actualizar" 
+                            style="-fx-background-color: #27ae60; -fx-text-fill: white;"
+                            prefWidth="120" prefHeight="30" onAction="#onActualizarObjetivo"
+                            visible="false">
+                        <HBox.margin>
+                            <Insets top="10" />
+                        </HBox.margin>
+                    </Button>
+                    
+                    <Button fx:id="btnCancelarEdicion" text="Cancelar" 
+                            style="-fx-background-color: #e74c3c; -fx-text-fill: white;"
+                            prefWidth="100" prefHeight="30" onAction="#onCancelarEdicion"
+                            visible="false">
+                        <HBox.margin>
+                            <Insets top="10" />
+                        </HBox.margin>
+                    </Button>
+                </HBox>
             </VBox>
 
             <!-- Lista de objetivos -->
             <VBox spacing="10" VBox.vgrow="ALWAYS">
                 <Label text="Mis objetivos actuales:" style="-fx-font-size: 16px; -fx-font-weight: bold;"/>
-                <ListView fx:id="listObjetivos" VBox.vgrow="ALWAYS"/>
+                
+                <!-- Reemplazar ListView con GridPane para mostrar los objetivos con botones -->
+                <GridPane fx:id="gridObjetivos" VBox.vgrow="ALWAYS" 
+                          style="-fx-background-color: white; -fx-background-radius: 5;">
+                    <padding>
+                        <Insets top="10" right="10" bottom="10" left="10"/>
+                    </padding>
+                    <!-- Las filas se añadirán dinámicamente desde el controlador -->
+                    <columnConstraints>
+                        <ColumnConstraints percentWidth="50" />
+                        <ColumnConstraints percentWidth="20" />
+                        <ColumnConstraints percentWidth="30" />
+                    </columnConstraints>
+                </GridPane>
+                
+                <!-- Mantener ListView original pero hacer invisible para compatibilidad -->
+                <ListView fx:id="listObjetivos" VBox.vgrow="ALWAYS" visible="false" managed="false"/>
+                
+                <Label fx:id="lblSinObjetivos" text="No tienes objetivos financieros actualmente. ¡Añade uno nuevo!" 
+                       style="-fx-font-style: italic;" visible="true"/>
             </VBox>
 
         </VBox>

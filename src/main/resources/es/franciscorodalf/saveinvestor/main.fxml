@@ -23,8 +23,6 @@
             <Button fx:id="btnPerfil"
                     text="Perfil"
                     onAction="#onPerfil"/>
-            <Button fx:id="btnWallet" text="Wallet" />
-            <Button fx:id="btnSettings" text="Ajustes" />
         </HBox>
     </top>
 
