@@ -16,6 +16,7 @@
 /Users/fran/Documents/GitHub/SafeInvestor/src/main/java/es/franciscorodalf/saveinvestor/frontend/controller/EstadisticasController.java
 /Users/fran/Documents/GitHub/SafeInvestor/src/main/java/es/franciscorodalf/saveinvestor/backend/model/Movimiento.java
 /Users/fran/Documents/GitHub/SafeInvestor/src/main/java/es/franciscorodalf/saveinvestor/backend/dao/TareaDAO.java
+/Users/fran/Documents/GitHub/SafeInvestor/src/main/java/es/franciscorodalf/saveinvestor/frontend/controller/EditarMovimientoController.java
 /Users/fran/Documents/GitHub/SafeInvestor/src/main/java/es/franciscorodalf/saveinvestor/frontend/controller/RegistrarGastoController.java
 /Users/fran/Documents/GitHub/SafeInvestor/src/main/java/es/franciscorodalf/saveinvestor/backend/model/tarea.java
 /Users/fran/Documents/GitHub/SafeInvestor/src/main/java/es/franciscorodalf/saveinvestor/frontend/controller/RecuperarContraseniaController.java

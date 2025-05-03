@@ -3,6 +3,8 @@
 <?import javafx.geometry.Insets?>
 <?import javafx.geometry.Pos?>
 <?import javafx.scene.control.Button?>
+<?import javafx.scene.control.CheckBox?>
+<?import javafx.scene.control.ComboBox?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.BorderPane?>
@@ -11,11 +13,11 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<BorderPane xmlns="http://javafx.com/javafx/23.0.1"
+<BorderPane xmlns="http://javafx.com/javafx/12.0.1"
             xmlns:fx="http://javafx.com/fxml/1"
             fx:controller="es.franciscorodalf.saveinvestor.frontend.controller.RegistrarAhorroController"
             style="-fx-background-color: #f5f5f5;"
-            prefWidth="400" prefHeight="500">
+            prefWidth="600" prefHeight="400">
 
     <!-- Título -->
     <top>
@@ -29,42 +31,38 @@
 
     <!-- Campos de entrada -->
     <center>
-        <VBox alignment="TOP_CENTER" spacing="20.0" BorderPane.alignment="CENTER">
+        <VBox alignment="CENTER" spacing="15.0" BorderPane.alignment="CENTER">
+            <children>
+                <HBox alignment="CENTER" spacing="10.0">
+                    <children>
+                        <Label prefWidth="100.0" text="Concepto:" />
+                        <TextField fx:id="txtConcepto" prefWidth="250.0" />
+                    </children>
+                </HBox>
+                <HBox alignment="CENTER" spacing="10.0">
+                    <children>
+                        <Label prefWidth="100.0" text="Cantidad:" />
+                        <TextField fx:id="txtCantidad" prefWidth="250.0" />
+                    </children>
+                </HBox>
+                <CheckBox fx:id="chkAsignarObjetivo" mnemonicParsing="false" onAction="#onCheckAsignarObjetivo" text="Asignar a un objetivo" />
+                <VBox fx:id="vboxObjetivo" alignment="CENTER" spacing="10.0" visible="false">
+                    <children>
+                        <Label fx:id="lblNoObjetivos" text="No tiene objetivos activos" visible="false" />
+                        <ComboBox fx:id="comboObjetivos" prefWidth="250.0" />
+                    </children>
+                </VBox>
+                <Label fx:id="lblMensaje" textFill="RED" visible="false" />
+                <HBox alignment="CENTER" spacing="20.0">
+                    <children>
+                        <Button mnemonicParsing="false" onAction="#onAceptar" text="Aceptar" />
+                        <Button mnemonicParsing="false" onAction="#onVolver" text="Volver" />
+                    </children>
+                </HBox>
+            </children>
             <padding>
-                <Insets left="30.0" right="30.0" top="20.0" bottom="20.0" />
+                <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
             </padding>
-
-            <Label text="Concepto:" style="-fx-font-weight: bold; -fx-font-size: 14px;" alignment="CENTER_LEFT" />
-            <TextField fx:id="txtConcepto" promptText="Ej: Salario, Venta, Ingreso..." />
-
-            <Label text="Cantidad:" style="-fx-font-weight: bold; -fx-font-size: 14px;" alignment="CENTER_LEFT">
-                <VBox.margin>
-                    <Insets top="10.0" />
-                </VBox.margin>
-            </Label>
-            <TextField fx:id="txtCantidad" promptText="Ej: 100.50" />
-
-            <Label fx:id="lblMensaje" textFill="RED" alignment="CENTER" visible="false">
-                <VBox.margin>
-                    <Insets top="20.0" />
-                </VBox.margin>
-                <font>
-                    <Font size="14.0" />
-                </font>
-            </Label>
         </VBox>
     </center>
-
-    <!-- Botones -->
-    <bottom>
-        <HBox alignment="CENTER" spacing="30.0" BorderPane.alignment="CENTER">
-            <padding>
-                <Insets bottom="30.0" left="20.0" right="20.0" top="20.0" />
-            </padding>
-            <Button fx:id="btnVolver" onAction="#onVolver" prefHeight="40.0" prefWidth="100.0" text="Volver" />
-            <Button fx:id="btnAceptar" onAction="#onAceptar" prefHeight="40.0" prefWidth="100.0" text="Aceptar"
-                    style="-fx-background-color: #27AE60; -fx-text-fill: white;" />
-        </HBox>
-    </bottom>
-
 </BorderPane>

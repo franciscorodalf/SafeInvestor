@@ -58,16 +58,33 @@ public class RegistrarAhorroController {
 
     @FXML
     public void initialize() {
-        tareaDAO = new TareaDAO();
-        estadisticaDAO = new EstadisticaDAO();
-        objetivoDAO = new ObjetivoDAO();
-        
-        if (lblMensaje != null) {
-            lblMensaje.setVisible(false);
+        try {
+            tareaDAO = new TareaDAO();
+            estadisticaDAO = new EstadisticaDAO();
+            objetivoDAO = new ObjetivoDAO();
+            
+            if (lblMensaje != null) {
+                lblMensaje.setVisible(false);
+            }
+            
+            // Si el vboxObjetivo existe, inicialmente lo ocultamos
+            if (vboxObjetivo != null) {
+                vboxObjetivo.setVisible(false);
+            }
+            
+            // Configurar el formato de visualización para el ComboBox si existe
+            if (comboObjetivos != null) {
+                configurarComboBox();
+            }
+        } catch (Exception e) {
+            System.err.println("Error en initialize de RegistrarAhorroController: " + e.getMessage());
+            e.printStackTrace();
+            // Mostrar el mensaje en la interfaz si es posible
+            if (lblMensaje != null) {
+                lblMensaje.setText("Error al inicializar: " + e.getMessage());
+                lblMensaje.setVisible(true);
+            }
         }
-        
-        // Configurar el formato de visualización para el ComboBox
-        configurarComboBox();
     }
     
     /**
@@ -113,59 +130,74 @@ public class RegistrarAhorroController {
     @FXML
     private void onCheckAsignarObjetivo(ActionEvent event) {
         if (vboxObjetivo != null) {
-            vboxObjetivo.setVisible(chkAsignarObjetivo.isSelected());
+            boolean seleccionado = chkAsignarObjetivo != null && chkAsignarObjetivo.isSelected();
+            vboxObjetivo.setVisible(seleccionado);
             
             // Si se marca el checkbox, verificar que haya objetivos disponibles
-            if (chkAsignarObjetivo.isSelected() && !tieneObjetivos) {
-                lblNoObjetivos.setVisible(true);
-                comboObjetivos.setVisible(false);
+            if (seleccionado && !tieneObjetivos) {
+                if (lblNoObjetivos != null) {
+                    lblNoObjetivos.setVisible(true);
+                }
+                if (comboObjetivos != null) {
+                    comboObjetivos.setVisible(false);
+                }
             } else {
-                lblNoObjetivos.setVisible(false);
-                comboObjetivos.setVisible(true);
+                if (lblNoObjetivos != null) {
+                    lblNoObjetivos.setVisible(false);
+                }
+                if (comboObjetivos != null) {
+                    comboObjetivos.setVisible(true);
+                }
             }
         }
     }
 
     @FXML
     private void onAceptar(ActionEvent event) {
-        if (validarEntrada()) {
-            try {
-                double cantidad = Double.parseDouble(txtCantidad.getText().trim());
-                
-                // Guardar el ahorro en la base de datos
-                tarea nuevoAhorro = guardarAhorro();
-                
-                // Verificar si se debe asignar a un objetivo
-                if (chkAsignarObjetivo.isSelected() && tieneObjetivos) {
-                    Objetivo objetivoSeleccionado = comboObjetivos.getValue();
-                    if (objetivoSeleccionado != null) {
-                        asignarAObjetivo(objetivoSeleccionado, cantidad);
-                    }
-                }
-                
-                // Mostrar mensaje de éxito
-                mostrarMensajePositivo("Ahorro registrado correctamente");
-                
-                // Esperar un momento para que el usuario lea el mensaje
-                new java.util.Timer().schedule(
-                    new java.util.TimerTask() {
-                        @Override
-                        public void run() {
-                            javafx.application.Platform.runLater(() -> volverAMain(event));
-                        }
-                    }, 
-                    1500 // esperar 1.5 segundos antes de volver a la pantalla principal
-                );
-                
-            } catch (SQLException e) {
-                mostrarError("Error en la base de datos: " + e.getMessage());
-                System.err.println("Error SQL: " + e.getMessage());
-                e.printStackTrace();
-            } catch (Exception e) {
-                mostrarError("Error al registrar ahorro: " + e.getMessage());
-                System.err.println("Error: " + e.getMessage());
-                e.printStackTrace();
+        try {
+            if (!validarEntrada()) {
+                return;
             }
+            
+            double cantidad = Double.parseDouble(txtCantidad.getText().trim());
+            
+            // Guardar el ahorro en la base de datos
+            tarea nuevoAhorro = guardarAhorro();
+            
+            // Verificar si se debe asignar a un objetivo
+            if (chkAsignarObjetivo != null && chkAsignarObjetivo.isSelected() && tieneObjetivos) {
+                Objetivo objetivoSeleccionado = comboObjetivos.getValue();
+                if (objetivoSeleccionado != null) {
+                    asignarAObjetivo(objetivoSeleccionado, cantidad);
+                }
+            }
+            
+            // Mostrar mensaje de éxito
+            mostrarMensajePositivo("Ahorro registrado correctamente");
+            
+            // Esperar un momento para que el usuario lea el mensaje
+            new java.util.Timer().schedule(
+                new java.util.TimerTask() {
+                    @Override
+                    public void run() {
+                        javafx.application.Platform.runLater(() -> volverAMain(event));
+                    }
+                }, 
+                1500 // esperar 1.5 segundos antes de volver a la pantalla principal
+            );
+            
+        } catch (NumberFormatException e) {
+            mostrarError("Error en el formato de la cantidad: " + e.getMessage());
+            System.err.println("Error de formato: " + e.getMessage());
+            e.printStackTrace();
+        } catch (SQLException e) {
+            mostrarError("Error en la base de datos: " + e.getMessage());
+            System.err.println("Error SQL: " + e.getMessage());
+            e.printStackTrace();
+        } catch (Exception e) {
+            mostrarError("Error al registrar ahorro: " + e.getMessage());
+            System.err.println("Error: " + e.getMessage());
+            e.printStackTrace();
         }
     }
     
@@ -174,22 +206,16 @@ public class RegistrarAhorroController {
      */
     private void asignarAObjetivo(Objetivo objetivo, double cantidad) throws SQLException {
         try {
-            // Obtener el objetivo actualizado de la base de datos
-            Objetivo objetivoActualizado = objetivoDAO.obtenerPorId(objetivo.getId());
-            if (objetivoActualizado == null) {
-                throw new SQLException("Objetivo no encontrado");
-            }
-            
             // Añadir la contribución al objetivo
-            double cantidadAnterior = objetivoActualizado.getCantidadActual();
-            objetivoActualizado.setCantidadActual(cantidadAnterior + cantidad);
+            double cantidadAnterior = objetivo.getCantidadActual();
+            objetivo.setCantidadActual(cantidadAnterior + cantidad);
             
             // Verificar si se completó el objetivo
-            boolean completado = objetivoActualizado.verificarCompletado();
-            objetivoActualizado.setCompletado(completado);
+            boolean completado = objetivo.verificarCompletado();
+            objetivo.setCompletado(completado);
             
             // Guardar los cambios en la base de datos
-            objetivoDAO.actualizar(objetivoActualizado);
+            objetivoDAO.actualizar(objetivo);
             
             if (completado) {
                 mostrarMensajePositivo("¡Felicidades! Objetivo completado");
@@ -198,7 +224,11 @@ public class RegistrarAhorroController {
             throw new SQLException("Error al asignar ahorro a objetivo: " + e.getMessage());
         }
     }
-
+    
+    /**
+     * Valida los campos del formulario
+     * @return true si todos los campos son válidos
+     */
     private boolean validarEntrada() {
         if (txtConcepto.getText().trim().isEmpty()) {
             mostrarError("El concepto no puede estar vacío");
@@ -216,15 +246,15 @@ public class RegistrarAhorroController {
             return false;
         }
         
-        // Si se selecciona asignar a objetivo pero no hay uno elegido
-        if (chkAsignarObjetivo.isSelected() && tieneObjetivos && comboObjetivos.getValue() == null) {
+        // Verificar null antes de usar el componente para evitar NullPointerException
+        if (chkAsignarObjetivo != null && chkAsignarObjetivo.isSelected() && tieneObjetivos && comboObjetivos.getValue() == null) {
             mostrarError("Debe seleccionar un objetivo");
             return false;
         }
         
         return true;
     }
-
+    
     private tarea guardarAhorro() throws SQLException {
         if (usuarioActual == null || usuarioActual.getId() == null) {
             mostrarError("Usuario no válido");
@@ -243,9 +273,11 @@ public class RegistrarAhorroController {
             usuarioActual.getId()
         );
         
-        tareaDAO.insertar(nuevoAhorro);
-        
-        // 2. Actualizar estadísticas del usuario
+        // Guardar en la base de datos SIN usar los triggers
+        // Usamos un método especial que solo inserta sin activar triggers
+        tareaDAO.insertarSinTrigger(nuevoAhorro);
+         
+        // 2. Actualizar estadísticas del usuario MANUALMENTE
         actualizarEstadisticas(cantidad);
         
         return nuevoAhorro;
@@ -269,7 +301,7 @@ public class RegistrarAhorroController {
             estadisticaDAO.insertar(nuevaEstadistica);
         }
     }
-
+    
     private void mostrarError(String mensaje) {
         if (lblMensaje != null) {
             lblMensaje.setText(mensaje);
@@ -279,7 +311,7 @@ public class RegistrarAhorroController {
             System.err.println(mensaje);
         }
     }
-
+    
     private void mostrarMensajePositivo(String mensaje) {
         if (lblMensaje != null) {
             lblMensaje.setText(mensaje);
@@ -289,7 +321,7 @@ public class RegistrarAhorroController {
             System.out.println(mensaje);
         }
     }
-
+    
     private void volverAMain(ActionEvent event) {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/es/franciscorodalf/saveinvestor/main.fxml"));
@@ -309,7 +341,7 @@ public class RegistrarAhorroController {
             e.printStackTrace();
         }
     }
-
+    
     public void setUsuario(Usuario usuario) {
         this.usuarioActual = usuario;
         
@@ -337,7 +369,6 @@ public class RegistrarAhorroController {
                     tieneObjetivos = true;
                     comboObjetivos.setItems(FXCollections.observableArrayList(objetivos));
                     comboObjetivos.getSelectionModel().selectFirst();
-                    
                     lblNoObjetivos.setVisible(false);
                     comboObjetivos.setVisible(true);
                 }

@@ -4,6 +4,7 @@ import java.io.IOException;
 
 import es.franciscorodalf.saveinvestor.backend.dao.UsuarioDAO;
 import es.franciscorodalf.saveinvestor.backend.model.Usuario;
+import es.franciscorodalf.saveinvestor.frontend.util.ValidationUtils;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -12,12 +13,12 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
 
 /**
  * Controlador para la edición de perfil.
- * Actualmente solo navega entre pantallas.
  */
 public class EditarPerfilController {
 
@@ -28,10 +29,10 @@ public class EditarPerfilController {
     private TextField txtEmail;
     
     @FXML
-    private TextField txtPassword;
+    private PasswordField txtPassword;
     
     @FXML
-    private TextField txtConfirmPassword;
+    private PasswordField txtConfirmPassword;
     
     @FXML
     private Label lblMensaje;
@@ -40,7 +41,7 @@ public class EditarPerfilController {
     private Button btnGuardar;
     
     @FXML
-    private Button btnCancelar;
+    private Button btnVolver;
     
     private Usuario usuarioActual;
     private UsuarioDAO usuarioDAO;
@@ -97,20 +98,20 @@ public class EditarPerfilController {
      */
     private boolean validarFormulario() {
         // Validar que el nombre no esté vacío
-        if (txtNombre.getText().trim().isEmpty()) {
-            mostrarMensaje("El nombre no puede estar vacío");
+        if (ValidationUtils.isEmptyField(txtNombre)) {
+            mostrarMensajeError("El nombre de usuario no puede estar vacío");
             return false;
         }
         
         // Validar formato de email
-        if (txtEmail.getText().trim().isEmpty() || !txtEmail.getText().contains("@")) {
-            mostrarMensaje("Debe ingresar un email válido");
+        if (ValidationUtils.isEmptyField(txtEmail) || !ValidationUtils.isValidEmail(txtEmail.getText())) {
+            mostrarMensajeError("Debe ingresar un correo electrónico válido");
             return false;
         }
         
         // Validar que las contraseñas coincidan si se han ingresado
         if (!txtPassword.getText().isEmpty() && !txtPassword.getText().equals(txtConfirmPassword.getText())) {
-            mostrarMensaje("Las contraseñas no coinciden");
+            mostrarMensajeError("Las contraseñas no coinciden");
             return false;
         }
         
@@ -135,24 +136,33 @@ public class EditarPerfilController {
             // Guardar cambios en la base de datos
             usuarioDAO.actualizar(usuarioActual);
             
-            mostrarMensaje("Perfil actualizado correctamente");
+            mostrarMensajeExito("Perfil actualizado correctamente");
         } catch (Exception e) {
-            mostrarMensaje("Error al actualizar perfil: " + e.getMessage());
-            System.err.println("Error al actualizar usuario: " + e.getMessage());
-            e.printStackTrace();
+            mostrarMensajeError("Error al actualizar perfil: " + e.getMessage());
         }
     }
     
     /**
-     * Muestra un mensaje en la interfaz
+     * Muestra un mensaje de error en la interfaz
      * @param mensaje El mensaje a mostrar
      */
-    private void mostrarMensaje(String mensaje) {
+    private void mostrarMensajeError(String mensaje) {
         if (lblMensaje != null) {
             lblMensaje.setText(mensaje);
+            lblMensaje.setStyle("-fx-text-fill: red;");
             lblMensaje.setVisible(true);
-        } else {
-            System.out.println(mensaje);
+        }
+    }
+    
+    /**
+     * Muestra un mensaje de éxito en la interfaz
+     * @param mensaje El mensaje a mostrar
+     */
+    private void mostrarMensajeExito(String mensaje) {
+        if (lblMensaje != null) {
+            lblMensaje.setText(mensaje);
+            lblMensaje.setStyle("-fx-text-fill: green;");
+            lblMensaje.setVisible(true);
         }
     }
     
@@ -175,8 +185,7 @@ public class EditarPerfilController {
             stage.setScene(new Scene(root));
             stage.show();
         } catch (IOException e) {
-            System.err.println("Error al volver a la pantalla de perfil: " + e.getMessage());
-            e.printStackTrace();
+            mostrarMensajeError("Error al volver a la pantalla de perfil");
         }
     }
 }

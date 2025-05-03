@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import javafx.geometry.Insets?>
-<?import javafx.geometry.Pos?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.layout.BorderPane?>
@@ -10,20 +9,15 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.shape.Rectangle?>
 
-<BorderPane xmlns="http://javafx.com/javafx/23.0.1"
-            xmlns:fx="http://javafx.com/fxml/1"
-            fx:controller="es.franciscorodalf.saveinvestor.frontend.controller.EstadisticasController"
-            style="-fx-background-color: #f5f5f5;"
-            prefWidth="550" prefHeight="650">
+<BorderPane prefHeight="650" prefWidth="550" style="-fx-background-color: #f5f5f5;" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="es.franciscorodalf.saveinvestor.frontend.controller.EstadisticasController">
 
     <!-- Título -->
     <top>
         <HBox alignment="CENTER">
             <padding>
-                <Insets top="20" bottom="10" left="20" right="20"/>
+                <Insets bottom="10" left="20" right="20" top="20" />
             </padding>
-            <Label text="Estadísticas"
-                   style="-fx-font-size: 24px; -fx-font-weight: bold;"/>
+            <Label style="-fx-font-size: 24px; -fx-font-weight: bold;" text="Estadísticas" />
         </HBox>
     </top>
 
@@ -31,29 +25,27 @@
     <center>
         <VBox spacing="20">
             <padding>
-                <Insets top="20" right="30" bottom="20" left="30"/>
+                <Insets bottom="20" left="30" right="30" top="20" />
             </padding>
 
             <!-- Navegación de mes -->
             <HBox alignment="CENTER" spacing="20">
-                <Button fx:id="btnPrevMonth" text="&lt;" onAction="#onPrevMonth" 
-                        style="-fx-font-weight: bold; -fx-background-radius: 50%; -fx-min-width: 40; -fx-min-height: 40;"/>
-                <Label fx:id="lblMonthYear" text="Mayo 2025" style="-fx-font-size: 18px; -fx-font-weight: bold;"/>
-                <Button fx:id="btnNextMonth" text="&gt;" onAction="#onNextMonth"
-                        style="-fx-font-weight: bold; -fx-background-radius: 50%; -fx-min-width: 40; -fx-min-height: 40;"/>
+                <Button fx:id="btnPrevMonth" onAction="#onPrevMonth" style="-fx-font-weight: bold; -fx-background-radius: 50%; -fx-min-width: 40; -fx-min-height: 40;" text="&lt;" />
+                <Label fx:id="lblMonthYear" style="-fx-font-size: 18px; -fx-font-weight: bold;" text="Mayo 2025" />
+                <Button fx:id="btnNextMonth" onAction="#onNextMonth" style="-fx-font-weight: bold; -fx-background-radius: 50%; -fx-min-width: 40; -fx-min-height: 40;" text="&gt;" />
             </HBox>
 
             <!-- GridPane para cabecera de días -->
-            <GridPane fx:id="headerGrid" hgap="10" vgap="5" alignment="CENTER">
+            <GridPane fx:id="headerGrid" alignment="CENTER" hgap="10" vgap="5">
                 <padding>
-                    <Insets top="5" right="10" bottom="5" left="10"/>
+                    <Insets bottom="5" left="10" right="10" top="5" />
                 </padding>
             </GridPane>
 
             <!-- GridPane para los días -->
-            <GridPane fx:id="calendarGrid" hgap="10" vgap="10" alignment="CENTER">
+            <GridPane fx:id="calendarGrid" alignment="CENTER" hgap="10" vgap="10">
                 <padding>
-                    <Insets top="5" right="10" bottom="5" left="10"/>
+                    <Insets bottom="5" left="10" right="10" top="5" />
                 </padding>
                 <!-- Las celdas se generan dinámicamente en el controlador -->
             </GridPane>
@@ -61,28 +53,28 @@
             <!-- Totales con barras -->
             <VBox spacing="15">
                 <padding>
-                    <Insets top="10" bottom="10" />
+                    <Insets bottom="10" top="10" />
                 </padding>
-                <Label text="Total de este mes:" style="-fx-font-size: 16px; -fx-font-weight: bold;"/>
-                <HBox alignment="CENTER" spacing="50" minHeight="120">
+                <Label style="-fx-font-size: 16px; -fx-font-weight: bold;" text="Total de este mes:" />
+                <HBox alignment="CENTER" minHeight="120" spacing="50">
                     <VBox alignment="BOTTOM_CENTER" spacing="5">
-                        <Rectangle fx:id="barAhorro" width="40" height="1" fill="green" arcWidth="5" arcHeight="5"/>
-                        <Label text="Ahorro" style="-fx-font-size: 14px;"/>
+                        <Rectangle fx:id="barAhorro" arcHeight="5" arcWidth="5" fill="green" height="1" width="40" />
+                        <Label style="-fx-font-size: 14px;" text="Ahorro" />
                     </VBox>
                     <VBox alignment="BOTTOM_CENTER" spacing="5">
-                        <Rectangle fx:id="barGasto" width="40" height="1" fill="red" arcWidth="5" arcHeight="5"/>
-                        <Label text="Gasto" style="-fx-font-size: 14px;"/>
+                        <Rectangle fx:id="barGasto" arcHeight="5" arcWidth="5" fill="red" height="1" width="40" />
+                        <Label style="-fx-font-size: 14px;" text="Gasto" />
                     </VBox>
                 </HBox>
-                <HBox spacing="20" alignment="CENTER">
-                    <Label text="Gastos:" style="-fx-font-weight: bold; -fx-font-size: 14px;"/>
-                    <Label fx:id="lblTotalGastos" text="0.00$" textFill="red" style="-fx-font-size: 14px;"/>
-                    <Label text="Ahorros:" style="-fx-font-weight: bold; -fx-font-size: 14px;">
+                <HBox alignment="CENTER" spacing="20">
+                    <Label style="-fx-font-weight: bold; -fx-font-size: 14px;" text="Ahorros:">
                         <HBox.margin>
                             <Insets left="30" />
                         </HBox.margin>
                     </Label>
-                    <Label fx:id="lblTotalAhorros" text="0.00$" textFill="green" style="-fx-font-size: 14px;"/>
+                    <Label fx:id="lblTotalAhorros" style="-fx-font-size: 14px;" text="0.00$" textFill="green" />
+                    <Label style="-fx-font-weight: bold; -fx-font-size: 14px;" text="Gastos:" />
+                    <Label fx:id="lblTotalGastos" style="-fx-font-size: 14px;" text="0.00$" textFill="red" />
                 </HBox>
             </VBox>
         </VBox>
@@ -92,11 +84,9 @@
     <bottom>
         <HBox alignment="CENTER">
             <padding>
-                <Insets top="15" bottom="25" left="20" right="20"/>
+                <Insets bottom="25" left="20" right="20" top="15" />
             </padding>
-            <Button fx:id="btnVolver" text="Volver" onAction="#onVolver" 
-                    style="-fx-background-color: #e0e0e0; -fx-background-radius: 5; -fx-font-size: 14px;" 
-                    prefWidth="120" prefHeight="40"/>
+            <Button fx:id="btnVolver" onAction="#onVolver" prefHeight="40" prefWidth="120" style="-fx-background-color: #e0e0e0; -fx-background-radius: 5; -fx-font-size: 14px;" text="Volver" />
         </HBox>
     </bottom>
 

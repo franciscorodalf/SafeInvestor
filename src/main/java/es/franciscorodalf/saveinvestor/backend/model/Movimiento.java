@@ -4,6 +4,8 @@ import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
+import javafx.beans.property.SimpleIntegerProperty;
+import javafx.beans.property.IntegerProperty;
 
 import java.time.LocalDate;
 import java.time.ZoneId;
@@ -26,12 +28,14 @@ public class Movimiento {
     private final ObjectProperty<TipoMovimiento> tipo;
     private final StringProperty concepto;
     private final ObjectProperty<Double> cantidad;
+    private final IntegerProperty tareaId; // Nuevo campo para almacenar el ID de la tarea
 
-    public Movimiento(LocalDate fecha, TipoMovimiento tipo, String concepto, Double cantidad) {
+    public Movimiento(LocalDate fecha, TipoMovimiento tipo, String concepto, Double cantidad, Integer tareaId) {
         this.fecha = new SimpleObjectProperty<>(fecha);
         this.tipo = new SimpleObjectProperty<>(tipo);
         this.concepto = new SimpleStringProperty(concepto);
         this.cantidad = new SimpleObjectProperty<>(cantidad);
+        this.tareaId = new SimpleIntegerProperty(tareaId);
     }
 
     /**
@@ -45,7 +49,7 @@ public class Movimiento {
                 .atZone(ZoneId.systemDefault())
                 .toLocalDate();
 
-        return new Movimiento(fechaLocal, tipo, t.getConcepto(), t.getCantidad());
+        return new Movimiento(fechaLocal, tipo, t.getConcepto(), t.getCantidad(), t.getId());
     }
 
     public ObjectProperty<LocalDate> fechaProperty() {
@@ -78,5 +82,13 @@ public class Movimiento {
 
     public Double getCantidad() {
         return cantidad.get();
+    }
+    
+    public IntegerProperty tareaIdProperty() {
+        return tareaId;
+    }
+    
+    public Integer getTareaId() {
+        return tareaId.get();
     }
 }

@@ -69,10 +69,10 @@ public class RegistrarGastoController {
                     usuarioActual.getId()
                 );
                 
-                // Guardar en la base de datos
-                tareaDAO.insertar(nuevoGasto);
+                // Guardar en la base de datos sin activar triggers
+                tareaDAO.insertarSinTrigger(nuevoGasto);
                 
-                // Actualizar estadísticas
+                // Actualizar estadísticas manualmente
                 actualizarEstadisticas(cantidad);
                 
                 mostrarMensaje("Gasto registrado correctamente");
@@ -141,31 +141,20 @@ public class RegistrarGastoController {
         }
     }
 
-    /**
-     * Actualiza las estadísticas del usuario añadiendo el nuevo gasto
-     */
+    // Implementación del método para actualizar estadísticas manualmente
     private void actualizarEstadisticas(double cantidad) throws SQLException {
-        if (usuarioActual == null || usuarioActual.getId() == null) {
-            return;
-        }
+        // Buscamos la estadística del usuario
+        estadistica stats = estadisticaDAO.obtenerPorUsuario(usuarioActual.getId());
         
-        try {
-            // Obtener estadísticas actuales del usuario
-            estadistica stats = estadisticaDAO.obtenerPorUsuario(usuarioActual.getId());
-            
-            if (stats != null) {
-                // Actualizar el total de gastos
-                double nuevoTotal = stats.getTotalGasto() + cantidad;
-                stats.setTotalGasto(nuevoTotal);
-                estadisticaDAO.actualizar(stats);
-            } else {
-                // Crear nueva estadística si no existe
-                estadistica nuevaEstadistica = new estadistica(0.0, cantidad, usuarioActual.getId());
-                estadisticaDAO.insertar(nuevaEstadistica);
-            }
-        } catch (SQLException e) {
-            System.err.println("Error al actualizar estadísticas: " + e.getMessage());
-            throw e; // Relanzamos para que sea manejado por el método llamante
+        if (stats != null) {
+            // Actualizamos total de gastos usando el método correcto
+            stats.setTotalGasto(stats.getTotalGasto() + cantidad);
+            // Guardamos los cambios
+            estadisticaDAO.actualizar(stats);
+        } else {
+            // Si no existe estadística para este usuario, la creamos
+            estadistica nuevaEstadistica = new estadistica(0.0, cantidad, usuarioActual.getId());
+            estadisticaDAO.insertar(nuevaEstadistica);
         }
     }
 }

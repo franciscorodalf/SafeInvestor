@@ -10,7 +10,6 @@ import javafx.scene.control.Label;
 import javafx.stage.Stage;
 
 import java.io.IOException;
-import java.time.format.DateTimeFormatter;
 
 import es.franciscorodalf.saveinvestor.backend.model.Usuario;
 

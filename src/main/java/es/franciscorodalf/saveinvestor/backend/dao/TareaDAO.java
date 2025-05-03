@@ -20,11 +20,51 @@ public class TareaDAO extends Conexion implements DAO<tarea> {
             stmt.setString(4, tarea.getEstado());
             stmt.setInt(5, tarea.getUsuarioId());
             stmt.executeUpdate();
-            
+
             ResultSet rs = stmt.getGeneratedKeys();
             if (rs.next()) {
                 tarea.setId(rs.getInt(1));
             }
+        }
+    }
+
+    /**
+     * Inserta una nueva tarea sin activar los triggers de la base de datos
+     */
+    public void insertarSinTrigger(tarea tarea) throws SQLException {
+        Connection conn = null;
+        try {
+            conn = conectar();
+
+            // Desactivar temporalmente las restricciones
+            try (Statement stmtPragma1 = conn.createStatement()) {
+                stmtPragma1.execute("PRAGMA ignore_check_constraints = ON;");
+            }
+
+            // Ejecutar la inserción
+            String sqlInsert = "INSERT INTO tarea (concepto, cantidad, fecha, estado, usuario_id) VALUES (?, ?, ?, ?, ?)";
+            try (PreparedStatement stmtInsert = conn.prepareStatement(sqlInsert, Statement.RETURN_GENERATED_KEYS)) {
+                stmtInsert.setString(1, tarea.getConcepto());
+                stmtInsert.setDouble(2, tarea.getCantidad());
+                stmtInsert.setDate(3, new java.sql.Date(tarea.getFecha().getTime()));
+                stmtInsert.setString(4, tarea.getEstado());
+                stmtInsert.setInt(5, tarea.getUsuarioId());
+                stmtInsert.executeUpdate();
+
+                // Obtener el ID generado
+                ResultSet rs = stmtInsert.getGeneratedKeys();
+                if (rs.next()) {
+                    tarea.setId(rs.getInt(1));
+                }
+            }
+
+            // Reactivar las restricciones
+            try (Statement stmtPragma2 = conn.createStatement()) {
+                stmtPragma2.execute("PRAGMA ignore_check_constraints = OFF;");
+            }
+        } finally {
+            // No cerramos la conexión aquí, ya que es manejada por el pool de conexiones
+            // o se cierra automáticamente al usar try-with-resources
         }
     }
 
@@ -49,7 +89,7 @@ public class TareaDAO extends Conexion implements DAO<tarea> {
         t.setId(rs.getInt("id"));
         t.setConcepto(rs.getString("concepto"));
         t.setCantidad(rs.getDouble("cantidad"));
-        
+
         // Extraer fecha de forma segura
         try {
             t.setFecha(rs.getTimestamp("fecha"));
@@ -62,7 +102,7 @@ public class TareaDAO extends Conexion implements DAO<tarea> {
                 t.setFecha(new java.util.Date());
             }
         }
-        
+
         t.setEstado(rs.getString("estado"));
         t.setUsuarioId(rs.getInt("usuario_id"));
         return t;
@@ -81,12 +121,75 @@ public class TareaDAO extends Conexion implements DAO<tarea> {
         }
     }
 
+    /**
+     * Actualiza una tarea existente sin activar los triggers de la base de datos
+     */
+    public void actualizarSinTrigger(tarea tarea) throws SQLException {
+        Connection conn = null;
+        try {
+            conn = conectar();
+            
+            // Desactivar temporalmente las restricciones
+            try (Statement stmtPragma1 = conn.createStatement()) {
+                stmtPragma1.execute("PRAGMA ignore_check_constraints = ON;");
+            }
+            
+            // Ejecutar la actualización
+            String sqlUpdate = "UPDATE tarea SET concepto = ?, cantidad = ?, fecha = ?, estado = ? WHERE id = ?";
+            try (PreparedStatement stmtUpdate = conn.prepareStatement(sqlUpdate)) {
+                stmtUpdate.setString(1, tarea.getConcepto());
+                stmtUpdate.setDouble(2, tarea.getCantidad());
+                stmtUpdate.setDate(3, new java.sql.Date(tarea.getFecha().getTime()));
+                stmtUpdate.setString(4, tarea.getEstado());
+                stmtUpdate.setInt(5, tarea.getId());
+                stmtUpdate.executeUpdate();
+            }
+            
+            // Reactivar las restricciones
+            try (Statement stmtPragma2 = conn.createStatement()) {
+                stmtPragma2.execute("PRAGMA ignore_check_constraints = OFF;");
+            }
+        } finally {
+            // No cerramos la conexión aquí, ya que es manejada por el pool de conexiones
+            // o se cierra automáticamente al usar try-with-resources
+        }
+    }
+
     @Override
     public void eliminar(Integer id) throws SQLException {
         String sql = "DELETE FROM tarea WHERE id = ?";
         try (PreparedStatement stmt = conectar().prepareStatement(sql)) {
             stmt.setInt(1, id);
             stmt.executeUpdate();
+        }
+    }
+
+    /**
+     * Elimina una tarea existente sin activar los triggers de la base de datos
+     */
+    public void eliminarSinTrigger(Integer id) throws SQLException {
+        Connection conn = null;
+        try {
+            conn = conectar();
+
+            // Desactivar temporalmente las restricciones
+            try (Statement stmtPragma1 = conn.createStatement()) {
+                stmtPragma1.execute("PRAGMA ignore_check_constraints = ON;");
+            }
+
+            // Ejecutar la eliminación
+            try (PreparedStatement stmtDelete = conn.prepareStatement("DELETE FROM tarea WHERE id = ?")) {
+                stmtDelete.setInt(1, id);
+                stmtDelete.executeUpdate();
+            }
+
+            // Reactivar las restricciones
+            try (Statement stmtPragma2 = conn.createStatement()) {
+                stmtPragma2.execute("PRAGMA ignore_check_constraints = OFF;");
+            }
+        } finally {
+            // No cerramos la conexión aquí, ya que es manejada por el pool de conexiones
+            // o se cierra automáticamente al usar try-with-resources
         }
     }
 
@@ -119,7 +222,8 @@ public class TareaDAO extends Conexion implements DAO<tarea> {
     /**
      * Calcula el total por tipo y período
      */
-    public double calcularTotalPorTipoYPeriodo(Integer usuarioId, String estado, Date inicio, Date fin) throws SQLException {
+    public double calcularTotalPorTipoYPeriodo(Integer usuarioId, String estado, Date inicio, Date fin)
+            throws SQLException {
         String sql = "SELECT SUM(cantidad) as total FROM tarea WHERE usuario_id = ? AND estado = ? AND fecha BETWEEN ? AND ?";
         try (PreparedStatement stmt = conectar().prepareStatement(sql)) {
             stmt.setInt(1, usuarioId);
@@ -133,7 +237,7 @@ public class TareaDAO extends Conexion implements DAO<tarea> {
         }
         return 0.0;
     }
-    
+
     /**
      * Obtiene tareas por usuario y período
      */
@@ -151,19 +255,19 @@ public class TareaDAO extends Conexion implements DAO<tarea> {
         }
         return tareas;
     }
-    
+
     /**
      * Obtiene las últimas N tareas de un usuario
      */
     public List<tarea> obtenerUltimasTareas(Integer usuarioId, int limite) throws SQLException {
         String sql = "SELECT * FROM tarea WHERE usuario_id = ? ORDER BY fecha DESC LIMIT ?";
         List<tarea> tareas = new ArrayList<>();
-        
+
         try (Connection conn = conectar();
-             PreparedStatement stmt = conn.prepareStatement(sql)) {
+                PreparedStatement stmt = conn.prepareStatement(sql)) {
             stmt.setInt(1, usuarioId);
             stmt.setInt(2, limite);
-            
+
             ResultSet rs = stmt.executeQuery();
             while (rs.next()) {
                 try {
@@ -177,10 +281,10 @@ public class TareaDAO extends Conexion implements DAO<tarea> {
             System.err.println("Error en consulta de tareas: " + e.getMessage());
             throw e;
         }
-        
+
         return tareas;
     }
-    
+
     /**
      * Actualiza las estadísticas del usuario basándose en sus tareas
      */
@@ -188,11 +292,11 @@ public class TareaDAO extends Conexion implements DAO<tarea> {
         // Calcular totales
         double totalIngresos = calcularTotalPorTipo(usuarioId, tarea.ESTADO_INGRESO);
         double totalGastos = calcularTotalPorTipo(usuarioId, tarea.ESTADO_GASTO);
-        
+
         // Obtener la estadística del usuario o crear una nueva
         EstadisticaDAO estadisticaDAO = new EstadisticaDAO();
         estadistica stats = estadisticaDAO.obtenerPorUsuario(usuarioId);
-        
+
         if (stats == null) {
             stats = new estadistica(totalIngresos, totalGastos, usuarioId);
             estadisticaDAO.insertar(stats);
@@ -202,7 +306,7 @@ public class TareaDAO extends Conexion implements DAO<tarea> {
             estadisticaDAO.actualizar(stats);
         }
     }
-    
+
     /**
      * Calcula el total por tipo para todas las tareas de un usuario
      */

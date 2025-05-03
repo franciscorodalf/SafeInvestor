@@ -3,6 +3,7 @@ package es.franciscorodalf.saveinvestor.frontend.controller;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.util.List;
+import java.util.Optional;
 
 import es.franciscorodalf.saveinvestor.backend.dao.EstadisticaDAO;
 import es.franciscorodalf.saveinvestor.backend.dao.ObjetivoDAO;
@@ -21,9 +22,12 @@ import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.control.ButtonType;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListCell;
 import javafx.scene.control.ListView;
+import javafx.scene.control.Alert;
+import javafx.stage.Modality;
 import javafx.stage.Stage;
 
 public class MainController {
@@ -72,6 +76,18 @@ public class MainController {
         
         // Configurar la celda personalizada para la lista de objetivos
         configurarCeldaObjetivos();
+        
+        // Configurar manejo de clics en la lista de movimientos
+        if (listMovimientos != null) {
+            listMovimientos.setOnMouseClicked(event -> {
+                if (event.getClickCount() == 2) { // Verificar doble clic
+                    Movimiento movimientoSeleccionado = listMovimientos.getSelectionModel().getSelectedItem();
+                    if (movimientoSeleccionado != null) {
+                        mostrarOpcionesMovimiento(movimientoSeleccionado);
+                    }
+                }
+            });
+        }
     }
     
     /**
@@ -373,5 +389,137 @@ public class MainController {
         } catch (IOException e) {
             System.err.println("Error al cargar vista: " + e.getMessage());
         }
+    }
+    
+    /**
+     * Muestra un diálogo con opciones para editar o eliminar un movimiento
+     */
+    private void mostrarOpcionesMovimiento(Movimiento movimiento) {
+        try {
+            // Buscar la tarea asociada al movimiento seleccionado
+            Integer tareaId = movimiento.getTareaId();
+            tarea tareaSeleccionada = null;
+            
+            if (tareaId != null) {
+                // Si tenemos el ID directamente, obtener la tarea
+                tareaSeleccionada = tareaDAO.obtenerPorId(tareaId);
+            } else {
+                // Si no tenemos ID, buscar por criterios
+                List<tarea> tareas = tareaDAO.obtenerUltimasTareas(usuarioActual.getId(), 100);
+                for (tarea t : tareas) {
+                    // Comparar atributos para encontrar la tarea correcta
+                    if (t.getConcepto().equals(movimiento.getConcepto()) && 
+                        Math.abs(t.getCantidad() - movimiento.getCantidad()) < 0.01 &&
+                        ((t.getEstado().equals(tarea.ESTADO_INGRESO) && movimiento.getTipo() == Movimiento.TipoMovimiento.INGRESO) ||
+                         (t.getEstado().equals(tarea.ESTADO_GASTO) && movimiento.getTipo() == Movimiento.TipoMovimiento.GASTO))) {
+                        tareaSeleccionada = t;
+                        break;
+                    }
+                }
+            }
+            
+            if (tareaSeleccionada == null) {
+                mostrarAlerta("No se pudo encontrar el movimiento en la base de datos.", Alert.AlertType.WARNING);
+                return;
+            }
+            
+            // Crear el diálogo de opciones
+            Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+            alert.setTitle("Opciones de movimiento");
+            alert.setHeaderText("¿Qué desea hacer con este movimiento?");
+            alert.setContentText("Concepto: " + movimiento.getConcepto() + "\nCantidad: " + movimiento.getCantidad());
+            
+            ButtonType btnEditar = new ButtonType("Editar");
+            ButtonType btnEliminar = new ButtonType("Eliminar");
+            ButtonType btnCancelar = new ButtonType("Cancelar");
+            
+            alert.getButtonTypes().setAll(btnEditar, btnEliminar, btnCancelar);
+            
+            Optional<ButtonType> resultado = alert.showAndWait();
+            if (resultado.isPresent()) {
+                if (resultado.get() == btnEditar) {
+                    abrirEditorMovimiento(tareaSeleccionada);
+                } else if (resultado.get() == btnEliminar) {
+                    confirmarEliminarMovimiento(tareaSeleccionada);
+                }
+            }
+        } catch (SQLException e) {
+            mostrarAlerta("Error al acceder a la base de datos: " + e.getMessage(), Alert.AlertType.ERROR);
+            e.printStackTrace();
+        }
+    }
+    
+    /**
+     * Abre el editor de movimientos con los datos existentes
+     */
+    private void abrirEditorMovimiento(tarea tareaParaEditar) {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/es/franciscorodalf/saveinvestor/editarMovimiento.fxml"));
+            Parent root = loader.load();
+            
+            EditarMovimientoController controller = loader.getController();
+            controller.inicializar(tareaParaEditar, usuarioActual, () -> actualizarInterfaz());
+            
+            Stage stage = new Stage();
+            stage.initModality(Modality.WINDOW_MODAL);
+            stage.initOwner(listMovimientos.getScene().getWindow());
+            stage.setScene(new Scene(root));
+            stage.setTitle("Editar Movimiento");
+            stage.showAndWait();
+            
+        } catch (IOException e) {
+            mostrarAlerta("Error al abrir editor: " + e.getMessage(), Alert.AlertType.ERROR);
+            e.printStackTrace();
+        }
+    }
+    
+    /**
+     * Confirma y procesa la eliminación de un movimiento
+     */
+    private void confirmarEliminarMovimiento(tarea tareaParaEliminar) {
+        Alert confirmacion = new Alert(Alert.AlertType.CONFIRMATION);
+        confirmacion.setTitle("Confirmar eliminación");
+        confirmacion.setHeaderText("¿Está seguro de eliminar este movimiento?");
+        confirmacion.setContentText("Esta acción no se puede deshacer");
+        
+        Optional<ButtonType> resultado = confirmacion.showAndWait();
+        if (resultado.isPresent() && resultado.get() == ButtonType.OK) {
+            try {
+                // Actualizar estadísticas manualmente antes de eliminar
+                estadistica stats = estadisticaDAO.obtenerPorUsuario(usuarioActual.getId());
+                if (stats != null) {
+                    if (tareaParaEliminar.getEstado().equals(tarea.ESTADO_INGRESO)) {
+                        stats.setTotalIngreso(stats.getTotalIngreso() - tareaParaEliminar.getCantidad());
+                    } else if (tareaParaEliminar.getEstado().equals(tarea.ESTADO_GASTO)) {
+                        stats.setTotalGasto(stats.getTotalGasto() - tareaParaEliminar.getCantidad());
+                    }
+                    estadisticaDAO.actualizar(stats);
+                }
+                
+                // Eliminar la tarea sin activar triggers
+                tareaDAO.eliminarSinTrigger(tareaParaEliminar.getId());
+                
+                // Actualizar la interfaz
+                actualizarInterfaz();
+                
+                // Mostrar confirmación
+                mostrarAlerta("Movimiento eliminado correctamente", Alert.AlertType.INFORMATION);
+                
+            } catch (SQLException e) {
+                mostrarAlerta("Error al eliminar movimiento: " + e.getMessage(), Alert.AlertType.ERROR);
+                e.printStackTrace();
+            }
+        }
+    }
+    
+    /**
+     * Muestra una alerta con el mensaje indicado
+     */
+    private void mostrarAlerta(String mensaje, Alert.AlertType tipo) {
+        Alert alerta = new Alert(tipo);
+        alerta.setTitle("Información");
+        alerta.setHeaderText(null);
+        alerta.setContentText(mensaje);
+        alerta.showAndWait();
     }
 }
