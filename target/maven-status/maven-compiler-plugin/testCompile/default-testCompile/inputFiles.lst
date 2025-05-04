@@ -1,1 +1,7 @@
-/Users/fran/Documents/GitHub/SafeInvestor/src/test/java/es/franciscorodalf/saveinvestor/frontend/controller/LoginControllerTest.java
+/Users/fran/Documents/GitHub/SafeInvestor/src/test/java/es/franciscorodalf/saveinvestor/frontend/controller/ConexionTest.java
+/Users/fran/Documents/GitHub/SafeInvestor/src/test/java/es/franciscorodalf/saveinvestor/backend/dao/EstadisticaDAOTest.java
+/Users/fran/Documents/GitHub/SafeInvestor/src/test/java/es/franciscorodalf/saveinvestor/backend/dao/TareaDAOTest.java
+/Users/fran/Documents/GitHub/SafeInvestor/src/test/java/es/franciscorodalf/saveinvestor/backend/model/UsuarioTest.java
+/Users/fran/Documents/GitHub/SafeInvestor/src/test/java/es/franciscorodalf/saveinvestor/backend/dao/UsuarioDAOTest.java
+/Users/fran/Documents/GitHub/SafeInvestor/src/test/java/es/franciscorodalf/saveinvestor/backend/model/TareaTest.java
+/Users/fran/Documents/GitHub/SafeInvestor/src/test/java/es/franciscorodalf/saveinvestor/frontend/controller/LoginControllerSimpleTest.java

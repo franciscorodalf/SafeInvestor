@@ -10,7 +10,7 @@ import java.util.Objects;
  * Representa un objetivo financiero del usuario
  */
 public class Objetivo {
-    
+
     private Integer id;
     private String descripcion;
     private Double cantidadObjetivo;
@@ -19,22 +19,23 @@ public class Objetivo {
     private Date fechaObjetivo;
     private boolean completado;
     private Integer usuarioId;
-    
+
     public Objetivo() {
         this.fechaCreacion = new Date();
         this.cantidadActual = 0.0;
         this.completado = false;
     }
-    
+
     public Objetivo(String descripcion, Double cantidadObjetivo, Integer usuarioId) {
         this();
         this.descripcion = descripcion;
         this.cantidadObjetivo = cantidadObjetivo;
         this.usuarioId = usuarioId;
     }
-    
+
     /**
      * Calcula el porcentaje de progreso hacia el objetivo
+     * 
      * @return Porcentaje de progreso (0-100)
      */
     public double calcularPorcentaje() {
@@ -43,9 +44,10 @@ public class Objetivo {
         }
         return Math.min(100, (cantidadActual / cantidadObjetivo) * 100);
     }
-    
+
     /**
      * Calcula cuánto falta para completar el objetivo
+     * 
      * @return Cantidad que falta para completar el objetivo
      */
     public double calcularCantidadFaltante() {
@@ -54,51 +56,55 @@ public class Objetivo {
         }
         return cantidadObjetivo - cantidadActual;
     }
-    
+
     /**
      * Calcula el número de días restantes hasta la fecha objetivo
+     * 
      * @return Número de días restantes, 0 si está completado, -1 si no tiene fecha
      */
     public long calcularDiasRestantes() {
         if (completado || fechaObjetivo == null) {
             return -1;
         }
-        
+
         LocalDate hoy = LocalDate.now();
         LocalDate fechaLimite = fechaObjetivo.toInstant()
-                                 .atZone(ZoneId.systemDefault())
-                                 .toLocalDate();
-        
+                .atZone(ZoneId.systemDefault())
+                .toLocalDate();
+
         return Math.max(0, ChronoUnit.DAYS.between(hoy, fechaLimite));
     }
-    
+
     /**
      * Verifica si el objetivo está completado
+     * 
      * @return true si la cantidad actual >= cantidad objetivo
      */
     public boolean verificarCompletado() {
         return cantidadActual >= cantidadObjetivo;
     }
-    
+
     /**
      * Verifica si el objetivo está vencido pero no completado
+     * 
      * @return true si está vencido y no completado
      */
     public boolean estaVencido() {
         if (fechaObjetivo == null || completado) {
             return false;
         }
-        
+
         LocalDate hoy = LocalDate.now();
         LocalDate fechaLimite = fechaObjetivo.toInstant()
-                                 .atZone(ZoneId.systemDefault())
-                                 .toLocalDate();
-        
+                .atZone(ZoneId.systemDefault())
+                .toLocalDate();
+
         return hoy.isAfter(fechaLimite);
     }
-    
+
     /**
      * Actualiza la cantidad actual y el estado de completado
+     * 
      * @param nuevaCantidad la nueva cantidad acumulada
      */
     public void actualizarCantidad(Double nuevaCantidad) {
@@ -108,9 +114,10 @@ public class Objetivo {
         this.cantidadActual = nuevaCantidad;
         this.completado = verificarCompletado();
     }
-    
+
     /**
      * Añade una cantidad al ahorro actual
+     * 
      * @param cantidad Cantidad a añadir
      * @return true si el objetivo se completa con esta contribución
      */
@@ -118,19 +125,19 @@ public class Objetivo {
         if (cantidad <= 0) {
             throw new IllegalArgumentException("La contribución debe ser positiva");
         }
-        
+
         this.cantidadActual += cantidad;
         boolean nuevoCompletado = verificarCompletado();
         this.completado = nuevoCompletado;
-        
+
         return nuevoCompletado && !completado;
     }
-    
+
     // Getter para monto (necesario para ObjetivosController)
     public Double getMonto() {
         return cantidadObjetivo;
     }
-    
+
     // Getters y setters
     public Integer getId() {
         return id;
@@ -205,8 +212,10 @@ public class Objetivo {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (this == o)
+            return true;
+        if (o == null || getClass() != o.getClass())
+            return false;
         Objetivo objetivo = (Objetivo) o;
         return Objects.equals(id, objetivo.id);
     }

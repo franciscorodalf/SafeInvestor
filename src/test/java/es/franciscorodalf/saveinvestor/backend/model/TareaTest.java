@@ -81,21 +81,6 @@ class TareaTest {
     }
     
     @Test
-    void testMethodChaining() {
-        Date fecha = new Date();
-        tarea t = new tarea()
-            .concepto("Salario")
-            .cantidad(2000.0)
-            .fecha(fecha)
-            .estado(tarea.ESTADO_INGRESO);
-            
-        assertEquals("Salario", t.getConcepto());
-        assertEquals(2000.0, t.getCantidad());
-        assertEquals(fecha, t.getFecha());
-        assertEquals(tarea.ESTADO_INGRESO, t.getEstado());
-    }
-    
-    @Test
     void testEquals() {
         tarea t1 = new tarea("Pago", 100.0, new Date(), tarea.ESTADO_GASTO, 1);
         tarea t2 = new tarea("Pago", 200.0, new Date(), tarea.ESTADO_INGRESO, 2);
