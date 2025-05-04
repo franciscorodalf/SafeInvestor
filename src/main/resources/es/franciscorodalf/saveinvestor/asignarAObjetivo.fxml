@@ -8,14 +8,11 @@
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
 
-<BorderPane xmlns="http://javafx.com/javafx/12.0.1" xmlns:fx="http://javafx.com/fxml/1"
-            fx:controller="es.franciscorodalf.saveinvestor.frontend.controller.AsignarAObjetivoController"
-            prefWidth="400.0" prefHeight="250.0" style="-fx-background-color: #f5f5f5;">
+<BorderPane prefHeight="250.0" prefWidth="400.0" style="-fx-background-color: #f5f5f5;" stylesheets="@../../../styles/style.css" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="es.franciscorodalf.saveinvestor.frontend.controller.AsignarAObjetivoController">
    <top>
-      <Label text="Asignar a Objetivo" style="-fx-font-size: 18px; -fx-font-weight: bold;" 
-             BorderPane.alignment="CENTER">
+      <Label style="-fx-font-size: 18px; -fx-font-weight: bold;" text="Asignar a Objetivo" BorderPane.alignment="CENTER">
          <padding>
-            <Insets top="20.0" bottom="20.0" />
+            <Insets bottom="20.0" top="20.0" />
          </padding>
       </Label>
    </top>
@@ -39,8 +36,7 @@
             <Insets bottom="20.0" top="20.0" />
          </padding>
          <Button fx:id="btnCancelar" mnemonicParsing="false" onAction="#onCancelar" prefHeight="35.0" prefWidth="100.0" text="Cancelar" />
-         <Button fx:id="btnAsignar" mnemonicParsing="false" onAction="#onAsignar" prefHeight="35.0" prefWidth="100.0" 
-                 style="-fx-background-color: #27AE60; -fx-text-fill: white;" text="Asignar" />
+         <Button fx:id="btnAsignar" mnemonicParsing="false" onAction="#onAsignar" prefHeight="35.0" prefWidth="100.0" style="-fx-background-color: #27AE60; -fx-text-fill: white;" text="Asignar" />
       </HBox>
    </bottom>
 </BorderPane>

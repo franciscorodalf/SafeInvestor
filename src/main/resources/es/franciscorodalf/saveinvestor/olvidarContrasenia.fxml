@@ -10,9 +10,9 @@
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
 
-<AnchorPane prefHeight="280.0" prefWidth="402.0"  xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="es.franciscorodalf.saveinvestor.frontend.controller.RecuperarContraseniaController">
+<AnchorPane prefHeight="280.0" prefWidth="402.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="es.franciscorodalf.saveinvestor.frontend.controller.RecuperarContraseniaController">
     
-   <VBox alignment="CENTER" layoutX="40.0" layoutY="53.0" prefHeight="202.0" prefWidth="400.0" spacing="10.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+   <VBox alignment="CENTER" layoutX="40.0" layoutY="53.0" prefHeight="202.0" prefWidth="400.0" spacing="10.0" stylesheets="@../../../styles/style.css" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
     <Label prefHeight="23.0" prefWidth="143.0" styleClass="titulo-principal" text="Recuperar Contraseña">
          <VBox.margin>
             <Insets />
@@ -28,26 +28,23 @@
          <VBox.margin>
             <Insets />
          </VBox.margin></Label>
-      <HBox>
+      <HBox alignment="CENTER">
          <children>
           <Button id="buttonVolver" fx:id="buttonVolverRecuperarContrasenia" maxWidth="-Infinity" onAction="#clickVolverRecuperarContrasenia" prefHeight="34.0" prefWidth="87.0" text="Volver">
                <HBox.margin>
-                  <Insets />
+                  <Insets right="30.0" />
                </HBox.margin>
             </Button>
       
           <Button id="buttonEnviar" fx:id="enviarButton" maxWidth="-Infinity" onAction="#clickButtonEnviar" prefHeight="34.0" prefWidth="85.0" text="Enviar">
                <HBox.margin>
-                  <Insets left="87.0" />
+                  <Insets />
                </HBox.margin>
             </Button>
          </children>
          <VBox.margin>
             <Insets />
          </VBox.margin>
-         <padding>
-            <Insets left="30.0" />
-         </padding>
       </HBox>
 </VBox>
 

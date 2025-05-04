@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import javafx.geometry.Insets?>
-<?import javafx.geometry.Pos?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.ListView?>
@@ -9,83 +8,66 @@
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
 
-<BorderPane xmlns="http://javafx.com/javafx/12.0.1"
-            xmlns:fx="http://javafx.com/fxml/1"
-            fx:controller="es.franciscorodalf.saveinvestor.frontend.controller.MainController"
-            style="-fx-background-color: #f5f5f5;">
+<BorderPane style="-fx-background-color: #f5f5f5;" stylesheets="@../../../styles/style.css" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="es.franciscorodalf.saveinvestor.frontend.controller.MainController">
 
     <!-- Barra superior -->
     <top>
         <HBox alignment="CENTER" spacing="20">
             <padding>
-                <Insets top="15" right="15" bottom="15" left="15"/>
+                <Insets bottom="15" left="15" right="15" top="15" />
             </padding>
-            <Button fx:id="btnPerfil"
-                    text="Perfil"
-                    onAction="#onPerfil"/>
+            <Button fx:id="btnPerfil" onAction="#onPerfil" text="Perfil" />
         </HBox>
     </top>
 
     <!-- Centro: Ahorro, acciones e historial -->
     <center>
-        <VBox alignment="TOP_CENTER" spacing="20">
+        <VBox alignment="TOP_CENTER" prefHeight="719.0" prefWidth="460.0" spacing="20">
             <padding>
-                <Insets top="30" right="30" bottom="30" left="30"/>
+                <Insets bottom="30" left="30" right="30" top="30" />
             </padding>
 
             <!-- Total ahorrado -->
             <VBox alignment="CENTER" spacing="5">
-                <Label text="Llevas Ahorrado:" style="-fx-font-size: 16px;"/>
-                <Label fx:id="lblTotalAhorro" text="0,00$"
-                       style="-fx-font-size: 32px; -fx-font-weight: bold;"/>
+                <Label style="-fx-font-size: 16px;" text="Llevas Ahorrado:" />
+                <Label fx:id="lblTotalAhorro" style="-fx-font-size: 32px; -fx-font-weight: bold;" text="0,00$" />
             </VBox>
 
             <!-- Botones de acción -->
             <HBox alignment="CENTER" spacing="30">
-                <Button fx:id="btnGasto" text="Gasto"
-                        style="-fx-background-color: #E74C3C; -fx-text-fill: white;"
-                        prefWidth="150" prefHeight="50"
-                        onAction="#onRegistrarGasto"/>
-                <Button fx:id="btnAhorro" text="Ahorro"
-                        style="-fx-background-color: #27AE60; -fx-text-fill: white;"
-                        prefWidth="150" prefHeight="50"
-                        onAction="#onRegistrarAhorro"/>
+                <Button fx:id="btnGasto" onAction="#onRegistrarGasto" prefHeight="50" prefWidth="150" style="-fx-background-color: #E74C3C; -fx-text-fill: white;" text="Gasto" />
+                <Button fx:id="btnAhorro" onAction="#onRegistrarAhorro" prefHeight="50" prefWidth="150" style="-fx-background-color: #27AE60; -fx-text-fill: white;" text="Ahorro" />
             </HBox>
             
             <!-- Objetivos activos -->
-            <VBox alignment="TOP_LEFT" spacing="10" prefWidth="400">
+            <VBox alignment="TOP_LEFT" prefWidth="400" spacing="10">
                 <HBox alignment="CENTER_LEFT" spacing="10">
-                    <Label text="Objetivos activos:" style="-fx-font-size: 14px;"/>
-                    <Button fx:id="btnVerTodosObjetivos" text="Ver todos" 
-                            style="-fx-background-color: #3498db; -fx-text-fill: white;"
-                            onAction="#onObjetivos"/>
+                    <Label style="-fx-font-size: 14px;" text="Objetivos activos:" />
+                    <Button fx:id="btnVerTodosObjetivos" onAction="#onObjetivos" style="-fx-background-color: #3498db; -fx-text-fill: white;" text="Ver todos" />
                 </HBox>
-                <ListView fx:id="listObjetivos" prefHeight="120" VBox.vgrow="SOMETIMES"/>
+                <ListView fx:id="listObjetivos" prefHeight="197.0" prefWidth="400.0" VBox.vgrow="SOMETIMES" />
             </VBox>
 
             <!-- Historial de movimientos -->
-            <VBox alignment="TOP_LEFT" spacing="10" prefWidth="400">
+            <VBox alignment="TOP_LEFT" prefWidth="400" spacing="10">
                 <HBox alignment="CENTER_LEFT" spacing="10">
-                    <Label text="Últimos movimientos:" style="-fx-font-size: 14px;"/>
-                    <Button fx:id="btnHistorialCompleto" text="Ver todos" 
-                            onAction="#onHistorial"/>
+                    <Label style="-fx-font-size: 14px;" text="Últimos movimientos:" />
+                    <Button fx:id="btnHistorialCompleto" onAction="#onHistorial" text="Ver todos" />
                 </HBox>
-                <ListView fx:id="listMovimientos" VBox.vgrow="ALWAYS"/>
+                <ListView fx:id="listMovimientos" prefHeight="215.0" prefWidth="400.0" VBox.vgrow="ALWAYS" />
             </VBox>
         </VBox>
     </center>
 
     <!-- Barra inferior -->
     <bottom>
-        <HBox alignment="CENTER" spacing="40"
-              style="-fx-border-color: #CCCCCC; -fx-border-width: 1 0 0 0;">
+        <HBox alignment="CENTER" spacing="40" style="-fx-border-color: #CCCCCC; -fx-border-width: 1 0 0 0;">
             <padding>
-                <Insets top="10" right="10" bottom="10" left="10"/>
+                <Insets bottom="10" left="10" right="10" top="10" />
             </padding>
-            <Button fx:id="btnCerrarSesion" text="Cerrar Sesión" onAction="#onCerrarSesion" 
-                    style="-fx-text-fill: #E74C3C;"/>
-            <Button fx:id="btnEstadisticas" text="Estadísticas" onAction="#onEstadisticas"/>
-            <Button fx:id="btnObjetivos" text="Objetivos" onAction="#onObjetivos"/>
+            <Button fx:id="btnCerrarSesion" onAction="#onCerrarSesion" style="-fx-text-fill: #E74C3C;" text="Cerrar Sesión" />
+            <Button fx:id="btnEstadisticas" onAction="#onEstadisticas" text="Estadísticas" />
+            <Button fx:id="btnObjetivos" onAction="#onObjetivos" text="Objetivos" />
         </HBox>
     </bottom>
 
