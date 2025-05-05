@@ -67,6 +67,75 @@ public class UsuarioDAO extends Conexion implements DAO<Usuario> {
             stmt.executeUpdate();
         }
     }
+    
+    /**
+     * Elimina un usuario y todos sus datos relacionados.
+     * Este método gestiona la eliminación en cascada de todas las entidades 
+     * relacionadas con el usuario (tareas, estadísticas, objetivos).
+     * 
+     * @param id ID del usuario a eliminar
+     * @return true si la eliminación fue exitosa
+     * @throws SQLException si ocurre un error durante la eliminación
+     */
+    public boolean eliminarCompleto(Integer id) throws SQLException {
+        Connection conn = null;
+        boolean exito = false;
+        
+        try {
+            conn = conectar();
+            conn.setAutoCommit(false);
+            
+            // 1. Eliminar tareas del usuario
+            try (PreparedStatement stmt = conn.prepareStatement("DELETE FROM tarea WHERE usuario_id = ?")) {
+                stmt.setInt(1, id);
+                stmt.executeUpdate();
+            }
+            
+            // 2. Eliminar objetivos del usuario
+            try (PreparedStatement stmt = conn.prepareStatement("DELETE FROM objetivo WHERE usuario_id = ?")) {
+                stmt.setInt(1, id);
+                stmt.executeUpdate();
+            }
+            
+            // 3. Eliminar estadísticas del usuario
+            try (PreparedStatement stmt = conn.prepareStatement("DELETE FROM estadistica WHERE usuario_id = ?")) {
+                stmt.setInt(1, id);
+                stmt.executeUpdate();
+            }
+            
+            // 4. Finalmente, eliminar el usuario
+            try (PreparedStatement stmt = conn.prepareStatement("DELETE FROM usuario WHERE id = ?")) {
+                stmt.setInt(1, id);
+                int filasAfectadas = stmt.executeUpdate();
+                exito = (filasAfectadas > 0);
+            }
+            
+            // Si todo salió bien, confirmar los cambios
+            conn.commit();
+            
+        } catch (SQLException e) {
+            // Si hay error, hacer rollback
+            if (conn != null) {
+                try {
+                    conn.rollback();
+                } catch (SQLException ex) {
+                    System.err.println("Error al hacer rollback: " + ex.getMessage());
+                }
+            }
+            throw e;
+        } finally {
+            // Restaurar autocommit y cerrar conexión
+            if (conn != null) {
+                try {
+                    conn.setAutoCommit(true);
+                } catch (SQLException ex) {
+                    System.err.println("Error al restaurar autocommit: " + ex.getMessage());
+                }
+            }
+        }
+        
+        return exito;
+    }
 
     @Override
     public Usuario obtenerPorId(Integer id) throws SQLException {

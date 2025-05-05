@@ -60,6 +60,11 @@
             </padding>
             <Button fx:id="btnVolver" onAction="#clickVolver" prefWidth="100" text="Volver" />
             <Button fx:id="btnEditar" onAction="#clickEditar" prefWidth="150" text="Editar información" />
+            <Button fx:id="btnEliminarCuenta" 
+                    text="Eliminar cuenta" 
+                    onAction="#clickEliminarCuenta" 
+                    style="-fx-background-color: #e74c3c; -fx-text-fill: white; -fx-font-weight: bold; -fx-border-radius: 5;" 
+                    maxWidth="Infinity" />
         </HBox>
     </bottom>
 
