@@ -17,7 +17,7 @@ public class EstadisticaDAO extends Conexion implements DAO<estadistica> {
             stmt.setDouble(2, stats.getTotalGasto());
             stmt.setInt(3, stats.getUsuarioId());
             stmt.executeUpdate();
-            
+
             ResultSet rs = stmt.getGeneratedKeys();
             if (rs.next()) {
                 stats.setId(rs.getInt(1));
@@ -82,7 +82,7 @@ public class EstadisticaDAO extends Conexion implements DAO<estadistica> {
         }
         return estadisticas;
     }
-    
+
     /**
      * Incrementa el total de ingresos para un usuario
      */
@@ -96,7 +96,7 @@ public class EstadisticaDAO extends Conexion implements DAO<estadistica> {
             insertar(nuevaEstadistica);
         }
     }
-    
+
     /**
      * Incrementa el total de gastos para un usuario
      */
