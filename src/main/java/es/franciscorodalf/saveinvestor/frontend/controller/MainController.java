@@ -281,7 +281,27 @@ public class MainController {
     private void onObjetivos(ActionEvent event) {
         cambiarEscena(event, "/es/franciscorodalf/saveinvestor/objetivos.fxml");
     }
-    
+
+    @FXML
+    private void onSimulador(ActionEvent event) {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/es/franciscorodalf/saveinvestor/simuladorMetas.fxml"));
+            Parent root = loader.load();
+
+            SimuladorMetasController controller = loader.getController();
+            if (controller != null && usuarioActual != null) {
+                controller.setUsuario(usuarioActual);
+                controller.setRutaRetorno("/es/franciscorodalf/saveinvestor/main.fxml");
+            }
+
+            Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+            stage.setScene(new Scene(root));
+            stage.show();
+        } catch (IOException e) {
+            System.err.println("Error al cargar el simulador: " + e.getMessage());
+        }
+    }
+
     @FXML
     private void onRegistrarGasto(ActionEvent event) {
         try {
@@ -380,6 +400,9 @@ public class MainController {
                     ((ObjetivosController) controller).setUsuario(usuarioActual);
                 } else if (controller instanceof EstadisticasController) {
                     ((EstadisticasController) controller).setUsuario(usuarioActual);
+                } else if (controller instanceof SimuladorMetasController) {
+                    ((SimuladorMetasController) controller).setUsuario(usuarioActual);
+                    ((SimuladorMetasController) controller).setRutaRetorno("/es/franciscorodalf/saveinvestor/main.fxml");
                 }
             }
             

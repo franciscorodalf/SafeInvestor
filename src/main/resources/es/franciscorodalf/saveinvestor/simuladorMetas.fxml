@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.chart.LineChart?>
+<?import javafx.scene.chart.NumberAxis?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ProgressBar?>
+<?import javafx.scene.control.Spinner?>
+<?import javafx.scene.control.TextArea?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+
+<BorderPane xmlns="http://javafx.com/javafx/23.0.1"
+            xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="es.franciscorodalf.saveinvestor.frontend.controller.SimuladorMetasController"
+            prefWidth="1000" prefHeight="650"
+            style="-fx-background-color: #f7f7f7;">
+    <top>
+        <HBox alignment="CENTER_LEFT" spacing="15">
+            <padding>
+                <Insets top="20" right="30" bottom="20" left="30"/>
+            </padding>
+            <Label text="Simulador de metas financieras"
+                   style="-fx-font-size: 24px; -fx-font-weight: bold;"/>
+        </HBox>
+    </top>
+
+    <center>
+        <VBox spacing="15">
+            <padding>
+                <Insets top="10" right="30" bottom="20" left="30"/>
+            </padding>
+
+            <VBox spacing="8" style="-fx-background-color: white; -fx-background-radius: 8; -fx-padding: 15;">
+                <Label text="¿Qué pasa si...? Usa tus objetivos o crea escenarios" style="-fx-font-weight: bold;"/>
+                <HBox spacing="10" alignment="CENTER_LEFT">
+                    <Label text="Importar objetivo:"/>
+                    <ComboBox fx:id="comboObjetivos" promptText="Selecciona un objetivo" prefWidth="280" onAction="#onSeleccionarObjetivo"/>
+                </HBox>
+            </VBox>
+
+            <GridPane hgap="10" vgap="12" style="-fx-background-color: white; -fx-background-radius: 8; -fx-padding: 20;">
+                <columnConstraints>
+                    <ColumnConstraints percentWidth="25"/>
+                    <ColumnConstraints percentWidth="25"/>
+                    <ColumnConstraints percentWidth="25"/>
+                    <ColumnConstraints percentWidth="25"/>
+                </columnConstraints>
+
+                <Label text="Meta objetivo" GridPane.rowIndex="0" GridPane.columnIndex="0"/>
+                <TextField fx:id="txtMetaObjetivo" promptText="Monto total" GridPane.rowIndex="0" GridPane.columnIndex="1"/>
+
+                <Label text="Monto inicial" GridPane.rowIndex="1" GridPane.columnIndex="0"/>
+                <TextField fx:id="txtMontoInicial" promptText="Capital disponible" GridPane.rowIndex="1" GridPane.columnIndex="1"/>
+
+                <Label text="Aportación mensual" GridPane.rowIndex="2" GridPane.columnIndex="0"/>
+                <TextField fx:id="txtAportacionPeriodica" promptText="Cantidad ahorrada cada mes" GridPane.rowIndex="2" GridPane.columnIndex="1"/>
+
+                <Label text="Tasa interés anual (%)" GridPane.rowIndex="0" GridPane.columnIndex="2"/>
+                <TextField fx:id="txtTasaInteres" promptText="Ej: 5" GridPane.rowIndex="0" GridPane.columnIndex="3"/>
+
+                <Label text="Horizonte (meses)" GridPane.rowIndex="1" GridPane.columnIndex="2"/>
+                <Spinner fx:id="spinnerHorizonte" prefWidth="120" GridPane.rowIndex="1" GridPane.columnIndex="3"/>
+
+                <Label text="Descripción del escenario" GridPane.rowIndex="2" GridPane.columnIndex="2"/>
+                <TextField fx:id="txtDescripcionEscenario" promptText="Nombre identificativo" GridPane.rowIndex="2" GridPane.columnIndex="3"/>
+            </GridPane>
+
+            <HBox alignment="CENTER_LEFT" spacing="10">
+                <Button text="Calcular aportación" onAction="#onCalcularAportacion"/>
+                <Button text="Simular" style="-fx-background-color: #27ae60; -fx-text-fill: white;" onAction="#onSimular"/>
+                <Button fx:id="btnGuardarEscenario" text="Guardar escenario" onAction="#onGuardarEscenario"/>
+                <Label fx:id="lblEstado" textFill="#2c3e50" style="-fx-font-style: italic;"/>
+            </HBox>
+
+            <VBox spacing="15" style="-fx-background-color: white; -fx-background-radius: 8; -fx-padding: 20;">
+                <LineChart fx:id="chartProyeccion" prefHeight="280">
+                    <xAxis>
+                        <NumberAxis fx:id="axisMeses" label="Meses"/>
+                    </xAxis>
+                    <yAxis>
+                        <NumberAxis fx:id="axisSaldo" label="Saldo proyectado"/>
+                    </yAxis>
+                </LineChart>
+
+                <VBox spacing="8">
+                    <Label fx:id="lblResumen" style="-fx-font-size: 14px; -fx-font-weight: bold;" wrapText="true"/>
+                    <ProgressBar fx:id="progressComparativa" prefWidth="400"/>
+                    <Label fx:id="lblComparativa" text="Selecciona un objetivo para comparar"/>
+                </VBox>
+
+                <TextArea fx:id="txtDetalles" prefRowCount="6" wrapText="true" promptText="Detalle de la proyección"/>
+            </VBox>
+        </VBox>
+    </center>
+
+    <bottom>
+        <HBox alignment="CENTER_RIGHT">
+            <padding>
+                <Insets top="15" right="30" bottom="20" left="30"/>
+            </padding>
+            <Button text="Volver" onAction="#onVolver"/>
+        </HBox>
+    </bottom>
+</BorderPane>

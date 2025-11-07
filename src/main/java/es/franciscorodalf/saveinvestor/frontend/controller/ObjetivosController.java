@@ -473,7 +473,32 @@ public class ObjetivosController {
 
     /**
      * Maneja el evento del botón volver
-     * 
+     *
+     * @param event El evento de acción
+     */
+    @FXML
+    private void onAbrirSimulador(ActionEvent event) {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/es/franciscorodalf/saveinvestor/simuladorMetas.fxml"));
+            Parent root = loader.load();
+
+            SimuladorMetasController controller = loader.getController();
+            if (controller != null) {
+                controller.setUsuario(usuarioActual);
+                controller.setRutaRetorno("/es/franciscorodalf/saveinvestor/objetivos.fxml");
+            }
+
+            Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+            stage.setScene(new Scene(root));
+            stage.show();
+        } catch (IOException e) {
+            mostrarMensaje("No se pudo abrir el simulador: " + e.getMessage(), true);
+        }
+    }
+
+    /**
+     * Maneja el evento del botón volver
+     *
      * @param event El evento de acción
      */
     @FXML
