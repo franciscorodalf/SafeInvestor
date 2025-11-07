@@ -15,7 +15,8 @@ public class tarea {
     private Integer usuarioId;
 
     public tarea() {
-        this.fecha = new Date(); // Por defecto, la fecha actual
+        this.cantidad = 0.0;
+        this.fecha = null;
     }
 
     public tarea(String concepto, Double cantidad, Date fecha, String estado, Integer usuarioId) {
@@ -47,8 +48,8 @@ public class tarea {
     }
 
     public void setCantidad(Double cantidad) {
-        if (cantidad <= 0) {
-            throw new IllegalArgumentException("La cantidad debe ser mayor que cero");
+        if (cantidad == null || cantidad <= 0) {
+            throw new IllegalArgumentException("La cantidad no puede ser cero ni negativa");
         }
         this.cantidad = cantidad;
     }
@@ -67,7 +68,7 @@ public class tarea {
 
     public void setEstado(String estado) {
         if (!ESTADO_INGRESO.equals(estado) && !ESTADO_GASTO.equals(estado)) {
-            throw new IllegalArgumentException("El estado debe ser INGRESO o GASTO");
+            throw new IllegalArgumentException("Estado debe ser INGRESO o GASTO");
         }
         this.estado = estado;
     }
@@ -98,13 +99,6 @@ public class tarea {
 
     @Override
     public String toString() {
-        return "Tarea{" +
-                "id=" + id +
-                ", concepto='" + concepto + '\'' +
-                ", cantidad=" + cantidad +
-                ", fecha=" + fecha +
-                ", estado='" + estado + '\'' +
-                ", usuarioId=" + usuarioId +
-                '}';
+        return String.format("%s, %s, %s, %s", concepto, cantidad, fecha, estado);
     }
 }
