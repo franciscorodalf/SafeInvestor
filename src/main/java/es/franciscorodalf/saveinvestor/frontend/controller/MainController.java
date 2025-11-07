@@ -30,7 +30,7 @@ import javafx.scene.control.Alert;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 
-public class MainController {
+public class MainController implements UsuarioAware, DashboardNavigable {
 
     @FXML
     private Button btnEstadisticas;
@@ -63,6 +63,7 @@ public class MainController {
     private TareaDAO tareaDAO;
     private EstadisticaDAO estadisticaDAO;
     private ObjetivoDAO objetivoDAO;
+    private DashboardController dashboardController;
     
     // Número de movimientos a mostrar en la lista
     private static final int LIMITE_MOVIMIENTOS = 10;
@@ -272,109 +273,152 @@ public class MainController {
     
     @FXML
     private void onPerfil(ActionEvent event) {
-        cambiarEscena(event, "/es/franciscorodalf/saveinvestor/perfil.fxml");
+        if (dashboardController != null) {
+            dashboardController.mostrarVistaPerfil();
+        } else {
+            cambiarEscena(event, "/es/franciscorodalf/saveinvestor/perfil.fxml");
+        }
     }
-    
+
     @FXML
     private void onEstadisticas(ActionEvent event) {
-        cambiarEscena(event, "/es/franciscorodalf/saveinvestor/estadisticas.fxml");
+        if (dashboardController != null) {
+            dashboardController.mostrarVistaEstadisticas();
+        } else {
+            cambiarEscena(event, "/es/franciscorodalf/saveinvestor/estadisticas.fxml");
+        }
     }
-    
+
     @FXML
     private void onObjetivos(ActionEvent event) {
-        cambiarEscena(event, "/es/franciscorodalf/saveinvestor/objetivos.fxml");
+        if (dashboardController != null) {
+            dashboardController.mostrarVistaObjetivos();
+        } else {
+            cambiarEscena(event, "/es/franciscorodalf/saveinvestor/objetivos.fxml");
+        }
     }
 
     @FXML
     private void onPortafolio(ActionEvent event) {
-        cambiarEscena(event, "/es/franciscorodalf/saveinvestor/portafolio.fxml");
-    }
-    
-    @FXML
-    private void onRegistrarGasto(ActionEvent event) {
-        try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/es/franciscorodalf/saveinvestor/registrarGasto.fxml"));
-            Parent root = loader.load();
-            
-            // Pasar el usuario al controlador de registro de gasto
-            RegistrarGastoController controller = loader.getController();
-            controller.setUsuario(usuarioActual);
-            
-            Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
-            stage.setScene(new Scene(root));
-            stage.show();
-        } catch (IOException e) {
-            System.err.println("Error al cargar vista de registro de gasto: " + e.getMessage());
+        if (dashboardController != null) {
+            dashboardController.mostrarVistaPortafolio();
+        } else {
+            cambiarEscena(event, "/es/franciscorodalf/saveinvestor/portafolio.fxml");
         }
     }
     
     @FXML
+    private void onRegistrarGasto(ActionEvent event) {
+        if (dashboardController != null) {
+            dashboardController.navegarA("/es/franciscorodalf/saveinvestor/registrarGasto.fxml");
+        } else {
+            try {
+                FXMLLoader loader = new FXMLLoader(getClass().getResource("/es/franciscorodalf/saveinvestor/registrarGasto.fxml"));
+                Parent root = loader.load();
+
+                // Pasar el usuario al controlador de registro de gasto
+                RegistrarGastoController controller = loader.getController();
+                controller.setUsuario(usuarioActual);
+
+                Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+                stage.setScene(new Scene(root));
+                stage.show();
+            } catch (IOException e) {
+                System.err.println("Error al cargar vista de registro de gasto: " + e.getMessage());
+            }
+        }
+    }
+
+    @FXML
     private void onRegistrarAhorro(ActionEvent event) {
-        try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/es/franciscorodalf/saveinvestor/registrarAhorro.fxml"));
-            Parent root = loader.load();
-            
-            // Pasar el usuario al controlador de registro de ahorro
-            RegistrarAhorroController controller = loader.getController();
-            controller.setUsuario(usuarioActual);
-            
-            Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
-            stage.setScene(new Scene(root));
-            stage.show();
-        } catch (IOException e) {
-            System.err.println("Error al cargar vista de registro de ahorro: " + e.getMessage());
+        if (dashboardController != null) {
+            dashboardController.navegarA("/es/franciscorodalf/saveinvestor/registrarAhorro.fxml");
+        } else {
+            try {
+                FXMLLoader loader = new FXMLLoader(getClass().getResource("/es/franciscorodalf/saveinvestor/registrarAhorro.fxml"));
+                Parent root = loader.load();
+
+                // Pasar el usuario al controlador de registro de ahorro
+                RegistrarAhorroController controller = loader.getController();
+                controller.setUsuario(usuarioActual);
+
+                Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+                stage.setScene(new Scene(root));
+                stage.show();
+            } catch (IOException e) {
+                System.err.println("Error al cargar vista de registro de ahorro: " + e.getMessage());
+            }
         }
     }
 
     @FXML
     private void onCerrarSesion(ActionEvent event) {
-        try {
-            // Simplemente carga la vista de login
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/es/franciscorodalf/saveinvestor/login.fxml"));
-            Parent root = loader.load();
-            Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
-            stage.setScene(new Scene(root));
-            stage.show();
-            
-            // Limpiar la referencia al usuario actual
+        if (dashboardController != null) {
+            dashboardController.cerrarSesion();
             this.usuarioActual = null;
-        } catch (IOException e) {
-            System.err.println("Error al volver a la pantalla de login: " + e.getMessage());
+        } else {
+            try {
+                // Simplemente carga la vista de login
+                FXMLLoader loader = new FXMLLoader(getClass().getResource("/es/franciscorodalf/saveinvestor/login.fxml"));
+                Parent root = loader.load();
+                Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+                stage.setScene(new Scene(root));
+                stage.show();
+
+                // Limpiar la referencia al usuario actual
+                this.usuarioActual = null;
+            } catch (IOException e) {
+                System.err.println("Error al volver a la pantalla de login: " + e.getMessage());
+            }
         }
     }
 
     @FXML
     private void onHistorial(ActionEvent event) {
-        try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/es/franciscorodalf/saveinvestor/historial.fxml"));
-            Parent root = loader.load();
-            
-            // Pasar el usuario al controlador
-            HistorialController controller = loader.getController();
-            controller.setUsuario(usuarioActual);
-            
-            Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
-            stage.setScene(new Scene(root));
-            stage.show();
-        } catch (IOException e) {
-            System.err.println("Error al cargar vista de historial: " + e.getMessage());
+        if (dashboardController != null) {
+            dashboardController.mostrarVistaHistorial();
+        } else {
+            try {
+                FXMLLoader loader = new FXMLLoader(getClass().getResource("/es/franciscorodalf/saveinvestor/historial.fxml"));
+                Parent root = loader.load();
+
+                // Pasar el usuario al controlador
+                HistorialController controller = loader.getController();
+                controller.setUsuario(usuarioActual);
+
+                Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+                stage.setScene(new Scene(root));
+                stage.show();
+            } catch (IOException e) {
+                System.err.println("Error al cargar vista de historial: " + e.getMessage());
+            }
         }
     }
 
+    @Override
     public void setUsuario(Usuario usuario) {
         this.usuarioActual = usuario;
-        
+
         // Actualizar interfaz con los datos del usuario
         if (usuario != null) {
             actualizarInterfaz();
         }
     }
 
+    @Override
+    public void setDashboardController(DashboardController dashboardController) {
+        this.dashboardController = dashboardController;
+    }
+
     private void cambiarEscena(ActionEvent event, String fxmlPath) {
+        if (dashboardController != null) {
+            dashboardController.navegarA(fxmlPath);
+            return;
+        }
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource(fxmlPath));
             Parent root = loader.load();
-            
+
             // Obtener el controlador y pasar el usuario si es necesario
             Object controller = loader.getController();
             

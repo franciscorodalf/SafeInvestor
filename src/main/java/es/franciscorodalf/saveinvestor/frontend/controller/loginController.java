@@ -140,17 +140,19 @@ public class loginController {
     public void cargarPantallaPrincipal(ActionEvent event, Usuario usuario) throws IOException {
         try {
             // Obtener la URL correctamente usando getClass().getResource()
-            java.net.URL url = getClass().getResource("/es/franciscorodalf/saveinvestor/main.fxml");
+            java.net.URL url = getClass().getResource("/es/franciscorodalf/saveinvestor/dashboard.fxml");
             if (url == null) {
-                throw new IOException("No se pudo encontrar el archivo main.fxml");
+                throw new IOException("No se pudo encontrar el archivo dashboard.fxml");
             }
-            
+
             FXMLLoader loader = new FXMLLoader(url);
             Parent root = loader.load();
 
             // Pasar el usuario al controlador principal
-            MainController controller = loader.getController();
-            controller.setUsuario(usuario);
+            Object controller = loader.getController();
+            if (controller instanceof DashboardController) {
+                ((DashboardController) controller).setUsuario(usuario);
+            }
 
             Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
             stage.setScene(new Scene(root));

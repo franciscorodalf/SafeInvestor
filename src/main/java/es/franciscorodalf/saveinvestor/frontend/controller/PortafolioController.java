@@ -25,7 +25,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
-public class PortafolioController {
+public class PortafolioController implements UsuarioAware, DashboardNavigable {
 
     @FXML
     private LineChart<String, Number> lineRendimiento;
@@ -41,6 +41,7 @@ public class PortafolioController {
 
     private Usuario usuarioActual;
     private PortafolioService portafolioService;
+    private DashboardController dashboardController;
 
     @FXML
     private void initialize() {
@@ -49,9 +50,15 @@ public class PortafolioController {
         pieDistribucion.setAnimated(false);
     }
 
+    @Override
     public void setUsuario(Usuario usuario) {
         this.usuarioActual = usuario;
         cargarDatosPortafolio();
+    }
+
+    @Override
+    public void setDashboardController(DashboardController dashboardController) {
+        this.dashboardController = dashboardController;
     }
 
     private void cargarDatosPortafolio() {
@@ -139,10 +146,22 @@ public class PortafolioController {
 
     @FXML
     private void onVolver(ActionEvent event) {
-        cambiarEscena(event, "/es/franciscorodalf/saveinvestor/main.fxml");
+        if (dashboardController != null) {
+            dashboardController.mostrarVistaResumen();
+        } else {
+            cambiarEscena(event, "/es/franciscorodalf/saveinvestor/main.fxml");
+        }
     }
 
     private void cambiarEscena(ActionEvent event, String fxml) {
+        if (dashboardController != null) {
+            if ("/es/franciscorodalf/saveinvestor/main.fxml".equals(fxml)) {
+                dashboardController.mostrarVistaResumen();
+            } else {
+                dashboardController.navegarA(fxml);
+            }
+            return;
+        }
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource(fxml));
             Parent root = loader.load();
