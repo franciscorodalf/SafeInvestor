@@ -35,7 +35,7 @@ import java.sql.SQLException;
 /**
  * Controlador de la vista de Estadísticas.
  */
-public class EstadisticasController {
+public class EstadisticasController implements UsuarioAware, DashboardNavigable {
 
     @FXML
     private Button btnPrevMonth;
@@ -71,6 +71,7 @@ public class EstadisticasController {
     private Usuario usuarioActual;
     private EstadisticaDAO estadisticaDAO;
     private TareaDAO tareaDAO;
+    private DashboardController dashboardController;
 
     /**
      * Inicializa el controlador
@@ -117,12 +118,18 @@ public class EstadisticasController {
      * Establece el usuario actual
      * @param usuario El usuario actual de la aplicación
      */
+    @Override
     public void setUsuario(Usuario usuario) {
         this.usuarioActual = usuario;
         if (usuario != null) {
             // Cargar datos del usuario
             cargarEstadisticas();
         }
+    }
+
+    @Override
+    public void setDashboardController(DashboardController dashboardController) {
+        this.dashboardController = dashboardController;
     }
 
     /**
@@ -320,7 +327,11 @@ public class EstadisticasController {
      */
     @FXML
     public void onVolver(ActionEvent event) {
-        cambiarEscena(event, "/es/franciscorodalf/saveinvestor/main.fxml");
+        if (dashboardController != null) {
+            dashboardController.mostrarVistaResumen();
+        } else {
+            cambiarEscena(event, "/es/franciscorodalf/saveinvestor/main.fxml");
+        }
     }
     
     /**
@@ -329,16 +340,24 @@ public class EstadisticasController {
      * @param fxml La ruta al archivo FXML
      */
     private void cambiarEscena(ActionEvent event, String fxml) {
+        if (dashboardController != null) {
+            if ("/es/franciscorodalf/saveinvestor/main.fxml".equals(fxml)) {
+                dashboardController.mostrarVistaResumen();
+            } else {
+                dashboardController.navegarA(fxml);
+            }
+            return;
+        }
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource(fxml));
             Parent root = loader.load();
-            
+
             // Si vamos a la pantalla principal, pasar el usuario
             if (fxml.contains("main.fxml") && usuarioActual != null) {
                 MainController controller = loader.getController();
                 controller.setUsuario(usuarioActual);
             }
-            
+
             Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
             stage.setScene(new Scene(root));
             stage.show();

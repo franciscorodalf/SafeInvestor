@@ -31,7 +31,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Optional;
 
-public class HistorialController {
+public class HistorialController implements UsuarioAware, DashboardNavigable {
 
     @FXML
     private TableView<Movimiento> tablaHistorial;
@@ -47,6 +47,7 @@ public class HistorialController {
     private Label lblError;
 
     private Usuario usuarioActual;
+    private DashboardController dashboardController;
     private TareaDAO tareaDAO;
 
     @FXML
@@ -102,9 +103,15 @@ public class HistorialController {
     /**
      * Asigna el usuario actual y carga sus movimientos
      */
+    @Override
     public void setUsuario(Usuario usuario) {
         this.usuarioActual = usuario;
         cargarMovimientos();
+    }
+
+    @Override
+    public void setDashboardController(DashboardController dashboardController) {
+        this.dashboardController = dashboardController;
     }
 
     /**
@@ -142,6 +149,10 @@ public class HistorialController {
 
     @FXML
     private void onVolver(ActionEvent event) {
+        if (dashboardController != null) {
+            dashboardController.mostrarVistaResumen();
+            return;
+        }
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/es/franciscorodalf/saveinvestor/main.fxml"));
             Parent root = loader.load();

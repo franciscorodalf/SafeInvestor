@@ -27,7 +27,7 @@ import javafx.scene.control.TextField;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
-public class RegistrarAhorroController {
+public class RegistrarAhorroController implements UsuarioAware, DashboardNavigable {
 
     @FXML
     private TextField txtCantidad;
@@ -55,6 +55,7 @@ public class RegistrarAhorroController {
     private EstadisticaDAO estadisticaDAO;
     private ObjetivoDAO objetivoDAO;
     private boolean tieneObjetivos = false;
+    private DashboardController dashboardController;
 
     @FXML
     public void initialize() {
@@ -323,16 +324,20 @@ public class RegistrarAhorroController {
     }
     
     private void volverAMain(ActionEvent event) {
+        if (dashboardController != null) {
+            dashboardController.mostrarVistaResumen();
+            return;
+        }
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/es/franciscorodalf/saveinvestor/main.fxml"));
             Parent root = loader.load();
-            
+
             // Pasar el usuario al controlador principal
             if (usuarioActual != null) {
                 MainController mainController = loader.getController();
                 mainController.setUsuario(usuarioActual);
             }
-            
+
             Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
             stage.setScene(new Scene(root));
             stage.show();
@@ -342,11 +347,17 @@ public class RegistrarAhorroController {
         }
     }
     
+    @Override
     public void setUsuario(Usuario usuario) {
         this.usuarioActual = usuario;
-        
+
         // Cargar objetivos disponibles
         cargarObjetivos();
+    }
+
+    @Override
+    public void setDashboardController(DashboardController dashboardController) {
+        this.dashboardController = dashboardController;
     }
     
     /**

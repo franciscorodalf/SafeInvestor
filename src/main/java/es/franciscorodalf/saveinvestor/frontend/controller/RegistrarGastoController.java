@@ -20,7 +20,7 @@ import javafx.scene.control.TextField;
 import javafx.scene.control.Label;
 import javafx.stage.Stage;
 
-public class RegistrarGastoController {
+public class RegistrarGastoController implements UsuarioAware, DashboardNavigable {
 
     @FXML
     private TextField txtCantidad;
@@ -34,6 +34,7 @@ public class RegistrarGastoController {
     private Usuario usuarioActual;
     private TareaDAO tareaDAO;
     private EstadisticaDAO estadisticaDAO;
+    private DashboardController dashboardController;
 
     @FXML
     private void initialize() {
@@ -44,8 +45,14 @@ public class RegistrarGastoController {
         }
     }
 
+    @Override
     public void setUsuario(Usuario usuario) {
         this.usuarioActual = usuario;
+    }
+
+    @Override
+    public void setDashboardController(DashboardController dashboardController) {
+        this.dashboardController = dashboardController;
     }
 
     @FXML
@@ -125,14 +132,18 @@ public class RegistrarGastoController {
     }
 
     private void volverAMain(ActionEvent event) {
+        if (dashboardController != null) {
+            dashboardController.mostrarVistaResumen();
+            return;
+        }
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/es/franciscorodalf/saveinvestor/main.fxml"));
             Parent root = loader.load();
-            
+
             // Pasar el usuario al controlador principal
             MainController controller = loader.getController();
             controller.setUsuario(usuarioActual);
-            
+
             Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
             stage.setScene(new Scene(root));
             stage.show();
