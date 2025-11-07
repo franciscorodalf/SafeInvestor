@@ -29,6 +29,33 @@ CREATE TABLE IF NOT EXISTS estadistica (
     FOREIGN KEY (usuario_id) REFERENCES usuario(id) ON DELETE CASCADE
 );
 
+-- Tabla de cuentas de inversión (ahorro, fondos y criptomonedas)
+CREATE TABLE IF NOT EXISTS cuenta_inversion (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    usuario_id INTEGER NOT NULL,
+    nombre TEXT NOT NULL,
+    tipo_activo TEXT NOT NULL CHECK (tipo_activo IN ('AHORRO', 'FONDO', 'CRYPTO')),
+    moneda TEXT NOT NULL DEFAULT 'EUR',
+    valor_inicial REAL NOT NULL DEFAULT 0,
+    valor_actual REAL NOT NULL DEFAULT 0,
+    fecha_creacion TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    descripcion TEXT,
+    FOREIGN KEY (usuario_id) REFERENCES usuario(id) ON DELETE CASCADE
+);
+
+-- Tabla de movimientos y valoraciones históricas de las cuentas de inversión
+CREATE TABLE IF NOT EXISTS movimiento_inversion (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    cuenta_id INTEGER NOT NULL,
+    fecha TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    aporte REAL DEFAULT 0,
+    retiro REAL DEFAULT 0,
+    valor_total REAL NOT NULL,
+    rentabilidad REAL DEFAULT 0,
+    notas TEXT,
+    FOREIGN KEY (cuenta_id) REFERENCES cuenta_inversion(id) ON DELETE CASCADE
+);
+
 -- Tabla de objetivos financieros
 CREATE TABLE IF NOT EXISTS objetivo (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -48,6 +75,10 @@ CREATE INDEX IF NOT EXISTS idx_tarea_fecha ON tarea(fecha);
 CREATE INDEX IF NOT EXISTS idx_tarea_estado ON tarea(estado);
 CREATE INDEX IF NOT EXISTS idx_objetivo_usuario ON objetivo(usuario_id);
 CREATE INDEX IF NOT EXISTS idx_objetivo_completado ON objetivo(completado);
+CREATE INDEX IF NOT EXISTS idx_cuenta_inversion_usuario ON cuenta_inversion(usuario_id);
+CREATE INDEX IF NOT EXISTS idx_cuenta_inversion_tipo ON cuenta_inversion(tipo_activo);
+CREATE INDEX IF NOT EXISTS idx_movimiento_inversion_cuenta ON movimiento_inversion(cuenta_id);
+CREATE INDEX IF NOT EXISTS idx_movimiento_inversion_fecha ON movimiento_inversion(fecha);
 
 -- Los triggers están comentados para evitar la doble actualización
 /*
@@ -129,10 +160,28 @@ INSERT OR IGNORE INTO estadistica (usuario_id, total_ingreso, total_gasto)
 VALUES (1, 0, 0);
 
 -- Insertar algunas tareas de ejemplo
-INSERT OR IGNORE INTO tarea (id, concepto, cantidad, fecha, estado, usuario_id) VALUES 
+INSERT OR IGNORE INTO tarea (id, concepto, cantidad, fecha, estado, usuario_id) VALUES
 (1, 'Salario', 1500.0, CURRENT_TIMESTAMP, 'INGRESO', 1),
 (2, 'Alquiler', 700.0, CURRENT_TIMESTAMP, 'GASTO', 1),
 (3, 'Compra supermercado', 150.0, CURRENT_TIMESTAMP, 'GASTO', 1);
+
+-- Insertar cuentas de inversión de ejemplo
+INSERT OR IGNORE INTO cuenta_inversion (id, usuario_id, nombre, tipo_activo, moneda, valor_inicial, valor_actual, descripcion) VALUES
+(1, 1, 'Cuenta de Ahorro Principal', 'AHORRO', 'EUR', 500.0, 1250.0, 'Cuenta de ahorro para emergencias'),
+(2, 1, 'Fondo Indexado Global', 'FONDO', 'EUR', 1000.0, 1850.0, 'Inversión en ETF global'),
+(3, 1, 'Wallet Cripto', 'CRYPTO', 'USD', 300.0, 720.0, 'Portafolio diversificado de criptomonedas');
+
+-- Insertar movimientos históricos de ejemplo para las cuentas
+INSERT OR IGNORE INTO movimiento_inversion (id, cuenta_id, fecha, aporte, retiro, valor_total, rentabilidad, notas) VALUES
+(1, 1, datetime('now', '-90 day'), 200.0, 0.0, 650.0, 0.012, 'Depósito inicial y primer rendimiento'),
+(2, 1, datetime('now', '-30 day'), 100.0, 0.0, 900.0, 0.008, 'Incremento de saldo'),
+(3, 1, datetime('now'), 0.0, 0.0, 1250.0, 0.006, 'Interés mensual acumulado'),
+(4, 2, datetime('now', '-120 day'), 1000.0, 0.0, 1050.0, 0.020, 'Compra inicial del fondo'),
+(5, 2, datetime('now', '-60 day'), 0.0, 0.0, 1500.0, 0.035, 'Revalorización del mercado'),
+(6, 2, datetime('now'), 0.0, 0.0, 1850.0, 0.012, 'Último valor liquidativo'),
+(7, 3, datetime('now', '-45 day'), 300.0, 0.0, 480.0, 0.080, 'Compra inicial de criptomonedas'),
+(8, 3, datetime('now', '-15 day'), 0.0, 50.0, 620.0, -0.025, 'Venta parcial para asegurar ganancias'),
+(9, 3, datetime('now'), 0.0, 0.0, 720.0, 0.045, 'Apreciación reciente del mercado');
 
 -- Insertar objetivo de ejemplo
 INSERT OR IGNORE INTO objetivo (id, descripcion, cantidad_objetivo, cantidad_actual, usuario_id) VALUES

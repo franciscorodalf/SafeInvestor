@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.chart.CategoryAxis?>
+<?import javafx.scene.chart.LineChart?>
+<?import javafx.scene.chart.NumberAxis?>
+<?import javafx.scene.chart.PieChart?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+
+<BorderPane prefHeight="720.0" prefWidth="1024.0" style="-fx-background-color: #f5f5f5;" stylesheets="@../../../styles/style.css" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="es.franciscorodalf.saveinvestor.frontend.controller.PortafolioController">
+    <top>
+        <HBox alignment="CENTER_LEFT" spacing="10">
+            <padding>
+                <Insets bottom="15" left="15" right="15" top="15" />
+            </padding>
+            <Button fx:id="btnVolver" mnemonicParsing="false" onAction="#onVolver" text="Regresar" />
+            <Label fx:id="lblTitulo" style="-fx-font-size: 20px; -fx-font-weight: bold;" text="Resumen del portafolio" />
+        </HBox>
+    </top>
+    <center>
+        <VBox alignment="TOP_CENTER" spacing="20">
+            <padding>
+                <Insets bottom="20" left="20" right="20" top="20" />
+            </padding>
+            <Label fx:id="lblValorTotal" style="-fx-font-size: 18px; -fx-font-weight: bold;" text="Valor total actual: --" />
+            <LineChart fx:id="lineRendimiento" prefHeight="320.0" prefWidth="880.0" title="Evolución histórica" >
+                <xAxis>
+                    <CategoryAxis label="Fecha" />
+                </xAxis>
+                <yAxis>
+                    <NumberAxis label="Valor total" />
+                </yAxis>
+            </LineChart>
+            <PieChart fx:id="pieDistribucion" labelsVisible="true" prefHeight="260.0" prefWidth="420.0" title="Distribución por tipo de activo" />
+            <Label fx:id="lblMensaje" style="-fx-text-fill: #7f8c8d;" text="" wrapText="true" />
+        </VBox>
+    </center>
+</BorderPane>
