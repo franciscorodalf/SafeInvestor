@@ -37,7 +37,10 @@ public class MainController {
     
     @FXML
     private Button btnObjetivos;
-    
+
+    @FXML
+    private Button btnPortafolio;
+
     @FXML
     private Button btnGasto;
     
@@ -281,6 +284,11 @@ public class MainController {
     private void onObjetivos(ActionEvent event) {
         cambiarEscena(event, "/es/franciscorodalf/saveinvestor/objetivos.fxml");
     }
+
+    @FXML
+    private void onPortafolio(ActionEvent event) {
+        cambiarEscena(event, "/es/franciscorodalf/saveinvestor/portafolio.fxml");
+    }
     
     @FXML
     private void onRegistrarGasto(ActionEvent event) {
@@ -380,6 +388,8 @@ public class MainController {
                     ((ObjetivosController) controller).setUsuario(usuarioActual);
                 } else if (controller instanceof EstadisticasController) {
                     ((EstadisticasController) controller).setUsuario(usuarioActual);
+                } else if (controller instanceof PortafolioController) {
+                    ((PortafolioController) controller).setUsuario(usuarioActual);
                 }
             }
             

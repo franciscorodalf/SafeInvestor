@@ -68,6 +68,7 @@
             <Button fx:id="btnCerrarSesion" onAction="#onCerrarSesion" style="-fx-text-fill: #E74C3C;" text="Cerrar Sesión" />
             <Button fx:id="btnEstadisticas" onAction="#onEstadisticas" text="Estadísticas" />
             <Button fx:id="btnObjetivos" onAction="#onObjetivos" text="Objetivos" />
+            <Button fx:id="btnPortafolio" onAction="#onPortafolio" text="Portafolio" />
         </HBox>
     </bottom>
 
