@@ -13,7 +13,7 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
-import javafx.scene.shape.Rectangle;
+
 import javafx.stage.Stage;
 
 import java.io.IOException;
@@ -39,28 +39,31 @@ public class EstadisticasController implements UsuarioAware, DashboardNavigable 
 
     @FXML
     private Button btnPrevMonth;
-    
+
     @FXML
     private Button btnNextMonth;
-    
+
     @FXML
     private Label lblMonthYear;
-    
+
     @FXML
     private GridPane headerGrid;
-    
+
     @FXML
     private GridPane calendarGrid;
 
     @FXML
-    private Rectangle barAhorro;
-    
+    private javafx.scene.chart.BarChart<String, Number> barChart;
+
     @FXML
-    private Rectangle barGasto;
-    
+    private javafx.scene.chart.CategoryAxis xAxis;
+
+    @FXML
+    private javafx.scene.chart.NumberAxis yAxis;
+
     @FXML
     private Label lblTotalGastos;
-    
+
     @FXML
     private Label lblTotalAhorros;
 
@@ -81,29 +84,36 @@ public class EstadisticasController implements UsuarioAware, DashboardNavigable 
         // Inicializar DAOs
         estadisticaDAO = new EstadisticaDAO();
         tareaDAO = new TareaDAO();
-        
+
         // Inicializar el mes actual
         currentYearMonth = YearMonth.now();
-        
+
         // Inicializar cabeceras de días
         inicializarDiasSemana();
-        
+
         // Actualizar calendario
         actualizarCalendario();
-        
+
         // Configurar listeners de botones
         configurarBotones();
+
+        // Configurar gráfico
+        if (barChart != null) {
+            barChart.setAnimated(true);
+            xAxis.setLabel("Tipo de Movimiento");
+            yAxis.setLabel("Monto ($)");
+        }
     }
-    
+
     /**
      * Inicializa los nombres de los días de la semana
      */
     private void inicializarDiasSemana() {
-        String[] diasSemana = {"Lu", "Ma", "Mi", "Ju", "Vi", "Sa", "Do"};
-        
+        String[] diasSemana = { "Lu", "Ma", "Mi", "Ju", "Vi", "Sa", "Do" };
+
         // Limpiar el grid de cabecera
         headerGrid.getChildren().clear();
-        
+
         // Añadir los nombres de los días
         for (int i = 0; i < diasSemana.length; i++) {
             Label lblDia = new Label(diasSemana[i]);
@@ -113,9 +123,10 @@ public class EstadisticasController implements UsuarioAware, DashboardNavigable 
             headerGrid.add(lblDia, i, 0);
         }
     }
-    
+
     /**
      * Establece el usuario actual
+     * 
      * @param usuario El usuario actual de la aplicación
      */
     @Override
@@ -140,9 +151,9 @@ public class EstadisticasController implements UsuarioAware, DashboardNavigable 
             if (usuarioActual != null && usuarioActual.getId() != null) {
                 // Obtener estadísticas del usuario
                 estadistica stats = estadisticaDAO.obtenerPorUsuario(usuarioActual.getId());
-                
+
                 if (stats != null) {
-                    // Mostrar estadísticas 
+                    // Mostrar estadísticas
                     mostrarEstadisticas(stats);
                 } else {
                     // Si no existe, crear una nueva estadística
@@ -159,7 +170,8 @@ public class EstadisticasController implements UsuarioAware, DashboardNavigable 
      * Configura los botones y sus acciones
      */
     private void configurarBotones() {
-        // Ya configurados por FXML con onAction, pero podríamos añadir más funcionalidad
+        // Ya configurados por FXML con onAction, pero podríamos añadir más
+        // funcionalidad
         btnVolver.setOnAction(this::onVolver);
         btnPrevMonth.setOnAction(this::onPrevMonth);
         btnNextMonth.setOnAction(this::onNextMonth);
@@ -167,6 +179,7 @@ public class EstadisticasController implements UsuarioAware, DashboardNavigable 
 
     /**
      * Maneja el evento del botón mes anterior
+     * 
      * @param event El evento de acción
      */
     @FXML
@@ -178,6 +191,7 @@ public class EstadisticasController implements UsuarioAware, DashboardNavigable 
 
     /**
      * Maneja el evento del botón mes siguiente
+     * 
      * @param event El evento de acción
      */
     @FXML
@@ -196,19 +210,19 @@ public class EstadisticasController implements UsuarioAware, DashboardNavigable 
         String mes = currentYearMonth.getMonth().getDisplayName(TextStyle.FULL, locale);
         mes = mes.substring(0, 1).toUpperCase() + mes.substring(1);
         lblMonthYear.setText(mes + " " + currentYearMonth.getYear());
-        
+
         // Limpiar el grid
         calendarGrid.getChildren().clear();
-        
+
         // Obtener fecha del primer día del mes
         LocalDate firstOfMonth = currentYearMonth.atDay(1);
-        
+
         // Obtener día de la semana (0 = Lunes, 6 = Domingo en LocalDate)
         int dayOfWeek = firstOfMonth.getDayOfWeek().getValue() - 1;
-        
+
         // Número de días en el mes
         int daysInMonth = currentYearMonth.lengthOfMonth();
-        
+
         // Llenar el calendario con celdas más grandes
         int day = 1;
         for (int i = 0; i < 6; i++) { // 6 filas máx
@@ -217,82 +231,86 @@ public class EstadisticasController implements UsuarioAware, DashboardNavigable 
                     // Celda vacía
                     continue;
                 }
-                
+
                 // Crear celda con el día
                 StackPane cell = new StackPane();
                 cell.setPrefSize(50, 40); // Hacer celdas más grandes
                 cell.setStyle("-fx-border-color: #e0e0e0; -fx-border-radius: 5; -fx-background-radius: 5;");
-                
+
                 Label lblDay = new Label(String.valueOf(day));
                 lblDay.setStyle("-fx-font-size: 14px;");
                 cell.getChildren().add(lblDay);
-                
+
                 // Si es día actual, marcarlo
                 LocalDate currentDate = LocalDate.now();
-                if (day == currentDate.getDayOfMonth() && 
-                    currentYearMonth.getMonth() == currentDate.getMonth() && 
-                    currentYearMonth.getYear() == currentDate.getYear()) {
+                if (day == currentDate.getDayOfMonth() &&
+                        currentYearMonth.getMonth() == currentDate.getMonth() &&
+                        currentYearMonth.getYear() == currentDate.getYear()) {
                     Circle circle = new Circle(15); // Círculo más grande
                     circle.setFill(Color.LIGHTBLUE);
                     circle.setOpacity(0.7);
                     cell.getChildren().add(0, circle); // Añadir círculo detrás del texto
                 }
-                
+
                 // Agregar la celda al grid
                 calendarGrid.add(cell, j, i);
                 StackPane.setAlignment(lblDay, Pos.CENTER);
-                
+
                 // Configurar evento para la celda
                 final int selectedDay = day;
                 cell.setOnMouseClicked(e -> mostrarDatosDia(selectedDay));
-                
+
                 // Incrementar día
                 day++;
             }
         }
     }
-    
+
     /**
      * Muestra los datos de un día específico
+     * 
      * @param day El día seleccionado
      */
     private void mostrarDatosDia(int day) {
-        System.out.println("Día seleccionado: " + day + " de " + 
-                     currentYearMonth.getMonth().getDisplayName(TextStyle.FULL, new Locale("es")) + 
-                     " de " + currentYearMonth.getYear());
+        System.out.println("Día seleccionado: " + day + " de " +
+                currentYearMonth.getMonth().getDisplayName(TextStyle.FULL, new Locale("es")) +
+                " de " + currentYearMonth.getYear());
         // Aquí se podría mostrar una ventana emergente o actualizar información
     }
-    
+
     /**
      * Actualiza las estadísticas mostradas
      */
     private void actualizarEstadisticas() {
-        if (usuarioActual == null || usuarioActual.getId() == null) return;
-        
+        if (usuarioActual == null || usuarioActual.getId() == null)
+            return;
+
         try {
             // Obtener estadísticas del mes actual
             LocalDate inicio = currentYearMonth.atDay(1);
             LocalDate fin = currentYearMonth.atEndOfMonth();
-            
+
             // Convertir a Date para la base de datos
             Date fechaInicio = java.util.Date.from(inicio.atStartOfDay(ZoneId.systemDefault()).toInstant());
             Date fechaFin = java.util.Date.from(fin.atTime(23, 59, 59).atZone(ZoneId.systemDefault()).toInstant());
-            
+
             // Calcular ingresos y gastos del mes
-            double ingresos = tareaDAO.calcularTotalPorTipoYPeriodo(usuarioActual.getId(), tarea.ESTADO_INGRESO, fechaInicio, fechaFin);
-            double gastos = tareaDAO.calcularTotalPorTipoYPeriodo(usuarioActual.getId(), tarea.ESTADO_GASTO, fechaInicio, fechaFin);
-            
+            double ingresos = tareaDAO.calcularTotalPorTipoYPeriodo(usuarioActual.getId(), tarea.ESTADO_INGRESO,
+                    fechaInicio, fechaFin);
+            double gastos = tareaDAO.calcularTotalPorTipoYPeriodo(usuarioActual.getId(), tarea.ESTADO_GASTO,
+                    fechaInicio, fechaFin);
+
             // Crear estadística temporal para mostrar
             estadistica statsMes = new estadistica(ingresos, gastos, usuarioActual.getId());
-            
+
             // Mostrar estadísticas mensuales
             mostrarEstadisticas(statsMes);
-            
+
         } catch (SQLException e) {
             System.err.println("Error al actualizar estadísticas: " + e.getMessage());
         }
     }
-    
+
     /**
      * Muestra las estadísticas en la interfaz
      */
@@ -300,29 +318,26 @@ public class EstadisticasController implements UsuarioAware, DashboardNavigable 
         // Actualizar etiquetas
         lblTotalAhorros.setText(String.format("%.2f$", stats.getTotalIngreso()));
         lblTotalGastos.setText(String.format("%.2f$", stats.getTotalGasto()));
-        
-        // Actualizar barras
-        double maxValue = Math.max(stats.getTotalIngreso(), stats.getTotalGasto());
-        double maxHeight = 100.0; // Altura máxima en píxeles
-        
-        // Si no hay datos, mostrar un valor mínimo
-        if (maxValue == 0) {
-            barAhorro.setHeight(1);
-            barGasto.setHeight(1);
-            return;
+
+        // Actualizar gráfico
+        if (barChart != null) {
+            barChart.getData().clear();
+
+            javafx.scene.chart.XYChart.Series<String, Number> seriesIngresos = new javafx.scene.chart.XYChart.Series<>();
+            seriesIngresos.setName("Ingresos");
+            seriesIngresos.getData().add(new javafx.scene.chart.XYChart.Data<>("Ingresos", stats.getTotalIngreso()));
+
+            javafx.scene.chart.XYChart.Series<String, Number> seriesGastos = new javafx.scene.chart.XYChart.Series<>();
+            seriesGastos.setName("Gastos");
+            seriesGastos.getData().add(new javafx.scene.chart.XYChart.Data<>("Gastos", stats.getTotalGasto()));
+
+            barChart.getData().addAll(java.util.Arrays.asList(seriesIngresos, seriesGastos));
         }
-        
-        // Calcular alturas proporcionales
-        double ingresoHeight = Math.max(1, (stats.getTotalIngreso() / maxValue) * maxHeight);
-        double gastoHeight = Math.max(1, (stats.getTotalGasto() / maxValue) * maxHeight);
-        
-        // Aplicar alturas a las barras
-        barAhorro.setHeight(ingresoHeight);
-        barGasto.setHeight(gastoHeight);
     }
 
     /**
      * Maneja el evento del botón volver
+     * 
      * @param event El evento de acción
      */
     @FXML
@@ -333,11 +348,12 @@ public class EstadisticasController implements UsuarioAware, DashboardNavigable 
             cambiarEscena(event, "/es/franciscorodalf/saveinvestor/main.fxml");
         }
     }
-    
+
     /**
      * Cambia a la escena especificada
+     * 
      * @param event El evento de acción
-     * @param fxml La ruta al archivo FXML
+     * @param fxml  La ruta al archivo FXML
      */
     private void cambiarEscena(ActionEvent event, String fxml) {
         if (dashboardController != null) {

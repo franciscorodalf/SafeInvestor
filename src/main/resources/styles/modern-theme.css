@@ -173,3 +173,44 @@
     -fx-background-color: transparent;
     -fx-effect: null;
 }
+
+/* Charts */
+.chart {
+    -fx-padding: 10;
+}
+
+.chart-plot-background {
+    -fx-background-color: transparent;
+}
+
+.chart-vertical-grid-lines,
+.chart-horizontal-grid-lines {
+    -fx-stroke: #ecf0f1;
+}
+
+.chart-legend {
+    -fx-background-color: transparent;
+}
+
+/* Series Colors */
+.default-color0.chart-bar {
+    -fx-bar-fill: -fx-secondary-color;
+}
+
+/* Ingresos - Green */
+.default-color1.chart-bar {
+    -fx-bar-fill: -fx-error-color;
+}
+
+/* Gastos - Red */
+.default-color0.chart-pie {
+    -fx-pie-color: -fx-secondary-color;
+}
+
+.default-color1.chart-pie {
+    -fx-pie-color: -fx-error-color;
+}
+
+.default-color2.chart-pie {
+    -fx-pie-color: -fx-accent-color;
+}

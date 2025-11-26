@@ -5,11 +5,14 @@ es/franciscorodalf/saveinvestor/backend/model/ValorHistoricoInversion.class
 es/franciscorodalf/saveinvestor/frontend/controller/AsignarAObjetivoController.class
 es/franciscorodalf/saveinvestor/frontend/controller/DashboardNavigable.class
 es/franciscorodalf/saveinvestor/frontend/controller/PerfilController.class
+es/franciscorodalf/saveinvestor/backend/dao/DAO.class
 es/franciscorodalf/saveinvestor/frontend/controller/RegistrarAhorroController.class
+es/franciscorodalf/saveinvestor/frontend/controller/LoginController.class
 es/franciscorodalf/saveinvestor/frontend/util/ValidationUtils.class
 es/franciscorodalf/saveinvestor/frontend/controller/EditarPerfilController.class
 es/franciscorodalf/saveinvestor/backend/model/CuentaInversion.class
 es/franciscorodalf/saveinvestor/frontend/controller/DashboardController.class
+es/franciscorodalf/saveinvestor/backend/dao/CuentaInversionDAO.class
 es/franciscorodalf/saveinvestor/frontend/controller/RegistrarAhorroController$3.class
 es/franciscorodalf/saveinvestor/frontend/controller/RegistrarGastoController.class
 es/franciscorodalf/saveinvestor/frontend/controller/cambiarContraseniaController.class
@@ -17,7 +20,9 @@ es/franciscorodalf/saveinvestor/frontend/controller/EstadisticasController.class
 es/franciscorodalf/saveinvestor/backend/service/PortafolioService.class
 es/franciscorodalf/saveinvestor/frontend/controller/RegistrarAhorroController$1.class
 es/franciscorodalf/saveinvestor/backend/model/abstractas/Conexion.class
+es/franciscorodalf/saveinvestor/backend/dao/EstadisticaDAO.class
 es/franciscorodalf/saveinvestor/frontend/controller/ObjetivosController.class
+es/franciscorodalf/saveinvestor/backend/service/ServiceFactory.class
 es/franciscorodalf/saveinvestor/backend/model/Movimiento$TipoMovimiento.class
 es/franciscorodalf/saveinvestor/backend/model/Usuario.class
 es/franciscorodalf/saveinvestor/frontend/controller/MainController.class
@@ -30,6 +35,7 @@ es/franciscorodalf/saveinvestor/backend/model/tarea.class
 es/franciscorodalf/saveinvestor/frontend/controller/PortafolioController$1.class
 es/franciscorodalf/saveinvestor/backend/model/MovimientoInversion.class
 es/franciscorodalf/saveinvestor/frontend/controller/AsignarAObjetivoController$2.class
+es/franciscorodalf/saveinvestor/Main.class
 es/franciscorodalf/saveinvestor/frontend/controller/HistorialController.class
 es/franciscorodalf/saveinvestor/frontend/controller/EditarMovimientoController$1.class
 es/franciscorodalf/saveinvestor/frontend/controller/HistorialController$1.class

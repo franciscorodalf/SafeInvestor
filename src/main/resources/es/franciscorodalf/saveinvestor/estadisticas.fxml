@@ -1,13 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import javafx.geometry.Insets?>
+<?import javafx.scene.chart.BarChart?>
+<?import javafx.scene.chart.CategoryAxis?>
+<?import javafx.scene.chart.NumberAxis?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.GridPane?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
-<?import javafx.scene.shape.Rectangle?>
 
 <BorderPane prefHeight="650" prefWidth="550" style="-fx-background-color: #f5f5f5;" stylesheets="@../../../styles/style.css" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="es.franciscorodalf.saveinvestor.frontend.controller.EstadisticasController">
 
@@ -50,22 +52,22 @@
                 <!-- Las celdas se generan dinámicamente en el controlador -->
             </GridPane>
 
-            <!-- Totales con barras -->
-            <VBox spacing="15">
+            <!-- Gráfico de Barras -->
+            <VBox spacing="10" VBox.vgrow="ALWAYS">
                 <padding>
                     <Insets bottom="10" top="10" />
                 </padding>
-                <Label style="-fx-font-size: 16px; -fx-font-weight: bold;" text="Total de este mes:" />
-                <HBox alignment="CENTER" minHeight="120" spacing="50">
-                    <VBox alignment="BOTTOM_CENTER" spacing="5">
-                        <Rectangle fx:id="barAhorro" arcHeight="5" arcWidth="5" fill="green" height="1" width="40" />
-                        <Label style="-fx-font-size: 14px;" text="Ahorro" />
-                    </VBox>
-                    <VBox alignment="BOTTOM_CENTER" spacing="5">
-                        <Rectangle fx:id="barGasto" arcHeight="5" arcWidth="5" fill="red" height="1" width="40" />
-                        <Label style="-fx-font-size: 14px;" text="Gasto" />
-                    </VBox>
-                </HBox>
+                <Label style="-fx-font-size: 16px; -fx-font-weight: bold;" text="Resumen del mes:" />
+                
+                <BarChart fx:id="barChart" animated="true" legendVisible="true" title="Ingresos vs Gastos">
+                    <xAxis>
+                        <CategoryAxis label="Tipo" fx:id="xAxis" />
+                    </xAxis>
+                    <yAxis>
+                        <NumberAxis label="Cantidad ($)" fx:id="yAxis" />
+                    </yAxis>
+                </BarChart>
+
                 <HBox alignment="CENTER" spacing="20">
                     <Label style="-fx-font-weight: bold; -fx-font-size: 14px;" text="Ahorros:">
                         <HBox.margin>

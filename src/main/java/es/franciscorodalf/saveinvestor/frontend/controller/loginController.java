@@ -151,15 +151,6 @@ public class LoginController {
         }
     }
 
-    /**
-     * Oculta el mensaje de error
-     */
-    private void ocultarMensajeError() {
-        if (textFieldMensaje != null) {
-            textFieldMensaje.setVisible(false);
-        }
-    }
-
     public void cargarPantallaPrincipal(ActionEvent event, Usuario usuario) throws IOException {
         try {
             java.net.URL url = getClass().getResource(AppConstants.FXML_DASHBOARD);
