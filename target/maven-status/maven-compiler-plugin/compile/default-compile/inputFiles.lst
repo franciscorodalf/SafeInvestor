@@ -1,12 +1,12 @@
 /Users/fran/Documents/GitHub/SafeInvestor/src/main/java/es/franciscorodalf/saveinvestor/frontend/util/ValidationUtils.java
 /Users/fran/Documents/GitHub/SafeInvestor/src/main/java/es/franciscorodalf/saveinvestor/frontend/controller/MainController.java
 /Users/fran/Documents/GitHub/SafeInvestor/src/main/java/es/franciscorodalf/saveinvestor/backend/model/abstractas/Conexion.java
-/Users/fran/Documents/GitHub/SafeInvestor/src/main/java/es/franciscorodalf/saveinvestor/frontend/controller/loginController.java
 /Users/fran/Documents/GitHub/SafeInvestor/src/main/java/es/franciscorodalf/saveinvestor/frontend/controller/EditarPerfilController.java
 /Users/fran/Documents/GitHub/SafeInvestor/src/main/java/es/franciscorodalf/saveinvestor/backend/dao/UsuarioDAO.java
 /Users/fran/Documents/GitHub/SafeInvestor/src/main/java/es/franciscorodalf/saveinvestor/frontend/controller/PerfilController.java
 /Users/fran/Documents/GitHub/SafeInvestor/src/main/java/es/franciscorodalf/saveinvestor/frontend/controller/PortafolioController.java
 /Users/fran/Documents/GitHub/SafeInvestor/src/main/java/es/franciscorodalf/saveinvestor/backend/service/PortafolioService.java
+/Users/fran/Documents/GitHub/SafeInvestor/src/main/java/es/franciscorodalf/saveinvestor/util/AppConstants.java
 /Users/fran/Documents/GitHub/SafeInvestor/src/main/java/es/franciscorodalf/saveinvestor/backend/model/Objetivo.java
 /Users/fran/Documents/GitHub/SafeInvestor/src/main/java/es/franciscorodalf/saveinvestor/frontend/controller/UsuarioAware.java
 /Users/fran/Documents/GitHub/SafeInvestor/src/main/java/es/franciscorodalf/saveinvestor/frontend/controller/RegistrarAhorroController.java
@@ -20,8 +20,10 @@
 /Users/fran/Documents/GitHub/SafeInvestor/src/main/java/es/franciscorodalf/saveinvestor/frontend/controller/ObjetivosController.java
 /Users/fran/Documents/GitHub/SafeInvestor/src/main/java/es/franciscorodalf/saveinvestor/Main.java
 /Users/fran/Documents/GitHub/SafeInvestor/src/main/java/es/franciscorodalf/saveinvestor/frontend/controller/RegistroController.java
+/Users/fran/Documents/GitHub/SafeInvestor/src/main/java/es/franciscorodalf/saveinvestor/backend/service/ServiceFactory.java
 /Users/fran/Documents/GitHub/SafeInvestor/src/main/java/es/franciscorodalf/saveinvestor/backend/dao/EstadisticaDAO.java
 /Users/fran/Documents/GitHub/SafeInvestor/src/main/java/es/franciscorodalf/saveinvestor/frontend/controller/EstadisticasController.java
+/Users/fran/Documents/GitHub/SafeInvestor/src/main/java/es/franciscorodalf/saveinvestor/frontend/controller/LoginController.java
 /Users/fran/Documents/GitHub/SafeInvestor/src/main/java/es/franciscorodalf/saveinvestor/backend/model/Movimiento.java
 /Users/fran/Documents/GitHub/SafeInvestor/src/main/java/es/franciscorodalf/saveinvestor/backend/dao/TareaDAO.java
 /Users/fran/Documents/GitHub/SafeInvestor/src/main/java/es/franciscorodalf/saveinvestor/frontend/controller/EditarMovimientoController.java

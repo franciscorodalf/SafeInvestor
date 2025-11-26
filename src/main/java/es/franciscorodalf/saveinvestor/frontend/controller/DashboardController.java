@@ -1,6 +1,7 @@
 package es.franciscorodalf.saveinvestor.frontend.controller;
 
 import es.franciscorodalf.saveinvestor.backend.model.Usuario;
+import es.franciscorodalf.saveinvestor.util.AppConstants;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -10,19 +11,18 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
+
 /**
- * Main dashboard controller that orchestrates navigation between all application views.
+ * Main dashboard controller that orchestrates navigation between all
+ * application views.
  */
 public class DashboardController implements UsuarioAware {
 
-    private static final String RUTA_RESUMEN = "/es/franciscorodalf/saveinvestor/main.fxml";
-    private static final String RUTA_HISTORIAL = "/es/franciscorodalf/saveinvestor/historial.fxml";
-    private static final String RUTA_OBJETIVOS = "/es/franciscorodalf/saveinvestor/objetivos.fxml";
-    private static final String RUTA_ESTADISTICAS = "/es/franciscorodalf/saveinvestor/estadisticas.fxml";
-    private static final String RUTA_PORTAFOLIO = "/es/franciscorodalf/saveinvestor/portafolio.fxml";
-    private static final String RUTA_PERFIL = "/es/franciscorodalf/saveinvestor/perfil.fxml";
+    private static final Logger logger = LoggerFactory.getLogger(DashboardController.class);
 
     @FXML
     private StackPane contentContainer;
@@ -106,27 +106,27 @@ public class DashboardController implements UsuarioAware {
     }
 
     public void mostrarVistaResumen() {
-        cargarVistaInterno(btnResumen, RUTA_RESUMEN);
+        cargarVistaInterno(btnResumen, AppConstants.FXML_MAIN);
     }
 
     public void mostrarVistaHistorial() {
-        cargarVistaInterno(btnHistorial, RUTA_HISTORIAL);
+        cargarVistaInterno(btnHistorial, AppConstants.FXML_HISTORIAL);
     }
 
     public void mostrarVistaObjetivos() {
-        cargarVistaInterno(btnObjetivos, RUTA_OBJETIVOS);
+        cargarVistaInterno(btnObjetivos, AppConstants.FXML_OBJETIVOS);
     }
 
     public void mostrarVistaEstadisticas() {
-        cargarVistaInterno(btnEstadisticas, RUTA_ESTADISTICAS);
+        cargarVistaInterno(btnEstadisticas, AppConstants.FXML_ESTADISTICAS);
     }
 
     public void mostrarVistaPortafolio() {
-        cargarVistaInterno(btnPortafolio, RUTA_PORTAFOLIO);
+        cargarVistaInterno(btnPortafolio, AppConstants.FXML_PORTAFOLIO);
     }
 
     public void mostrarVistaPerfil() {
-        cargarVistaInterno(btnPerfil, RUTA_PERFIL);
+        cargarVistaInterno(btnPerfil, AppConstants.FXML_PERFIL);
     }
 
     public void navegarA(String rutaFXML) {
@@ -150,8 +150,9 @@ public class DashboardController implements UsuarioAware {
             actualizarBotonActivo(boton);
             mostrarEstado(null);
         } catch (IOException e) {
-            mostrarEstado("No se pudo cargar la vista solicitada.");
-            e.printStackTrace();
+            String msg = "No se pudo cargar la vista solicitada: " + rutaFXML;
+            logger.error(msg, e);
+            mostrarEstado(msg);
         }
     }
 
@@ -180,14 +181,14 @@ public class DashboardController implements UsuarioAware {
 
     public void cerrarSesion() {
         try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/es/franciscorodalf/saveinvestor/login.fxml"));
+            FXMLLoader loader = new FXMLLoader(getClass().getResource(AppConstants.FXML_LOGIN));
             Parent root = loader.load();
             Stage stage = (Stage) contentContainer.getScene().getWindow();
             stage.setScene(new Scene(root));
             stage.show();
         } catch (IOException e) {
+            logger.error("No se pudo cerrar la sesión", e);
             mostrarEstado("No se pudo cerrar la sesión.");
-            e.printStackTrace();
         }
     }
 }
