@@ -2,6 +2,8 @@ package es.franciscorodalf.saveinvestor.frontend.controller;
 
 import es.franciscorodalf.saveinvestor.backend.dao.UsuarioDAO;
 import es.franciscorodalf.saveinvestor.backend.model.Usuario;
+import es.franciscorodalf.saveinvestor.backend.service.ServiceFactory;
+import es.franciscorodalf.saveinvestor.util.AppConstants;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -9,11 +11,18 @@ import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
+import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.io.IOException;
 
-public class loginController {
+public class LoginController {
+
+    private static final Logger logger = LoggerFactory.getLogger(LoginController.class);
+
     @FXML
     private TextField textFieldUsuario;
     @FXML
@@ -29,9 +38,30 @@ public class loginController {
 
     private UsuarioDAO usuarioDAO;
 
+    @FXML
+    private VBox rootVBox;
+
+    @FXML
     public void initialize() {
-        usuarioDAO = new UsuarioDAO();
+        usuarioDAO = ServiceFactory.getInstance().getUsuarioDAO();
         textFieldMensaje.setVisible(false);
+
+        // Preparar animación de entrada
+        if (rootVBox != null) {
+            rootVBox.setOpacity(0);
+            javafx.application.Platform.runLater(this::animateEntry);
+        }
+    }
+
+    public void animateEntry() {
+        if (rootVBox != null) {
+            javafx.animation.FadeTransition fadeOut = new javafx.animation.FadeTransition(
+                    javafx.util.Duration.millis(1000), rootVBox);
+            fadeOut.setFromValue(0.0);
+            fadeOut.setToValue(1.0);
+            fadeOut.setCycleCount(1);
+            fadeOut.play();
+        }
     }
 
     // Setters para testing
@@ -73,11 +103,7 @@ public class loginController {
                 mostrarMensajeError("Credenciales inválidas. Revise usuario y contraseña");
             }
         } catch (Exception e) {
-            // Errores críticos o no controlados mostrados en terminal
-            System.err.println("ERROR al iniciar sesión: " + e.getMessage());
-            e.printStackTrace();
-            
-            // También mostrar mensaje genérico al usuario
+            logger.error("Error al iniciar sesión", e);
             mostrarMensajeError("Error al iniciar sesión. Inténtelo de nuevo");
         }
     }
@@ -85,15 +111,13 @@ public class loginController {
     @FXML
     private void clickButtonRegistrar(ActionEvent event) {
         try {
-            FXMLLoader loader = new FXMLLoader(
-                    getClass().getResource("/es/franciscorodalf/saveinvestor/registro.fxml"));
+            FXMLLoader loader = new FXMLLoader(getClass().getResource(AppConstants.FXML_REGISTRO));
             Scene scene = new Scene(loader.load());
             Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
             stage.setScene(scene);
             stage.show();
         } catch (IOException e) {
-            System.err.println("ERROR: Error al cargar pantalla de registro: " + e.getMessage());
-            e.printStackTrace();
+            logger.error("Error al cargar pantalla de registro", e);
             mostrarMensajeError("No se pudo abrir la pantalla de registro");
         }
     }
@@ -101,63 +125,53 @@ public class loginController {
     @FXML
     private void clickLinkOlvidarContrasenia(ActionEvent event) {
         try {
-            FXMLLoader loader = new FXMLLoader(
-                    getClass().getResource("/es/franciscorodalf/saveinvestor/olvidarContrasenia.fxml"));
+            FXMLLoader loader = new FXMLLoader(getClass().getResource(AppConstants.FXML_OLVIDAR_CONTRASENIA));
             Scene scene = new Scene(loader.load());
             Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
             stage.setScene(scene);
             stage.show();
         } catch (IOException e) {
-            System.err.println("ERROR: Error al cargar pantalla de recuperación: " + e.getMessage());
-            e.printStackTrace();
+            logger.error("Error al cargar pantalla de recuperación", e);
             mostrarMensajeError("No se pudo abrir la pantalla de recuperación");
         }
     }
 
     /**
      * Muestra un mensaje de error en la interfaz
+     * 
      * @param mensaje El mensaje de error a mostrar
      */
     private void mostrarMensajeError(String mensaje) {
         if (textFieldMensaje != null) {
             textFieldMensaje.setText(mensaje);
             textFieldMensaje.setVisible(true);
-            
+
             // Color rojo para el mensaje de error
             textFieldMensaje.setStyle("-fx-fill: #e74c3c;");
         }
     }
 
-    /**
-     * Oculta el mensaje de error
-     */
-    private void ocultarMensajeError() {
-        if (textFieldMensaje != null) {
-            textFieldMensaje.setVisible(false);
-        }
-    }
-
     public void cargarPantallaPrincipal(ActionEvent event, Usuario usuario) throws IOException {
         try {
-            // Obtener la URL correctamente usando getClass().getResource()
-            java.net.URL url = getClass().getResource("/es/franciscorodalf/saveinvestor/main.fxml");
+            java.net.URL url = getClass().getResource(AppConstants.FXML_DASHBOARD);
             if (url == null) {
-                throw new IOException("No se pudo encontrar el archivo main.fxml");
+                throw new IOException("No se pudo encontrar el archivo dashboard.fxml");
             }
-            
+
             FXMLLoader loader = new FXMLLoader(url);
             Parent root = loader.load();
 
             // Pasar el usuario al controlador principal
-            MainController controller = loader.getController();
-            controller.setUsuario(usuario);
+            Object controller = loader.getController();
+            if (controller instanceof DashboardController) {
+                ((DashboardController) controller).setUsuario(usuario);
+            }
 
             Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
             stage.setScene(new Scene(root));
             stage.show();
         } catch (IOException e) {
-            System.err.println("ERROR al cargar pantalla principal: " + e.getMessage());
-            e.printStackTrace();
+            logger.error("Error al cargar pantalla principal", e);
             mostrarMensajeError("Error al iniciar la aplicación: " + e.getMessage());
             throw e; // Re-lanzamos para conservar el comportamiento original
         }

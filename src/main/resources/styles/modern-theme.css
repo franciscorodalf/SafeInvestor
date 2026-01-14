@@ -1,0 +1,216 @@
+/* Global Styles */
+.root {
+    -fx-font-family: 'Segoe UI', 'Roboto', 'Helvetica Neue', sans-serif;
+    -fx-background-color: #F4F6F8;
+    -fx-font-size: 14px;
+}
+
+/* Color Palette */
+* {
+    -fx-primary-color: #1A237E;
+    /* Deep Navy Blue */
+    -fx-secondary-color: #2ECC71;
+    /* Emerald Green */
+    -fx-accent-color: #3498DB;
+    /* Bright Blue */
+    -fx-text-color: #2C3E50;
+    /* Dark Slate */
+    -fx-text-color-light: #7F8C8D;
+    /* Gray */
+    -fx-background-color-main: #F4F6F8;
+    -fx-card-background: #FFFFFF;
+    -fx-error-color: #E74C3C;
+}
+
+/* Containers */
+.container {
+    -fx-background-color: -fx-card-background;
+    -fx-background-radius: 12;
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.1), 15, 0, 0, 4);
+    -fx-padding: 30;
+}
+
+/* Labels */
+.label {
+    -fx-text-fill: -fx-text-color;
+}
+
+.label-title {
+    -fx-font-size: 24px;
+    -fx-font-weight: bold;
+    -fx-text-fill: -fx-primary-color;
+}
+
+.label-subtitle {
+    -fx-font-size: 14px;
+    -fx-text-fill: -fx-text-color-light;
+}
+
+.error-label {
+    -fx-text-fill: -fx-error-color;
+    -fx-font-size: 12px;
+}
+
+/* Text Fields */
+.text-field,
+.password-field {
+    -fx-background-color: #FFFFFF;
+    -fx-border-color: #BDC3C7;
+    -fx-border-width: 1;
+    -fx-border-radius: 6;
+    -fx-background-radius: 6;
+    -fx-padding: 10;
+    -fx-font-size: 14px;
+    -fx-prompt-text-fill: derive(-fx-text-color-light, 20%);
+    -fx-transition: all 0.3s ease;
+    /* Smooth transition */
+}
+
+.text-field:focused,
+.password-field:focused {
+    -fx-border-color: -fx-primary-color;
+    -fx-border-width: 1.5;
+    /* Slightly thicker but not ugly */
+    -fx-background-color: #FFFFFF;
+    -fx-effect: dropshadow(gaussian, rgba(26, 35, 126, 0.2), 8, 0, 0, 2);
+    /* Subtle glow */
+}
+
+/* Buttons */
+.button {
+    -fx-background-radius: 6;
+    -fx-font-weight: bold;
+    -fx-font-size: 14px;
+    -fx-padding: 10 20;
+    -fx-cursor: hand;
+    -fx-transition: -fx-background-color 0.2s ease, -fx-scale-x 0.2s ease, -fx-scale-y 0.2s ease;
+}
+
+.button:hover {
+    -fx-scale-x: 1.02;
+    -fx-scale-y: 1.02;
+}
+
+.button-primary {
+    -fx-background-color: -fx-primary-color;
+    -fx-text-fill: white;
+}
+
+.button-primary:hover {
+    -fx-background-color: derive(-fx-primary-color, 10%);
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.2), 5, 0, 0, 2);
+}
+
+.button-primary:pressed {
+    -fx-background-color: derive(-fx-primary-color, -10%);
+}
+
+.button-secondary {
+    -fx-background-color: transparent;
+    -fx-border-color: -fx-primary-color;
+    -fx-border-width: 1;
+    -fx-border-radius: 6;
+    -fx-text-fill: -fx-primary-color;
+}
+
+.button-secondary:hover {
+    -fx-background-color: rgba(26, 35, 126, 0.05);
+}
+
+/* Navigation Buttons (Sidebar) */
+.nav-button {
+    -fx-background-color: transparent;
+    -fx-text-fill: -fx-text-color;
+    -fx-alignment: CENTER_LEFT;
+    -fx-padding: 12 20;
+    -fx-font-size: 15px;
+    -fx-background-radius: 8;
+    -fx-cursor: hand;
+}
+
+.nav-button:hover {
+    -fx-background-color: #F0F2F5;
+    -fx-text-fill: -fx-primary-color;
+    -fx-padding: 12 15 12 25;
+    /* Slight movement effect */
+}
+
+.nav-button-active {
+    -fx-background-color: rgba(46, 204, 113, 0.15);
+    /* Light Green */
+    -fx-text-fill: -fx-secondary-color;
+    -fx-font-weight: bold;
+    -fx-border-color: -fx-secondary-color;
+    -fx-border-width: 0 0 0 4;
+    /* Left border indicator */
+    -fx-border-radius: 2;
+}
+
+/* List View */
+.list-view {
+    -fx-background-color: transparent;
+    -fx-padding: 5;
+    -fx-background-insets: 0;
+}
+
+.list-cell {
+    -fx-background-color: #FFFFFF;
+    -fx-background-radius: 8;
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.05), 5, 0, 0, 1);
+    -fx-padding: 10;
+    -fx-border-width: 0 0 5 0;
+    /* Bottom border for spacing simulation */
+    -fx-border-color: transparent;
+}
+
+.list-cell:filled:selected,
+.list-cell:filled:hover {
+    -fx-background-color: #F8F9FA;
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.1), 8, 0, 0, 2);
+}
+
+.list-cell:empty {
+    -fx-background-color: transparent;
+    -fx-effect: null;
+}
+
+/* Charts */
+.chart {
+    -fx-padding: 10;
+}
+
+.chart-plot-background {
+    -fx-background-color: transparent;
+}
+
+.chart-vertical-grid-lines,
+.chart-horizontal-grid-lines {
+    -fx-stroke: #ecf0f1;
+}
+
+.chart-legend {
+    -fx-background-color: transparent;
+}
+
+/* Series Colors */
+.default-color0.chart-bar {
+    -fx-bar-fill: -fx-secondary-color;
+}
+
+/* Ingresos - Green */
+.default-color1.chart-bar {
+    -fx-bar-fill: -fx-error-color;
+}
+
+/* Gastos - Red */
+.default-color0.chart-pie {
+    -fx-pie-color: -fx-secondary-color;
+}
+
+.default-color1.chart-pie {
+    -fx-pie-color: -fx-error-color;
+}
+
+.default-color2.chart-pie {
+    -fx-pie-color: -fx-accent-color;
+}

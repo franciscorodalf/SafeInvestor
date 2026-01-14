@@ -35,7 +35,7 @@ import es.franciscorodalf.saveinvestor.backend.dao.ObjetivoDAO;
 /**
  * Controlador de la vista de Objetivos financieros.
  */
-public class ObjetivosController {
+public class ObjetivosController implements UsuarioAware, DashboardNavigable {
 
     @FXML
     private TextField txtDescripcion;
@@ -73,6 +73,7 @@ public class ObjetivosController {
     private Usuario usuarioActual;
     private ObjetivoDAO objetivoDAO;
     private Objetivo objetivoEnEdicion;
+    private DashboardController dashboardController;
 
     @FXML
     public void initialize() {
@@ -102,10 +103,16 @@ public class ObjetivosController {
      * 
      * @param usuario El usuario actual de la aplicación
      */
+    @Override
     public void setUsuario(Usuario usuario) {
         this.usuarioActual = usuario;
         // Cargar objetivos del usuario desde la base de datos
         cargarObjetivos();
+    }
+
+    @Override
+    public void setDashboardController(DashboardController dashboardController) {
+        this.dashboardController = dashboardController;
     }
 
     /**
@@ -478,6 +485,10 @@ public class ObjetivosController {
      */
     @FXML
     private void onVolver(ActionEvent event) {
+        if (dashboardController != null) {
+            dashboardController.mostrarVistaResumen();
+            return;
+        }
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/es/franciscorodalf/saveinvestor/main.fxml"));
             Parent root = loader.load();

@@ -2,6 +2,8 @@ package es.franciscorodalf.saveinvestor.frontend.controller;
 
 import es.franciscorodalf.saveinvestor.backend.dao.UsuarioDAO;
 import es.franciscorodalf.saveinvestor.backend.model.Usuario;
+import es.franciscorodalf.saveinvestor.backend.service.ServiceFactory;
+import es.franciscorodalf.saveinvestor.util.AppConstants;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -9,9 +11,15 @@ import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.stage.Stage;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.io.IOException;
 
 public class RegistroController {
+
+    private static final Logger logger = LoggerFactory.getLogger(RegistroController.class);
+
     @FXML
     private TextField textFieldUsuarioRegistro;
     @FXML
@@ -28,7 +36,7 @@ public class RegistroController {
     private UsuarioDAO usuarioDAO;
 
     public void initialize() {
-        usuarioDAO = new UsuarioDAO();
+        usuarioDAO = ServiceFactory.getInstance().getUsuarioDAO();
         textMensajeRegistro.setVisible(false);
     }
 
@@ -69,19 +77,20 @@ public class RegistroController {
             }
 
             Usuario nuevoUsuario = new Usuario(
-                textFieldEmailRegistro.getText(),
-                textFieldUsuarioRegistro.getText(),
-                textFieldContraseniaRegistro.getText()
-            );
-            
+                    textFieldEmailRegistro.getText(),
+                    textFieldUsuarioRegistro.getText(),
+                    textFieldContraseniaRegistro.getText());
+
             usuarioDAO.insertar(nuevoUsuario);
-            mostrarMensaje("Usuario registrado correctamente");
-            
+            mostrarMensaje("Usuario registrado correctamente", false);
+
             if (event != null) {
+                // Pequeña pausa o transición podría ir aquí, pero por ahora volvemos directo
                 volverALogin(event);
             }
         } catch (Exception e) {
-            mostrarMensaje("Error al registrar usuario: " + e.getMessage());
+            logger.error("Error al registrar usuario", e);
+            mostrarMensaje("Error al registrar usuario: " + e.getMessage(), true);
         }
     }
 
@@ -90,18 +99,25 @@ public class RegistroController {
         try {
             volverALogin(event);
         } catch (IOException e) {
-            mostrarMensaje("Error al volver a la pantalla de login");
+            logger.error("Error al volver a login", e);
+            mostrarMensaje("Error al volver a la pantalla de login", true);
         }
     }
 
     private boolean validarCampos() {
         if (!textFieldEmailRegistro.getText().equals(textFieldRepetirEmail.getText())) {
-            mostrarMensaje("Los emails no coinciden");
+            mostrarMensaje("Los emails no coinciden", true);
             return false;
         }
 
         if (!textFieldContraseniaRegistro.getText().equals(textFieldRepetirContraseniaRegistro.getText())) {
-            mostrarMensaje("Las contraseñas no coinciden");
+            mostrarMensaje("Las contraseñas no coinciden", true);
+            return false;
+        }
+
+        if (textFieldUsuarioRegistro.getText().isEmpty() || textFieldEmailRegistro.getText().isEmpty()
+                || textFieldContraseniaRegistro.getText().isEmpty()) {
+            mostrarMensaje("Todos los campos son obligatorios", true);
             return false;
         }
 
@@ -109,15 +125,20 @@ public class RegistroController {
     }
 
     private void volverALogin(ActionEvent event) throws IOException {
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("/es/franciscorodalf/saveinvestor/login.fxml"));
+        FXMLLoader loader = new FXMLLoader(getClass().getResource(AppConstants.FXML_LOGIN));
         Scene scene = new Scene(loader.load());
         Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
         stage.setScene(scene);
         stage.show();
     }
 
-    private void mostrarMensaje(String mensaje) {
+    private void mostrarMensaje(String mensaje, boolean error) {
         textMensajeRegistro.setText(mensaje);
         textMensajeRegistro.setVisible(true);
+        if (error) {
+            textMensajeRegistro.setStyle("-fx-text-fill: -fx-error-color;");
+        } else {
+            textMensajeRegistro.setStyle("-fx-text-fill: -fx-secondary-color;");
+        }
     }
 }

@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.layout.VBox?>
+
+<BorderPane prefHeight="720.0" prefWidth="1080.0" stylesheets="@../../../styles/modern-theme.css" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="es.franciscorodalf.saveinvestor.frontend.controller.DashboardController">
+    <left>
+        <VBox alignment="TOP_CENTER" spacing="12" style="-fx-background-color: #ffffff; -fx-padding: 30 20 30 20; -fx-border-color: #dfe6e9; -fx-border-width: 0 1 0 0;">
+            <children>
+                <ImageView fitHeight="80.0" fitWidth="80.0" pickOnBounds="true" preserveRatio="true">
+                    <image>
+                        <Image url="@../../../images/logo-saveInvestor.png" />
+                    </image>
+                </ImageView>
+                <Label text="SafeInvestor" styleClass="label-title" style="-fx-font-size: 20px;" />
+                <Button fx:id="btnResumen" alignment="CENTER_LEFT" mnemonicParsing="false" onAction="#onMostrarResumen" styleClass="nav-button" text="Resumen" maxWidth="Infinity" />
+                <Button fx:id="btnHistorial" alignment="CENTER_LEFT" mnemonicParsing="false" onAction="#onMostrarHistorial" styleClass="nav-button" text="Historial" maxWidth="Infinity" />
+                <Button fx:id="btnObjetivos" alignment="CENTER_LEFT" mnemonicParsing="false" onAction="#onMostrarObjetivos" styleClass="nav-button" text="Objetivos" maxWidth="Infinity" />
+                <Button fx:id="btnEstadisticas" alignment="CENTER_LEFT" mnemonicParsing="false" onAction="#onMostrarEstadisticas" styleClass="nav-button" text="Estadísticas" maxWidth="Infinity" />
+                <Button fx:id="btnPortafolio" alignment="CENTER_LEFT" mnemonicParsing="false" onAction="#onMostrarPortafolio" styleClass="nav-button" text="Portafolio" maxWidth="Infinity" />
+                <Button fx:id="btnPerfil" alignment="CENTER_LEFT" mnemonicParsing="false" onAction="#onMostrarPerfil" styleClass="nav-button" text="Perfil" maxWidth="Infinity" />
+            </children>
+        </VBox>
+    </left>
+    <top>
+        <HBox alignment="CENTER_RIGHT" spacing="10" style="-fx-padding: 20 30 20 30; -fx-background-color: #ffffff; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.05), 10, 0, 0, 2);">
+            <children>
+                <Label text="Bienvenido," styleClass="label" style="-fx-font-size: 16px;" />
+                <Label fx:id="lblUsuario" styleClass="label" style="-fx-text-fill: -fx-secondary-color; -fx-font-size: 16px; -fx-font-weight: bold;" text="Usuario" />
+                <Button mnemonicParsing="false" onAction="#onCerrarSesion" styleClass="button-secondary" style="-fx-border-color: -fx-error-color; -fx-text-fill: -fx-error-color;" text="Cerrar sesión" />
+            </children>
+        </HBox>
+    </top>
+    <center>
+        <StackPane fx:id="contentContainer" prefHeight="600.0" prefWidth="820.0" style="-fx-padding: 30; -fx-background-color: -fx-background-color-main;" />
+    </center>
+    <bottom>
+        <HBox alignment="CENTER_LEFT" style="-fx-padding: 10 20 15 30; -fx-background-color: #ffffff;">
+            <children>
+                <Label fx:id="lblEstado" styleClass="error-label" text="" />
+            </children>
+        </HBox>
+    </bottom>
+</BorderPane>

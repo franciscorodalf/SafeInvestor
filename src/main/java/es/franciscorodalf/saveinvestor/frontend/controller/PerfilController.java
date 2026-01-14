@@ -21,7 +21,7 @@ import es.franciscorodalf.saveinvestor.backend.model.Usuario;
 /**
  * Controlador para la vista de perfil de usuario.
  */
-public class PerfilController {
+public class PerfilController implements UsuarioAware, DashboardNavigable {
 
     @FXML
     private Label lblNombre;
@@ -40,6 +40,7 @@ public class PerfilController {
 
     private Usuario usuarioActual;
     private UsuarioDAO usuarioDAO;
+    private DashboardController dashboardController;
 
     @FXML
     private void initialize() {
@@ -51,9 +52,15 @@ public class PerfilController {
      * 
      * @param usuario El usuario cuyo perfil se va a mostrar
      */
+    @Override
     public void setUsuario(Usuario usuario) {
         this.usuarioActual = usuario;
         actualizarDatosUsuario();
+    }
+
+    @Override
+    public void setDashboardController(DashboardController dashboardController) {
+        this.dashboardController = dashboardController;
     }
 
     /**
@@ -78,6 +85,10 @@ public class PerfilController {
 
     @FXML
     private void clickVolver(ActionEvent event) {
+        if (dashboardController != null) {
+            dashboardController.mostrarVistaResumen();
+            return;
+        }
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/es/franciscorodalf/saveinvestor/main.fxml"));
             Parent root = loader.load();
@@ -98,6 +109,10 @@ public class PerfilController {
 
     @FXML
     private void clickEditar(ActionEvent event) {
+        if (dashboardController != null) {
+            dashboardController.navegarA("/es/franciscorodalf/saveinvestor/editarPerfil.fxml");
+            return;
+        }
         try {
             FXMLLoader loader = new FXMLLoader(
                     getClass().getResource("/es/franciscorodalf/saveinvestor/editarPerfil.fxml"));

@@ -58,3 +58,22 @@
     -fx-underline: true;
     -fx-cursor: hand;
 }
+
+/* Navegación del dashboard */
+.nav-button {
+    -fx-background-color: transparent;
+    -fx-text-fill: #2c3e50;
+    -fx-alignment: CENTER_LEFT;
+    -fx-padding: 10 20 10 20;
+    -fx-font-size: 14px;
+    -fx-background-radius: 8px;
+}
+
+.nav-button:hover {
+    -fx-background-color: rgba(39, 174, 96, 0.15);
+}
+
+.nav-button-active {
+    -fx-background-color: rgba(39, 174, 96, 0.25);
+    -fx-text-fill: #1e8449;
+}

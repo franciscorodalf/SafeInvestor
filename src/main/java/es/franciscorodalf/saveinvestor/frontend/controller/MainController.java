@@ -13,6 +13,7 @@ import es.franciscorodalf.saveinvestor.backend.model.Objetivo;
 import es.franciscorodalf.saveinvestor.backend.model.Usuario;
 import es.franciscorodalf.saveinvestor.backend.model.estadistica;
 import es.franciscorodalf.saveinvestor.backend.model.tarea;
+import es.franciscorodalf.saveinvestor.util.AppConstants;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -29,54 +30,65 @@ import javafx.scene.control.ListView;
 import javafx.scene.control.Alert;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-public class MainController {
+public class MainController implements UsuarioAware, DashboardNavigable {
 
-    @FXML
-    private Button btnEstadisticas;
-    
-    @FXML
-    private Button btnObjetivos;
-    
+    private static final Logger logger = LoggerFactory.getLogger(MainController.class);
+
     @FXML
     private Button btnGasto;
-    
+
     @FXML
     private Button btnAhorro;
 
     @FXML
-    private Button btnCerrarSesion;
-    
-    @FXML
     private Label lblTotalAhorro;
-    
+
     @FXML
     private ListView<Movimiento> listMovimientos;
 
     @FXML
     private ListView<Objetivo> listObjetivos;
-    
+
     private Usuario usuarioActual;
     private TareaDAO tareaDAO;
     private EstadisticaDAO estadisticaDAO;
     private ObjetivoDAO objetivoDAO;
-    
+    private DashboardController dashboardController;
+
     // Número de movimientos a mostrar en la lista
     private static final int LIMITE_MOVIMIENTOS = 10;
 
     @FXML
     private void initialize() {
-        // Inicializar DAOs
+        // Inicializar DAOs usando Factory (o directamente si no están en el factory
+        // aún, pero idealmente sí)
+        // Por ahora asumimos que están disponibles o los instanciamos aquí si el
+        // factory no los tiene todos
+        // El ServiceFactory actual solo tiene UsuarioDAO y MovimientoInversionDAO en el
+        // snippet anterior.
+        // Deberíamos añadir los otros al Factory, pero para no romper, los instanciamos
+        // aquí o actualizamos Factory.
+        // Para ser consistentes con el plan, usaremos instanciación directa si no están
+        // en Factory,
+        // pero lo ideal es actualizar Factory.
+        // Dado que no puedo editar Factory y MainController a la vez fácilmente sin
+        // múltiples pasos,
+        // usaré new por ahora para los que faltan, pero UsuarioDAO sí desde Factory si
+        // lo necesitara.
+
         tareaDAO = new TareaDAO();
         estadisticaDAO = new EstadisticaDAO();
         objetivoDAO = new ObjetivoDAO();
-        
+
         // Configurar la celda personalizada para la lista de movimientos
         configurarCeldaPersonalizada();
-        
+
         // Configurar la celda personalizada para la lista de objetivos
         configurarCeldaObjetivos();
-        
+
         // Configurar manejo de clics en la lista de movimientos
         if (listMovimientos != null) {
             listMovimientos.setOnMouseClicked(event -> {
@@ -89,7 +101,7 @@ public class MainController {
             });
         }
     }
-    
+
     /**
      * Configura cómo se muestran los movimientos en la lista
      */
@@ -98,24 +110,25 @@ public class MainController {
             @Override
             protected void updateItem(Movimiento item, boolean empty) {
                 super.updateItem(item, empty);
-                
+
                 if (empty || item == null) {
                     setText(null);
                     setGraphic(null);
                     return;
                 }
-                
-                String colorStyle = item.getTipo() == Movimiento.TipoMovimiento.INGRESO ? 
-                        "-fx-text-fill: green;" : "-fx-text-fill: red;";
-                
+
+                String colorStyle = item.getTipo() == Movimiento.TipoMovimiento.INGRESO
+                        ? "-fx-text-fill: -fx-secondary-color;"
+                        : "-fx-text-fill: -fx-error-color;";
+
                 // Formato: "Concepto: $Cantidad (Fecha)"
-                String formattedText = String.format("%s: $%.2f (%s)", 
-                        item.getConcepto(), 
+                String formattedText = String.format("%s: $%.2f (%s)",
+                        item.getConcepto(),
                         item.getCantidad(),
                         item.getFecha().toString());
-                
+
                 setText(formattedText);
-                setStyle(colorStyle);
+                setStyle(colorStyle + "-fx-font-size: 14px;");
             }
         });
     }
@@ -129,50 +142,50 @@ public class MainController {
             private javafx.scene.control.Label lblDescripcion = new javafx.scene.control.Label();
             private javafx.scene.control.Label lblDetalle = new javafx.scene.control.Label();
             private javafx.scene.layout.VBox vbox = new javafx.scene.layout.VBox(5);
-            
+
             {
                 progressBar.setPrefWidth(200);
-                lblDescripcion.setStyle("-fx-font-weight: bold;");
-                lblDetalle.setStyle("-fx-font-size: 10px;");
+                lblDescripcion.setStyle("-fx-font-weight: bold; -fx-text-fill: -fx-text-color;");
+                lblDetalle.setStyle("-fx-font-size: 11px; -fx-text-fill: -fx-text-color-light;");
                 vbox.getChildren().addAll(lblDescripcion, progressBar, lblDetalle);
                 vbox.setPadding(new javafx.geometry.Insets(5, 0, 5, 0));
             }
-            
+
             @Override
             protected void updateItem(Objetivo item, boolean empty) {
                 super.updateItem(item, empty);
-                
+
                 if (empty || item == null) {
                     setText(null);
                     setGraphic(null);
                     return;
                 }
-                
+
                 // Configurar descripción
                 lblDescripcion.setText(item.getDescripcion());
-                
+
                 // Configurar barra de progreso
                 double progreso = item.calcularPorcentaje() / 100.0;
                 progressBar.setProgress(progreso);
-                
+
                 // Configurar color de la barra según el estado
                 String barColor;
                 if (item.isCompletado()) {
-                    barColor = "-fx-accent: green;";
+                    barColor = "-fx-accent: -fx-secondary-color;";
                 } else if (item.estaVencido()) {
-                    barColor = "-fx-accent: red;";
+                    barColor = "-fx-accent: -fx-error-color;";
                 } else {
-                    barColor = "-fx-accent: #27ae60;";
+                    barColor = "-fx-accent: -fx-primary-color;";
                 }
                 progressBar.setStyle(barColor);
-                
+
                 // Configurar detalle
                 StringBuilder detalle = new StringBuilder();
-                detalle.append(String.format("%.2f$ de %.2f$ (%.1f%%)", 
-                        item.getCantidadActual(), 
+                detalle.append(String.format("%.2f$ de %.2f$ (%.1f%%)",
+                        item.getCantidadActual(),
                         item.getCantidadObjetivo(),
                         item.calcularPorcentaje()));
-                
+
                 // Añadir info de fecha si existe
                 if (item.getFechaObjetivo() != null) {
                     long diasRestantes = item.calcularDiasRestantes();
@@ -182,9 +195,9 @@ public class MainController {
                         detalle.append(" - Vencido");
                     }
                 }
-                
+
                 lblDetalle.setText(detalle.toString());
-                
+
                 setGraphic(vbox);
             }
         });
@@ -197,29 +210,28 @@ public class MainController {
         if (usuarioActual == null || usuarioActual.getId() == null) {
             return;
         }
-        
+
         try {
             // Cargar estadísticas
             actualizarEstadisticas();
-            
+
             // Cargar objetivos activos
             cargarObjetivos();
-            
+
             // Cargar últimos movimientos
             cargarUltimosMovimientos();
-            
+
         } catch (Exception e) {
-            System.err.println("Error al cargar datos del usuario: " + e.getMessage());
-            e.printStackTrace();
+            logger.error("Error al cargar datos del usuario", e);
         }
     }
-    
+
     /**
      * Actualiza las estadísticas mostradas en pantalla
      */
     private void actualizarEstadisticas() throws SQLException {
         estadistica stats = estadisticaDAO.obtenerPorUsuario(usuarioActual.getId());
-        
+
         if (stats != null) {
             // Calcular balance (ingresos - gastos)
             double balance = stats.getTotalIngreso() - stats.getTotalGasto();
@@ -228,7 +240,7 @@ public class MainController {
             lblTotalAhorro.setText("0.00$");
         }
     }
-    
+
     /**
      * Carga los últimos movimientos del usuario
      */
@@ -236,20 +248,20 @@ public class MainController {
         try {
             List<tarea> tareas = tareaDAO.obtenerUltimasTareas(usuarioActual.getId(), LIMITE_MOVIMIENTOS);
             ObservableList<Movimiento> movimientos = FXCollections.observableArrayList();
-            
+
             for (tarea t : tareas) {
                 try {
                     Movimiento m = Movimiento.fromTarea(t);
                     movimientos.add(m);
                 } catch (Exception e) {
-                    System.err.println("Error al convertir tarea a movimiento: " + e.getMessage());
+                    logger.warn("Error al convertir tarea a movimiento: {}", e.getMessage());
                     // Continuar con la siguiente tarea
                 }
             }
-            
+
             listMovimientos.setItems(movimientos);
         } catch (Exception e) {
-            System.err.println("Error al cargar movimientos: " + e.getMessage());
+            logger.error("Error al cargar movimientos", e);
             throw e; // Re-lanzar para manejo externo
         }
     }
@@ -262,135 +274,69 @@ public class MainController {
             List<Objetivo> objetivos = objetivoDAO.obtenerObjetivosActivos(usuarioActual.getId());
             listObjetivos.setItems(FXCollections.observableArrayList(objetivos));
         } catch (SQLException e) {
-            System.err.println("Error al cargar objetivos: " + e.getMessage());
-            e.printStackTrace();
+            logger.error("Error al cargar objetivos", e);
         }
     }
-    
-    @FXML
-    private void onPerfil(ActionEvent event) {
-        cambiarEscena(event, "/es/franciscorodalf/saveinvestor/perfil.fxml");
-    }
-    
-    @FXML
-    private void onEstadisticas(ActionEvent event) {
-        cambiarEscena(event, "/es/franciscorodalf/saveinvestor/estadisticas.fxml");
-    }
-    
-    @FXML
-    private void onObjetivos(ActionEvent event) {
-        cambiarEscena(event, "/es/franciscorodalf/saveinvestor/objetivos.fxml");
-    }
-    
+
     @FXML
     private void onRegistrarGasto(ActionEvent event) {
-        try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/es/franciscorodalf/saveinvestor/registrarGasto.fxml"));
-            Parent root = loader.load();
-            
-            // Pasar el usuario al controlador de registro de gasto
-            RegistrarGastoController controller = loader.getController();
-            controller.setUsuario(usuarioActual);
-            
-            Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
-            stage.setScene(new Scene(root));
-            stage.show();
-        } catch (IOException e) {
-            System.err.println("Error al cargar vista de registro de gasto: " + e.getMessage());
+        if (dashboardController != null) {
+            dashboardController.navegarA(AppConstants.FXML_REGISTRAR_GASTO);
+        } else {
+            // Fallback legacy
+            try {
+                FXMLLoader loader = new FXMLLoader(getClass().getResource(AppConstants.FXML_REGISTRAR_GASTO));
+                Parent root = loader.load();
+
+                RegistrarGastoController controller = loader.getController();
+                controller.setUsuario(usuarioActual);
+
+                Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+                stage.setScene(new Scene(root));
+                stage.show();
+            } catch (IOException e) {
+                logger.error("Error al cargar vista de registro de gasto", e);
+            }
         }
     }
-    
+
     @FXML
     private void onRegistrarAhorro(ActionEvent event) {
-        try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/es/franciscorodalf/saveinvestor/registrarAhorro.fxml"));
-            Parent root = loader.load();
-            
-            // Pasar el usuario al controlador de registro de ahorro
-            RegistrarAhorroController controller = loader.getController();
-            controller.setUsuario(usuarioActual);
-            
-            Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
-            stage.setScene(new Scene(root));
-            stage.show();
-        } catch (IOException e) {
-            System.err.println("Error al cargar vista de registro de ahorro: " + e.getMessage());
+        if (dashboardController != null) {
+            dashboardController.navegarA(AppConstants.FXML_REGISTRAR_AHORRO);
+        } else {
+            // Fallback legacy
+            try {
+                FXMLLoader loader = new FXMLLoader(getClass().getResource(AppConstants.FXML_REGISTRAR_AHORRO));
+                Parent root = loader.load();
+
+                RegistrarAhorroController controller = loader.getController();
+                controller.setUsuario(usuarioActual);
+
+                Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+                stage.setScene(new Scene(root));
+                stage.show();
+            } catch (IOException e) {
+                logger.error("Error al cargar vista de registro de ahorro", e);
+            }
         }
     }
 
-    @FXML
-    private void onCerrarSesion(ActionEvent event) {
-        try {
-            // Simplemente carga la vista de login
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/es/franciscorodalf/saveinvestor/login.fxml"));
-            Parent root = loader.load();
-            Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
-            stage.setScene(new Scene(root));
-            stage.show();
-            
-            // Limpiar la referencia al usuario actual
-            this.usuarioActual = null;
-        } catch (IOException e) {
-            System.err.println("Error al volver a la pantalla de login: " + e.getMessage());
-        }
-    }
-
-    @FXML
-    private void onHistorial(ActionEvent event) {
-        try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/es/franciscorodalf/saveinvestor/historial.fxml"));
-            Parent root = loader.load();
-            
-            // Pasar el usuario al controlador
-            HistorialController controller = loader.getController();
-            controller.setUsuario(usuarioActual);
-            
-            Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
-            stage.setScene(new Scene(root));
-            stage.show();
-        } catch (IOException e) {
-            System.err.println("Error al cargar vista de historial: " + e.getMessage());
-        }
-    }
-
+    @Override
     public void setUsuario(Usuario usuario) {
         this.usuarioActual = usuario;
-        
+
         // Actualizar interfaz con los datos del usuario
         if (usuario != null) {
             actualizarInterfaz();
         }
     }
 
-    private void cambiarEscena(ActionEvent event, String fxmlPath) {
-        try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource(fxmlPath));
-            Parent root = loader.load();
-            
-            // Obtener el controlador y pasar el usuario si es necesario
-            Object controller = loader.getController();
-            
-            // Comprobar si el controlador implementa la capacidad de recibir un usuario
-            if (controller != null && usuarioActual != null) {
-                if (controller instanceof PerfilController) {
-                    ((PerfilController) controller).setUsuario(usuarioActual);
-                } else if (controller instanceof EditarPerfilController) {
-                    ((EditarPerfilController) controller).setUsuario(usuarioActual);
-                } else if (controller instanceof ObjetivosController) {
-                    ((ObjetivosController) controller).setUsuario(usuarioActual);
-                } else if (controller instanceof EstadisticasController) {
-                    ((EstadisticasController) controller).setUsuario(usuarioActual);
-                }
-            }
-            
-            Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
-            stage.setScene(new Scene(root));
-            stage.show();
-        } catch (IOException e) {
-            System.err.println("Error al cargar vista: " + e.getMessage());
-        }
+    @Override
+    public void setDashboardController(DashboardController dashboardController) {
+        this.dashboardController = dashboardController;
     }
-    
+
     /**
      * Muestra un diálogo con opciones para editar o eliminar un movimiento
      */
@@ -399,7 +345,7 @@ public class MainController {
             // Buscar la tarea asociada al movimiento seleccionado
             Integer tareaId = movimiento.getTareaId();
             tarea tareaSeleccionada = null;
-            
+
             if (tareaId != null) {
                 // Si tenemos el ID directamente, obtener la tarea
                 tareaSeleccionada = tareaDAO.obtenerPorId(tareaId);
@@ -408,33 +354,35 @@ public class MainController {
                 List<tarea> tareas = tareaDAO.obtenerUltimasTareas(usuarioActual.getId(), 100);
                 for (tarea t : tareas) {
                     // Comparar atributos para encontrar la tarea correcta
-                    if (t.getConcepto().equals(movimiento.getConcepto()) && 
-                        Math.abs(t.getCantidad() - movimiento.getCantidad()) < 0.01 &&
-                        ((t.getEstado().equals(tarea.ESTADO_INGRESO) && movimiento.getTipo() == Movimiento.TipoMovimiento.INGRESO) ||
-                         (t.getEstado().equals(tarea.ESTADO_GASTO) && movimiento.getTipo() == Movimiento.TipoMovimiento.GASTO))) {
+                    if (t.getConcepto().equals(movimiento.getConcepto()) &&
+                            Math.abs(t.getCantidad() - movimiento.getCantidad()) < 0.01 &&
+                            ((t.getEstado().equals(tarea.ESTADO_INGRESO)
+                                    && movimiento.getTipo() == Movimiento.TipoMovimiento.INGRESO) ||
+                                    (t.getEstado().equals(tarea.ESTADO_GASTO)
+                                            && movimiento.getTipo() == Movimiento.TipoMovimiento.GASTO))) {
                         tareaSeleccionada = t;
                         break;
                     }
                 }
             }
-            
+
             if (tareaSeleccionada == null) {
                 mostrarAlerta("No se pudo encontrar el movimiento en la base de datos.", Alert.AlertType.WARNING);
                 return;
             }
-            
+
             // Crear el diálogo de opciones
             Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
             alert.setTitle("Opciones de movimiento");
             alert.setHeaderText("¿Qué desea hacer con este movimiento?");
             alert.setContentText("Concepto: " + movimiento.getConcepto() + "\nCantidad: " + movimiento.getCantidad());
-            
+
             ButtonType btnEditar = new ButtonType("Editar");
             ButtonType btnEliminar = new ButtonType("Eliminar");
             ButtonType btnCancelar = new ButtonType("Cancelar");
-            
+
             alert.getButtonTypes().setAll(btnEditar, btnEliminar, btnCancelar);
-            
+
             Optional<ButtonType> resultado = alert.showAndWait();
             if (resultado.isPresent()) {
                 if (resultado.get() == btnEditar) {
@@ -445,34 +393,34 @@ public class MainController {
             }
         } catch (SQLException e) {
             mostrarAlerta("Error al acceder a la base de datos: " + e.getMessage(), Alert.AlertType.ERROR);
-            e.printStackTrace();
+            logger.error("Error DB", e);
         }
     }
-    
+
     /**
      * Abre el editor de movimientos con los datos existentes
      */
     private void abrirEditorMovimiento(tarea tareaParaEditar) {
         try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/es/franciscorodalf/saveinvestor/editarMovimiento.fxml"));
+            FXMLLoader loader = new FXMLLoader(getClass().getResource(AppConstants.FXML_EDITAR_MOVIMIENTO));
             Parent root = loader.load();
-            
+
             EditarMovimientoController controller = loader.getController();
             controller.inicializar(tareaParaEditar, usuarioActual, () -> actualizarInterfaz());
-            
+
             Stage stage = new Stage();
             stage.initModality(Modality.WINDOW_MODAL);
             stage.initOwner(listMovimientos.getScene().getWindow());
             stage.setScene(new Scene(root));
             stage.setTitle("Editar Movimiento");
             stage.showAndWait();
-            
+
         } catch (IOException e) {
             mostrarAlerta("Error al abrir editor: " + e.getMessage(), Alert.AlertType.ERROR);
-            e.printStackTrace();
+            logger.error("Error al abrir editor", e);
         }
     }
-    
+
     /**
      * Confirma y procesa la eliminación de un movimiento
      */
@@ -481,7 +429,7 @@ public class MainController {
         confirmacion.setTitle("Confirmar eliminación");
         confirmacion.setHeaderText("¿Está seguro de eliminar este movimiento?");
         confirmacion.setContentText("Esta acción no se puede deshacer");
-        
+
         Optional<ButtonType> resultado = confirmacion.showAndWait();
         if (resultado.isPresent() && resultado.get() == ButtonType.OK) {
             try {
@@ -495,23 +443,23 @@ public class MainController {
                     }
                     estadisticaDAO.actualizar(stats);
                 }
-                
+
                 // Eliminar la tarea sin activar triggers
                 tareaDAO.eliminarSinTrigger(tareaParaEliminar.getId());
-                
+
                 // Actualizar la interfaz
                 actualizarInterfaz();
-                
+
                 // Mostrar confirmación
                 mostrarAlerta("Movimiento eliminado correctamente", Alert.AlertType.INFORMATION);
-                
+
             } catch (SQLException e) {
                 mostrarAlerta("Error al eliminar movimiento: " + e.getMessage(), Alert.AlertType.ERROR);
-                e.printStackTrace();
+                logger.error("Error al eliminar movimiento", e);
             }
         }
     }
-    
+
     /**
      * Muestra una alerta con el mensaje indicado
      */

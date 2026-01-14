@@ -20,7 +20,7 @@ import javafx.stage.Stage;
 /**
  * Controlador para la edición de perfil.
  */
-public class EditarPerfilController {
+public class EditarPerfilController implements UsuarioAware, DashboardNavigable {
 
     @FXML
     private TextField txtNombre;
@@ -45,6 +45,7 @@ public class EditarPerfilController {
     
     private Usuario usuarioActual;
     private UsuarioDAO usuarioDAO;
+    private DashboardController dashboardController;
     
     @FXML
     private void initialize() {
@@ -59,9 +60,15 @@ public class EditarPerfilController {
      * Establece el usuario actual y carga sus datos en el formulario
      * @param usuario El usuario a editar
      */
+    @Override
     public void setUsuario(Usuario usuario) {
         this.usuarioActual = usuario;
         cargarDatosUsuario();
+    }
+
+    @Override
+    public void setDashboardController(DashboardController dashboardController) {
+        this.dashboardController = dashboardController;
     }
     
     /**
@@ -171,16 +178,20 @@ public class EditarPerfilController {
      * @param event Evento de acción
      */
     private void volverAPerfil(ActionEvent event) {
+        if (dashboardController != null) {
+            dashboardController.mostrarVistaPerfil();
+            return;
+        }
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/es/franciscorodalf/saveinvestor/perfil.fxml"));
             Parent root = loader.load();
-            
+
             // Pasar el usuario actualizado al controlador de perfil
             if (usuarioActual != null) {
                 PerfilController controller = loader.getController();
                 controller.setUsuario(usuarioActual);
             }
-            
+
             Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
             stage.setScene(new Scene(root));
             stage.show();
