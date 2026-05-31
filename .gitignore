@@ -1,0 +1,39 @@
+# Maven
+target/
+!.mvn/wrapper/maven-wrapper.jar
+!**/src/main/**/target/
+!**/src/test/**/target/
+
+# IDEs
+.idea/
+*.iml
+*.ipr
+*.iws
+.vscode/
+.project
+.classpath
+.settings/
+.factorypath
+nbproject/private/
+nbbuild/
+nbdist/
+.nb-gradle/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Spring Boot
+HELP.md
+
+# Logs
+*.log
+logs/
+
+# Env / secrets
+.env
+.env.local
+*.pem
+
+# Docker volumes
+postgres-data/
