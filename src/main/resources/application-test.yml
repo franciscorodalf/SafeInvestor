@@ -1,4 +1,9 @@
 spring:
+  datasource:
+    url: ${TEST_DB_URL:jdbc:postgresql://localhost:5432/safeinvestor}
+    username: ${TEST_DB_USERNAME:safeinvestor}
+    password: ${TEST_DB_PASSWORD:safeinvestor}
+    driver-class-name: org.postgresql.Driver
   jpa:
     hibernate:
       ddl-auto: validate
@@ -10,5 +15,4 @@ spring:
 
 logging:
   level:
-    org.testcontainers: INFO
-    com.github.dockerjava: WARN
+    org.flywaydb: INFO
