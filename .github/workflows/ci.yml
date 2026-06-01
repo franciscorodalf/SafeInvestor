@@ -1,0 +1,45 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  build:
+    name: Build & Test
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    services:
+      postgres:
+        image: postgres:16-alpine
+        env:
+          POSTGRES_DB: safeinvestor
+          POSTGRES_USER: safeinvestor
+          POSTGRES_PASSWORD: safeinvestor
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U safeinvestor -d safeinvestor"
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 10
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up JDK 21
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '21'
+          cache: maven
+
+      - name: Verify Maven wrapper
+        run: ./mvnw -v
+
+      - name: Build and test
+        run: ./mvnw -B verify
