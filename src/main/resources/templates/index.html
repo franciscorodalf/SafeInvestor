@@ -1,11 +1,21 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <title>SafeInvestor</title>
+    <script src="https://cdn.tailwindcss.com"></script>
 </head>
-<body>
-    <h1>SafeInvestor v2</h1>
-    <p>Scaffold ready. Auth and features ship in subsequent phases.</p>
+<body class="bg-gray-50 min-h-screen flex items-center justify-center">
+    <div class="text-center">
+        <h1 class="text-4xl font-bold text-blue-600 mb-4">SafeInvestor v2</h1>
+        <p class="text-gray-600 mb-6">Tu app de finanzas personales.</p>
+        <div sec:authorize="!isAuthenticated()" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+            <a href="/login" class="bg-blue-600 text-white px-6 py-2 rounded hover:bg-blue-700">Entrar</a>
+            <a href="/register" class="ml-2 border border-blue-600 text-blue-600 px-6 py-2 rounded hover:bg-blue-50">Crear cuenta</a>
+        </div>
+        <div sec:authorize="isAuthenticated()" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+            <p>Hola <span sec:authentication="name"></span>. El dashboard llega en la Fase 2.</p>
+        </div>
+    </div>
 </body>
 </html>

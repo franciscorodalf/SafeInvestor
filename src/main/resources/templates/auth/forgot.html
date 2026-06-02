@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8"><title>Recuperar contraseña — SafeInvestor</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-50 min-h-screen flex items-center justify-center">
+<form th:action="@{/forgot}" method="post" class="bg-white p-8 rounded shadow w-full max-w-sm">
+    <h1 class="text-2xl font-bold mb-4 text-center">Recuperar contraseña</h1>
+    <p class="text-sm text-gray-600 mb-4">Te enviaremos un enlace para restablecerla.</p>
+    <div th:if="${sent}" class="bg-green-100 text-green-700 p-3 rounded mb-4 text-sm">
+        Si el email existe, recibirás instrucciones (en dev, mira los logs).
+    </div>
+    <label class="block mb-4">
+        <span class="text-sm text-gray-700">Email</span>
+        <input name="email" type="email" required class="mt-1 w-full px-3 py-2 border rounded">
+    </label>
+    <button class="w-full bg-blue-600 text-white py-2 rounded hover:bg-blue-700">Enviar enlace</button>
+    <a href="/login" class="block mt-4 text-sm text-center text-blue-600 hover:underline">Volver a entrar</a>
+</form>
+</body>
+</html>

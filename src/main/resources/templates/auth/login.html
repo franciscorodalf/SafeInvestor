@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8"><title>Entrar — SafeInvestor</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-50 min-h-screen flex items-center justify-center">
+<form th:action="@{/login}" method="post" class="bg-white p-8 rounded shadow w-full max-w-sm">
+    <h1 class="text-2xl font-bold mb-6 text-center">Entrar</h1>
+    <div th:if="${param.error}" class="bg-red-100 text-red-700 p-3 rounded mb-4 text-sm">
+        Email o contraseña incorrectos.
+    </div>
+    <div th:if="${param.logout}" class="bg-green-100 text-green-700 p-3 rounded mb-4 text-sm">
+        Has cerrado sesión correctamente.
+    </div>
+    <div th:if="${param.registered}" class="bg-green-100 text-green-700 p-3 rounded mb-4 text-sm">
+        Cuenta creada. Inicia sesión.
+    </div>
+    <div th:if="${param.reset}" class="bg-green-100 text-green-700 p-3 rounded mb-4 text-sm">
+        Contraseña restablecida. Entra con la nueva.
+    </div>
+    <label class="block mb-3">
+        <span class="text-sm text-gray-700">Email</span>
+        <input name="username" type="email" required class="mt-1 w-full px-3 py-2 border rounded">
+    </label>
+    <label class="block mb-4">
+        <span class="text-sm text-gray-700">Contraseña</span>
+        <input name="password" type="password" required class="mt-1 w-full px-3 py-2 border rounded">
+    </label>
+    <button class="w-full bg-blue-600 text-white py-2 rounded hover:bg-blue-700">Entrar</button>
+    <div class="mt-4 text-sm text-center space-y-1">
+        <a href="/register" class="text-blue-600 hover:underline block">¿No tienes cuenta? Regístrate</a>
+        <a href="/forgot" class="text-gray-500 hover:underline block">¿Olvidaste tu contraseña?</a>
+    </div>
+</form>
+</body>
+</html>
