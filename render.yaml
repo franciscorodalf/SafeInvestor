@@ -7,10 +7,18 @@ services:
     healthCheckPath: /actuator/health
     autoDeploy: true
     envVars:
-      - key: DB_URL
+      - key: DB_HOST
         fromDatabase:
           name: safeinvestor-db
-          property: connectionString
+          property: host
+      - key: DB_PORT
+        fromDatabase:
+          name: safeinvestor-db
+          property: port
+      - key: DB_NAME
+        fromDatabase:
+          name: safeinvestor-db
+          property: database
       - key: DB_USERNAME
         fromDatabase:
           name: safeinvestor-db

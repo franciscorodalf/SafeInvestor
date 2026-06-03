@@ -3,7 +3,7 @@ spring:
     name: safeinvestor
 
   datasource:
-    url: ${DB_URL:jdbc:postgresql://localhost:5432/safeinvestor}
+    url: ${DB_URL:jdbc:postgresql://${DB_HOST:localhost}:${DB_PORT:5432}/${DB_NAME:safeinvestor}}
     username: ${DB_USERNAME:safeinvestor}
     password: ${DB_PASSWORD:safeinvestor}
     driver-class-name: org.postgresql.Driver
