@@ -1,0 +1,31 @@
+services:
+  - type: web
+    name: safeinvestor
+    runtime: docker
+    plan: free
+    dockerfilePath: ./Dockerfile
+    healthCheckPath: /actuator/health
+    autoDeploy: true
+    envVars:
+      - key: DB_URL
+        fromDatabase:
+          name: safeinvestor-db
+          property: connectionString
+      - key: DB_USERNAME
+        fromDatabase:
+          name: safeinvestor-db
+          property: user
+      - key: DB_PASSWORD
+        fromDatabase:
+          name: safeinvestor-db
+          property: password
+      - key: JWT_SECRET
+        generateValue: true
+      - key: APP_BASE_URL
+        sync: false
+
+databases:
+  - name: safeinvestor-db
+    plan: free
+    databaseName: safeinvestor
+    user: safeinvestor
