@@ -2,14 +2,44 @@
 
 > Aplicación web de finanzas personales — gestiona gastos, ahorros, objetivos y tareas financieras, y aprende tips de economía.
 
-**Estado:** v2 scaffold (Fase 0 completada). Auth y features en desarrollo.
+[![CI](https://github.com/franciscorodalf/SafeInvestor/actions/workflows/ci.yml/badge.svg)](https://github.com/franciscorodalf/SafeInvestor/actions/workflows/ci.yml)
+[![Java](https://img.shields.io/badge/Java-21-orange?logo=openjdk)](https://openjdk.org/projects/jdk/21/)
+[![Spring Boot](https://img.shields.io/badge/Spring%20Boot-3.3-6DB33F?logo=spring)](https://spring.io/projects/spring-boot)
+[![License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
+
+**Estado:** v2 Fase 1 desplegada. Auth funcionando con sesión web + JWT en API.
+
+## 🚀 Demo en vivo
+
+👉 **[https://safeinvestor.onrender.com](https://safeinvestor.onrender.com)**
+
+Regístrate en `/register` y prueba `/login`. La API REST está en `/api/auth/*`.
+
+> ⚠️ La demo corre en el plan free de Render, así que la app se duerme tras 15 min sin tráfico. El primer hit puede tardar ~30-60s en despertar. Pasado eso, va fluida.
+
+### Probar la API rápido
+
+```bash
+# Registro
+curl -X POST https://safeinvestor.onrender.com/api/auth/register \
+  -H 'Content-Type: application/json' \
+  -d '{"email":"tu@email.com","nombre":"Tu Nombre","password":"password123"}'
+
+# Login
+curl -X POST https://safeinvestor.onrender.com/api/auth/login \
+  -H 'Content-Type: application/json' \
+  -d '{"email":"tu@email.com","password":"password123"}'
+```
 
 ## Stack
 
 - **Java 21**, **Spring Boot 3.3** (Web, Data JPA, Security, Thymeleaf, Validation, Actuator)
 - **PostgreSQL 16** + migraciones con **Flyway**
-- **JUnit 5**, **Mockito**, **Testcontainers** (integración en Fase 2)
-- **Maven**, **Docker**, **GitHub Actions**
+- **Spring Security**: doble filter chain — sesión cookie para web + JWT (jjwt 0.12) para API
+- **BCrypt** para hashing de contraseñas
+- **JUnit 5** + **Mockito** + **MockMvc** (8 tests de integración)
+- **Maven**, **Docker** (imagen multi-stage), **GitHub Actions** (CI verde)
+- **Render** para el deploy público
 
 ## Ejecutar en local
 
@@ -22,6 +52,8 @@ docker compose up -d
 
 - App: `http://localhost:8080`
 - Health: `http://localhost:8080/actuator/health`
+- Registro: `http://localhost:8080/register`
+- Login: `http://localhost:8080/login`
 
 ## Tests
 
@@ -32,12 +64,47 @@ docker compose up -d   # Postgres debe estar levantado
 
 En CI, GitHub Actions levanta el mismo Postgres como service container.
 
+## Endpoints
+
+### Web (Thymeleaf + sesión)
+
+| Método | Ruta | Descripción |
+|--------|------|-------------|
+| GET | `/` | Landing |
+| GET/POST | `/login` | Login form |
+| GET/POST | `/register` | Registro |
+| GET/POST | `/forgot` | Solicitar reset de contraseña (link en logs en dev) |
+| GET/POST | `/reset/{token}` | Establecer nueva contraseña |
+| POST | `/logout` | Cerrar sesión |
+
+### API REST (JWT)
+
+| Método | Ruta | Códigos |
+|--------|------|---------|
+| POST | `/api/auth/register` | 201 / 409 |
+| POST | `/api/auth/login` | 200 / 401 |
+
+### Actuator
+
+| Método | Ruta | Descripción |
+|--------|------|-------------|
+| GET | `/actuator/health` | Healthcheck (200 UP) |
+
 ## v1 (JavaFX desktop)
 
 La versión original desarrollada durante 1ºDAM se conserva en:
 
 - Tag: [`v1-javafx`](https://github.com/franciscorodalf/SafeInvestor/tree/v1-javafx)
 - Rama: [`legacy/javafx`](https://github.com/franciscorodalf/SafeInvestor/tree/legacy/javafx)
+
+## Roadmap
+
+- [x] **Fase 0** — Scaffold Spring Boot + Postgres + CI
+- [x] **Fase 1** — Auth (sesión web + JWT API) + reset de contraseña + deploy en Render
+- [ ] **Fase 2** — CRUD de movimientos (gastos/ingresos) + categorías
+- [ ] **Fase 3** — Objetivos de ahorro + tareas financieras
+- [ ] **Fase 4** — Dashboard con estadísticas (Chart.js) + export CSV/PDF
+- [ ] **Fase 5** — Tips de economía + i18n ES/EN + dark mode
 
 ## Licencia
 
