@@ -7,7 +7,7 @@
 [![Spring Boot](https://img.shields.io/badge/Spring%20Boot-3.3-6DB33F?logo=spring)](https://spring.io/projects/spring-boot)
 [![License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 
-**Estado:** v2 Fase 1 desplegada. Auth funcionando con sesión web + JWT en API.
+**Estado:** v2 Fase 2 desplegada. Auth + CRUD de movimientos (gastos/ingresos) + categorías.
 
 ## 🚀 Demo en vivo
 
@@ -37,7 +37,7 @@ curl -X POST https://safeinvestor.onrender.com/api/auth/login \
 - **PostgreSQL 16** + migraciones con **Flyway**
 - **Spring Security**: doble filter chain — sesión cookie para web + JWT (jjwt 0.12) para API
 - **BCrypt** para hashing de contraseñas
-- **JUnit 5** + **Mockito** + **MockMvc** (8 tests de integración)
+- **JUnit 5** + **Mockito** + **MockMvc** (14 tests de integración)
 - **Maven**, **Docker** (imagen multi-stage), **GitHub Actions** (CI verde)
 - **Render** para el deploy público
 
@@ -76,6 +76,11 @@ En CI, GitHub Actions levanta el mismo Postgres como service container.
 | GET/POST | `/forgot` | Solicitar reset de contraseña (link en logs en dev) |
 | GET/POST | `/reset/{token}` | Establecer nueva contraseña |
 | POST | `/logout` | Cerrar sesión |
+| GET | `/movimientos` | Lista paginada con filtros (categoría, fechas) |
+| GET/POST | `/movimientos/nuevo` | Nuevo gasto/ingreso |
+| GET/POST | `/movimientos/{id}/editar` | Editar |
+| POST | `/movimientos/{id}/borrar` | Eliminar |
+| GET/POST | `/categorias` | Gestión de categorías |
 
 ### API REST (JWT)
 
@@ -83,6 +88,17 @@ En CI, GitHub Actions levanta el mismo Postgres como service container.
 |--------|------|---------|
 | POST | `/api/auth/register` | 201 / 409 |
 | POST | `/api/auth/login` | 200 / 401 |
+| GET | `/api/categorias` | 200 |
+| POST | `/api/categorias` | 201 / 409 |
+| PUT | `/api/categorias/{id}` | 200 / 404 |
+| DELETE | `/api/categorias/{id}` | 204 / 404 |
+| GET | `/api/movimientos?categoriaId=&desde=&hasta=&page=` | 200 |
+| POST | `/api/movimientos` | 201 |
+| GET | `/api/movimientos/{id}` | 200 / 404 |
+| PUT | `/api/movimientos/{id}` | 200 / 404 |
+| DELETE | `/api/movimientos/{id}` | 204 / 404 |
+
+Todos los endpoints de `/api/` (excepto `/api/auth/*`) requieren `Authorization: Bearer <JWT>`. Sin auth → 401.
 
 ### Actuator
 
@@ -101,7 +117,7 @@ La versión original desarrollada durante 1ºDAM se conserva en:
 
 - [x] **Fase 0** — Scaffold Spring Boot + Postgres + CI
 - [x] **Fase 1** — Auth (sesión web + JWT API) + reset de contraseña + deploy en Render
-- [ ] **Fase 2** — CRUD de movimientos (gastos/ingresos) + categorías
+- [x] **Fase 2** — CRUD de movimientos (gastos/ingresos) + categorías con seed por defecto
 - [ ] **Fase 3** — Objetivos de ahorro + tareas financieras
 - [ ] **Fase 4** — Dashboard con estadísticas (Chart.js) + export CSV/PDF
 - [ ] **Fase 5** — Tips de economía + i18n ES/EN + dark mode
