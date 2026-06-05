@@ -2,6 +2,8 @@ package es.franciscorodalf.safeinvestor.auth.service;
 
 import es.franciscorodalf.safeinvestor.auth.domain.Usuario;
 import es.franciscorodalf.safeinvestor.auth.domain.UsuarioRepository;
+import es.franciscorodalf.safeinvestor.movimientos.service.CategoriaService;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -11,10 +13,14 @@ public class UsuarioService {
 
     private final UsuarioRepository usuarios;
     private final PasswordEncoder passwordEncoder;
+    private final CategoriaService categoriaService;
 
-    public UsuarioService(UsuarioRepository usuarios, PasswordEncoder passwordEncoder) {
+    public UsuarioService(UsuarioRepository usuarios,
+                          PasswordEncoder passwordEncoder,
+                          @Lazy CategoriaService categoriaService) {
         this.usuarios = usuarios;
         this.passwordEncoder = passwordEncoder;
+        this.categoriaService = categoriaService;
     }
 
     @Transactional
@@ -23,7 +29,9 @@ public class UsuarioService {
             throw new EmailAlreadyRegisteredException(email);
         }
         Usuario u = new Usuario(email.toLowerCase(), nombre, passwordEncoder.encode(rawPassword));
-        return usuarios.save(u);
+        Usuario saved = usuarios.save(u);
+        categoriaService.seedDefaults(saved);
+        return saved;
     }
 
     @Transactional
