@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8"><title>Movimientos — SafeInvestor</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-50 min-h-screen">
+<nav class="bg-white shadow">
+    <div class="max-w-5xl mx-auto px-4 py-3 flex justify-between items-center">
+        <a href="/" class="text-xl font-bold text-blue-600">SafeInvestor</a>
+        <div class="flex items-center gap-4 text-sm">
+            <a href="/movimientos" class="text-blue-600 font-semibold">Movimientos</a>
+            <a href="/categorias" class="text-gray-700 hover:text-blue-600">Categorías</a>
+            <form th:action="@{/logout}" method="post" class="inline">
+                <button class="text-red-600 hover:underline">Cerrar sesión</button>
+            </form>
+        </div>
+    </div>
+</nav>
+<main class="max-w-5xl mx-auto px-4 py-6">
+    <div class="flex justify-between items-center mb-4">
+        <h1 class="text-2xl font-bold">Mis movimientos</h1>
+        <a href="/movimientos/nuevo" class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">+ Nuevo</a>
+    </div>
+
+    <form method="get" action="/movimientos" class="bg-white p-4 rounded shadow mb-4 grid grid-cols-1 md:grid-cols-4 gap-3 text-sm">
+        <select name="categoriaId" class="border rounded px-2 py-1">
+            <option value="">Todas las categorías</option>
+            <option th:each="c : ${categorias}" th:value="${c.id}" th:text="${c.nombre}"
+                    th:selected="${c.id == currentCategoriaId}"></option>
+        </select>
+        <input type="date" name="desde" th:value="${desde}" class="border rounded px-2 py-1">
+        <input type="date" name="hasta" th:value="${hasta}" class="border rounded px-2 py-1">
+        <button class="bg-gray-700 text-white rounded px-3 py-1">Filtrar</button>
+    </form>
+
+    <div class="bg-white rounded shadow overflow-hidden">
+        <table class="w-full text-sm">
+            <thead class="bg-gray-100 text-left">
+                <tr><th class="p-3">Fecha</th><th>Categoría</th><th>Descripción</th><th class="text-right">Importe</th><th></th></tr>
+            </thead>
+            <tbody>
+            <tr th:each="m : ${movimientos}" class="border-t hover:bg-gray-50">
+                <td class="p-3" th:text="${#temporals.format(m.fecha, 'dd/MM/yyyy')}"></td>
+                <td>
+                    <span th:if="${m.categoria != null}"
+                          class="inline-block w-3 h-3 rounded-full mr-1"
+                          th:style="'background-color:' + ${m.categoria.color}"></span>
+                    <span th:text="${m.categoria != null ? m.categoria.nombre : '—'}"></span>
+                </td>
+                <td th:text="${m.descripcion ?: ''}"></td>
+                <td class="text-right font-mono"
+                    th:classappend="${m.tipo.name() == 'GASTO'} ? 'text-red-600' : 'text-green-600'">
+                    <span th:text="${m.tipo.name() == 'GASTO' ? '-' : '+'}"></span>
+                    <span th:text="${#numbers.formatDecimal(m.importe, 1, 2)} + ' €'"></span>
+                </td>
+                <td class="text-right pr-3">
+                    <a th:href="@{/movimientos/{id}/editar(id=${m.id})}" class="text-blue-600 text-xs">Editar</a>
+                    <form th:action="@{/movimientos/{id}/borrar(id=${m.id})}" method="post" class="inline ml-2">
+                        <button class="text-red-600 text-xs" onclick="return confirm('¿Borrar este movimiento?')">Borrar</button>
+                    </form>
+                </td>
+            </tr>
+            <tr th:if="${#lists.isEmpty(movimientos)}">
+                <td colspan="5" class="p-6 text-center text-gray-500">No hay movimientos todavía. <a href="/movimientos/nuevo" class="text-blue-600">Crear el primero</a>.</td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <div class="flex justify-between mt-4 text-sm">
+        <a th:if="${hasPrev}" th:href="@{/movimientos(page=${page - 1}, categoriaId=${currentCategoriaId}, desde=${desde}, hasta=${hasta})}"
+           class="text-blue-600">&larr; Anterior</a>
+        <span></span>
+        <a th:if="${hasNext}" th:href="@{/movimientos(page=${page + 1}, categoriaId=${currentCategoriaId}, desde=${desde}, hasta=${hasta})}"
+           class="text-blue-600">Siguiente &rarr;</a>
+    </div>
+</main>
+</body>
+</html>

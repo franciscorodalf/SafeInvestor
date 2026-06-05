@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8"><title>Categorías — SafeInvestor</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-50 min-h-screen">
+<nav class="bg-white shadow">
+    <div class="max-w-5xl mx-auto px-4 py-3 flex justify-between items-center">
+        <a href="/" class="text-xl font-bold text-blue-600">SafeInvestor</a>
+        <div class="flex items-center gap-4 text-sm">
+            <a href="/movimientos" class="text-gray-700 hover:text-blue-600">Movimientos</a>
+            <a href="/categorias" class="text-blue-600 font-semibold">Categorías</a>
+        </div>
+    </div>
+</nav>
+<main class="max-w-2xl mx-auto px-4 py-6">
+    <h1 class="text-2xl font-bold mb-4">Mis categorías</h1>
+
+    <form method="post" action="/categorias" class="bg-white p-4 rounded shadow mb-6 flex gap-2 items-end">
+        <label class="flex-1">
+            <span class="text-sm text-gray-700">Nombre</span>
+            <input name="nombre" type="text" required maxlength="50" class="mt-1 w-full px-3 py-2 border rounded">
+        </label>
+        <label>
+            <span class="text-sm text-gray-700">Color</span>
+            <input name="color" type="color" value="#6B7280" class="mt-1 h-10 w-16 border rounded">
+        </label>
+        <button class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">+ Añadir</button>
+    </form>
+
+    <div class="bg-white rounded shadow divide-y">
+        <div th:each="c : ${categorias}" class="flex items-center justify-between p-3">
+            <div class="flex items-center gap-3">
+                <span class="inline-block w-4 h-4 rounded-full" th:style="'background-color:' + ${c.color}"></span>
+                <span th:text="${c.nombre}"></span>
+            </div>
+            <form th:action="@{/categorias/{id}/borrar(id=${c.id})}" method="post">
+                <button class="text-red-600 text-sm" onclick="return confirm('¿Borrar esta categoría?')">Borrar</button>
+            </form>
+        </div>
+    </div>
+</main>
+</body>
+</html>
