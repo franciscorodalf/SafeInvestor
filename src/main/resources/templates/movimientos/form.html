@@ -1,51 +1,82 @@
 <!DOCTYPE html>
 <html lang="es" xmlns:th="http://www.thymeleaf.org">
-<head>
-    <meta charset="UTF-8"><title>Movimiento — SafeInvestor</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-</head>
-<body class="bg-gray-50 min-h-screen">
-<nav class="bg-white shadow">
-    <div class="max-w-5xl mx-auto px-4 py-3">
-        <a href="/" class="text-xl font-bold text-blue-600">SafeInvestor</a>
-    </div>
-</nav>
-<main class="max-w-md mx-auto px-4 py-6">
-    <h1 class="text-2xl font-bold mb-4" th:text="${form.id == null ? 'Nuevo movimiento' : 'Editar movimiento'}">Movimiento</h1>
+<head th:replace="~{fragments/head :: head('Movimiento')}"></head>
+<body>
+<nav th:replace="~{fragments/nav :: nav('movimientos')}"></nav>
+
+<main class="max-w-2xl mx-auto px-5 py-10">
+
+    <a href="/movimientos" class="text-sm text-ink-soft hover:text-brand inline-flex items-center gap-1.5 mb-6">
+        <i class="ph ph-arrow-left"></i> Volver
+    </a>
+
+    <header class="mb-8 fade-up">
+        <p class="text-xs tracking-[0.18em] uppercase text-ink-soft mb-1" th:text="${form.id == null ? 'Nuevo registro' : 'Edición'}">Nuevo registro</p>
+        <h1 class="font-display text-4xl" th:text="${form.id == null ? 'Nuevo movimiento' : 'Editar movimiento'}">Nuevo movimiento</h1>
+    </header>
+
     <form th:action="${form.id == null ? '/movimientos' : '/movimientos/' + form.id}"
-          th:object="${form}" method="post" class="bg-white p-6 rounded shadow space-y-3">
+          th:object="${form}" method="post"
+          class="bg-surface border border-line rounded-lg p-6 sm:p-8 shadow-sm space-y-5">
+
+        <!-- Tipo (radio segmented) -->
+        <fieldset>
+            <legend class="text-sm text-ink-soft mb-2 block">Tipo</legend>
+            <div class="grid grid-cols-2 gap-2 p-1 bg-bg-soft rounded-lg">
+                <label class="cursor-pointer">
+                    <input th:field="*{tipo}" type="radio" value="GASTO" class="peer sr-only">
+                    <div class="px-4 py-2.5 rounded-md text-center text-sm font-medium peer-checked:bg-negative peer-checked:text-bg peer-checked:shadow text-ink-soft flex items-center justify-center gap-2">
+                        <i class="ph ph-arrow-up-right"></i> Gasto
+                    </div>
+                </label>
+                <label class="cursor-pointer">
+                    <input th:field="*{tipo}" type="radio" value="INGRESO" class="peer sr-only">
+                    <div class="px-4 py-2.5 rounded-md text-center text-sm font-medium peer-checked:bg-positive peer-checked:text-bg peer-checked:shadow text-ink-soft flex items-center justify-center gap-2">
+                        <i class="ph ph-arrow-down-left"></i> Ingreso
+                    </div>
+                </label>
+            </div>
+        </fieldset>
+
+        <!-- Importe (hero) -->
         <label class="block">
-            <span class="text-sm text-gray-700">Tipo</span>
-            <select th:field="*{tipo}" class="mt-1 w-full px-3 py-2 border rounded">
-                <option value="GASTO">Gasto</option>
-                <option value="INGRESO">Ingreso</option>
-            </select>
+            <span class="text-sm text-ink-soft mb-1.5 block">Importe</span>
+            <div class="relative">
+                <input th:field="*{importe}" type="number" step="0.01" min="0.01" required
+                       placeholder="0.00"
+                       class="input font-mono text-3xl py-4 pr-12 text-right">
+                <span class="absolute right-4 top-1/2 -translate-y-1/2 font-mono text-2xl text-ink-soft">€</span>
+            </div>
+            <span class="text-negative text-xs mt-1 block" th:if="${#fields.hasErrors('importe')}" th:errors="*{importe}"></span>
         </label>
+
+        <!-- Categoría -->
         <label class="block">
-            <span class="text-sm text-gray-700">Importe (€)</span>
-            <input th:field="*{importe}" type="number" step="0.01" min="0.01" required
-                   class="mt-1 w-full px-3 py-2 border rounded">
-            <span class="text-red-600 text-xs" th:if="${#fields.hasErrors('importe')}" th:errors="*{importe}"></span>
-        </label>
-        <label class="block">
-            <span class="text-sm text-gray-700">Categoría</span>
-            <select th:field="*{categoriaId}" class="mt-1 w-full px-3 py-2 border rounded">
+            <span class="text-sm text-ink-soft mb-1.5 block">Categoría</span>
+            <select th:field="*{categoriaId}" class="input">
                 <option value="">— Sin categoría —</option>
                 <option th:each="c : ${categorias}" th:value="${c.id}" th:text="${c.nombre}"></option>
             </select>
         </label>
+
+        <!-- Descripción -->
         <label class="block">
-            <span class="text-sm text-gray-700">Descripción</span>
+            <span class="text-sm text-ink-soft mb-1.5 block">Descripción <span class="text-ink-soft/60 font-normal">(opcional)</span></span>
             <input th:field="*{descripcion}" type="text" maxlength="200"
-                   class="mt-1 w-full px-3 py-2 border rounded">
+                   placeholder="Cena con amigos, gasolina, factura del móvil..." class="input">
         </label>
+
+        <!-- Fecha -->
         <label class="block">
-            <span class="text-sm text-gray-700">Fecha</span>
-            <input th:field="*{fecha}" type="date" required class="mt-1 w-full px-3 py-2 border rounded">
+            <span class="text-sm text-ink-soft mb-1.5 block">Fecha</span>
+            <input th:field="*{fecha}" type="date" required class="input">
         </label>
-        <div class="flex justify-between pt-2">
-            <a href="/movimientos" class="text-gray-600 hover:underline">Cancelar</a>
-            <button class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">Guardar</button>
+
+        <div class="flex justify-end gap-3 pt-3 border-t border-line">
+            <a href="/movimientos" class="btn btn-ghost">Cancelar</a>
+            <button class="btn btn-primary">
+                <i class="ph ph-check"></i> Guardar
+            </button>
         </div>
     </form>
 </main>
