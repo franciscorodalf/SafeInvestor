@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8"><title>Objetivos — SafeInvestor</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-50 min-h-screen">
+<nav class="bg-white shadow">
+    <div class="max-w-5xl mx-auto px-4 py-3 flex justify-between items-center">
+        <a href="/" class="text-xl font-bold text-blue-600">SafeInvestor</a>
+        <div class="flex items-center gap-4 text-sm">
+            <a href="/movimientos" class="text-gray-700 hover:text-blue-600">Movimientos</a>
+            <a href="/categorias" class="text-gray-700 hover:text-blue-600">Categorías</a>
+            <a href="/objetivos" class="text-blue-600 font-semibold">Objetivos</a>
+            <a href="/tareas" class="text-gray-700 hover:text-blue-600">Tareas</a>
+            <form th:action="@{/logout}" method="post" class="inline">
+                <button class="text-red-600 hover:underline">Cerrar sesión</button>
+            </form>
+        </div>
+    </div>
+</nav>
+<main class="max-w-5xl mx-auto px-4 py-6">
+    <div class="flex justify-between items-center mb-4">
+        <h1 class="text-2xl font-bold">Mis objetivos de ahorro</h1>
+        <a href="/objetivos/nuevo" class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">+ Nuevo</a>
+    </div>
+
+    <div th:if="${#lists.isEmpty(objetivos)}" class="bg-white rounded shadow p-8 text-center text-gray-500">
+        No tienes objetivos todavía. <a href="/objetivos/nuevo" class="text-blue-600">Crear el primero</a>.
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <a th:each="o : ${objetivos}" th:href="@{/objetivos/{id}(id=${o.id})}"
+           class="bg-white rounded shadow p-4 hover:shadow-md transition"
+           th:classappend="${o.completado} ? 'opacity-70'">
+            <div class="flex items-center justify-between mb-2">
+                <div class="flex items-center gap-2">
+                    <span class="inline-block w-3 h-3 rounded-full" th:style="'background-color:' + ${o.color}"></span>
+                    <h2 class="font-semibold" th:text="${o.nombre}"></h2>
+                </div>
+                <span th:if="${o.completado}" class="text-green-600 text-xs font-semibold">✓ Completado</span>
+            </div>
+            <div class="text-sm text-gray-600 mb-2">
+                <span th:text="${#numbers.formatDecimal(o.importeAhorrado, 1, 2)} + ' € de '"></span>
+                <span th:text="${#numbers.formatDecimal(o.importeObjetivo, 1, 2)} + ' €'"></span>
+                <span th:if="${o.fechaLimite}" class="text-gray-400 ml-2">
+                    · antes de <span th:text="${#temporals.format(o.fechaLimite, 'dd/MM/yyyy')}"></span>
+                </span>
+            </div>
+            <div class="bg-gray-200 rounded h-3 overflow-hidden">
+                <div class="h-full transition-all" th:style="'width:' + ${o.porcentaje} + '%; background-color:' + ${o.color}"></div>
+            </div>
+            <div class="text-xs text-gray-500 mt-1 text-right">
+                <span th:text="${o.porcentaje} + '%'"></span>
+            </div>
+        </a>
+    </div>
+</main>
+</body>
+</html>

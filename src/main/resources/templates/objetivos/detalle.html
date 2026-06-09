@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8"><title th:text="${objetivo.nombre} + ' — SafeInvestor'">Objetivo</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-50 min-h-screen">
+<nav class="bg-white shadow">
+    <div class="max-w-3xl mx-auto px-4 py-3 flex justify-between items-center">
+        <a href="/" class="text-xl font-bold text-blue-600">SafeInvestor</a>
+        <a href="/objetivos" class="text-sm text-gray-600 hover:text-blue-600">← Volver a objetivos</a>
+    </div>
+</nav>
+<main class="max-w-3xl mx-auto px-4 py-6">
+    <div class="bg-white rounded shadow p-6 mb-4">
+        <div class="flex items-center justify-between mb-3">
+            <div class="flex items-center gap-3">
+                <span class="inline-block w-5 h-5 rounded-full" th:style="'background-color:' + ${objetivo.color}"></span>
+                <h1 class="text-2xl font-bold" th:text="${objetivo.nombre}"></h1>
+            </div>
+            <span th:if="${objetivo.completado}" class="bg-green-100 text-green-700 px-3 py-1 rounded-full text-sm font-semibold">✓ Completado</span>
+        </div>
+        <p class="text-gray-600 mb-4">
+            <span class="font-mono font-semibold" th:text="${#numbers.formatDecimal(objetivo.importeAhorrado, 1, 2)} + ' €'"></span>
+            de
+            <span class="font-mono" th:text="${#numbers.formatDecimal(objetivo.importeObjetivo, 1, 2)} + ' €'"></span>
+            <span th:if="${objetivo.fechaLimite}" class="ml-3 text-gray-400">
+                · fecha límite: <span th:text="${#temporals.format(objetivo.fechaLimite, 'dd/MM/yyyy')}"></span>
+            </span>
+        </p>
+        <div class="bg-gray-200 rounded h-5 overflow-hidden mb-2">
+            <div class="h-full transition-all" th:style="'width:' + ${objetivo.porcentaje} + '%; background-color:' + ${objetivo.color}"></div>
+        </div>
+        <p class="text-right text-sm text-gray-500" th:text="${objetivo.porcentaje} + '%'"></p>
+    </div>
+
+    <div th:unless="${objetivo.completado}" class="bg-white rounded shadow p-6 mb-4">
+        <h2 class="font-semibold mb-3">Aportar dinero</h2>
+        <form th:action="@{/objetivos/{id}/aportar(id=${objetivo.id})}" method="post" class="flex gap-2 items-end">
+            <label class="flex-1">
+                <span class="text-sm text-gray-700">Importe (€)</span>
+                <input name="importe" type="number" step="0.01" min="0.01" required
+                       class="mt-1 w-full px-3 py-2 border rounded">
+            </label>
+            <button class="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700">+ Aportar</button>
+        </form>
+    </div>
+
+    <div class="flex justify-between text-sm">
+        <a th:href="@{/objetivos/{id}/editar(id=${objetivo.id})}" class="text-blue-600 hover:underline">Editar objetivo</a>
+        <form th:action="@{/objetivos/{id}/borrar(id=${objetivo.id})}" method="post">
+            <button class="text-red-600 hover:underline" onclick="return confirm('¿Borrar este objetivo?')">Borrar</button>
+        </form>
+    </div>
+</main>
+</body>
+</html>

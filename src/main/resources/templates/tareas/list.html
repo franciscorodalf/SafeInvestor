@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8"><title>Tareas — SafeInvestor</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-50 min-h-screen">
+<nav class="bg-white shadow">
+    <div class="max-w-3xl mx-auto px-4 py-3 flex justify-between items-center">
+        <a href="/" class="text-xl font-bold text-blue-600">SafeInvestor</a>
+        <div class="flex items-center gap-4 text-sm">
+            <a href="/movimientos" class="text-gray-700 hover:text-blue-600">Movimientos</a>
+            <a href="/categorias" class="text-gray-700 hover:text-blue-600">Categorías</a>
+            <a href="/objetivos" class="text-gray-700 hover:text-blue-600">Objetivos</a>
+            <a href="/tareas" class="text-blue-600 font-semibold">Tareas</a>
+            <form th:action="@{/logout}" method="post" class="inline">
+                <button class="text-red-600 hover:underline">Cerrar sesión</button>
+            </form>
+        </div>
+    </div>
+</nav>
+<main class="max-w-3xl mx-auto px-4 py-6">
+    <h1 class="text-2xl font-bold mb-4">Mis tareas financieras</h1>
+
+    <form th:action="@{/tareas}" th:object="${form}" method="post" class="bg-white p-4 rounded shadow mb-6 space-y-3">
+        <h2 class="font-semibold">Añadir tarea</h2>
+        <label class="block">
+            <span class="text-sm text-gray-700">Título</span>
+            <input th:field="*{titulo}" type="text" required maxlength="150" class="mt-1 w-full px-3 py-2 border rounded" placeholder="Pagar alquiler antes del día 5">
+            <span class="text-red-600 text-xs" th:if="${#fields.hasErrors('titulo')}" th:errors="*{titulo}"></span>
+        </label>
+        <label class="block">
+            <span class="text-sm text-gray-700">Descripción (opcional)</span>
+            <textarea th:field="*{descripcion}" maxlength="500" rows="2" class="mt-1 w-full px-3 py-2 border rounded"></textarea>
+        </label>
+        <label class="block">
+            <span class="text-sm text-gray-700">Fecha de vencimiento (opcional)</span>
+            <input th:field="*{fechaVencimiento}" type="date" class="mt-1 w-full px-3 py-2 border rounded">
+        </label>
+        <button class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">+ Añadir</button>
+    </form>
+
+    <div th:if="${#lists.isEmpty(tareas)}" class="bg-white rounded shadow p-8 text-center text-gray-500">
+        No tienes tareas todavía.
+    </div>
+
+    <div class="bg-white rounded shadow divide-y">
+        <div th:each="t : ${tareas}" class="flex items-start gap-3 p-4"
+             th:classappend="${t.completada} ? 'opacity-60' : (${t.vencida} ? 'bg-red-50' : '')">
+            <form th:if="${!t.completada}" th:action="@{/tareas/{id}/completar(id=${t.id})}" method="post" class="pt-1">
+                <button class="w-5 h-5 border-2 border-gray-400 rounded hover:bg-blue-100" title="Marcar completada"></button>
+            </form>
+            <form th:if="${t.completada}" th:action="@{/tareas/{id}/descompletar(id=${t.id})}" method="post" class="pt-1">
+                <button class="w-5 h-5 bg-green-500 border-2 border-green-500 rounded text-white text-xs flex items-center justify-center" title="Desmarcar">✓</button>
+            </form>
+            <div class="flex-1">
+                <div class="flex items-center gap-2">
+                    <h3 class="font-semibold" th:text="${t.titulo}"
+                        th:classappend="${t.completada} ? 'line-through'"></h3>
+                    <span th:if="${t.vencida}" class="text-red-600 text-xs font-semibold">VENCIDA</span>
+                </div>
+                <p th:if="${t.descripcion}" class="text-sm text-gray-600" th:text="${t.descripcion}"></p>
+                <p th:if="${t.fechaVencimiento}" class="text-xs text-gray-500 mt-1">
+                    Vence: <span th:text="${#temporals.format(t.fechaVencimiento, 'dd/MM/yyyy')}"></span>
+                </p>
+            </div>
+            <form th:action="@{/tareas/{id}/borrar(id=${t.id})}" method="post">
+                <button class="text-red-600 text-sm hover:underline" onclick="return confirm('¿Borrar?')">Borrar</button>
+            </form>
+        </div>
+    </div>
+</main>
+</body>
+</html>
