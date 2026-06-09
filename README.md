@@ -7,7 +7,7 @@
 [![Spring Boot](https://img.shields.io/badge/Spring%20Boot-3.3-6DB33F?logo=spring)](https://spring.io/projects/spring-boot)
 [![License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 
-**Estado:** v2 Fase 2 desplegada. Auth + CRUD de movimientos (gastos/ingresos) + categorías.
+**Estado:** v2 Fase 3 desplegada. Auth + movimientos + categorías + objetivos de ahorro + tareas financieras.
 
 ## 🚀 Demo en vivo
 
@@ -37,7 +37,7 @@ curl -X POST https://safeinvestor.onrender.com/api/auth/login \
 - **PostgreSQL 16** + migraciones con **Flyway**
 - **Spring Security**: doble filter chain — sesión cookie para web + JWT (jjwt 0.12) para API
 - **BCrypt** para hashing de contraseñas
-- **JUnit 5** + **Mockito** + **MockMvc** (14 tests de integración)
+- **JUnit 5** + **Mockito** + **MockMvc** (19 tests de integración)
 - **Maven**, **Docker** (imagen multi-stage), **GitHub Actions** (CI verde)
 - **Render** para el deploy público
 
@@ -81,6 +81,13 @@ En CI, GitHub Actions levanta el mismo Postgres como service container.
 | GET/POST | `/movimientos/{id}/editar` | Editar |
 | POST | `/movimientos/{id}/borrar` | Eliminar |
 | GET/POST | `/categorias` | Gestión de categorías |
+| GET | `/objetivos` | Lista con barra de progreso |
+| GET/POST | `/objetivos/nuevo` | Crear objetivo |
+| GET | `/objetivos/{id}` | Detalle + form de aportar |
+| POST | `/objetivos/{id}/aportar` | Sumar al ahorrado |
+| GET/POST | `/tareas` | Lista + crear inline |
+| POST | `/tareas/{id}/completar` | Marcar completada |
+| POST | `/tareas/{id}/descompletar` | Desmarcar |
 
 ### API REST (JWT)
 
@@ -97,6 +104,18 @@ En CI, GitHub Actions levanta el mismo Postgres como service container.
 | GET | `/api/movimientos/{id}` | 200 / 404 |
 | PUT | `/api/movimientos/{id}` | 200 / 404 |
 | DELETE | `/api/movimientos/{id}` | 204 / 404 |
+| GET | `/api/objetivos` | 200 |
+| POST | `/api/objetivos` | 201 |
+| GET | `/api/objetivos/{id}` | 200 / 404 |
+| PUT | `/api/objetivos/{id}` | 200 / 404 |
+| POST | `/api/objetivos/{id}/aportar` | 200 (autocompleta si alcanza objetivo) |
+| DELETE | `/api/objetivos/{id}` | 204 |
+| GET | `/api/tareas` | 200 |
+| POST | `/api/tareas` | 201 |
+| PUT | `/api/tareas/{id}` | 200 / 404 |
+| POST | `/api/tareas/{id}/completar` | 200 |
+| POST | `/api/tareas/{id}/descompletar` | 200 |
+| DELETE | `/api/tareas/{id}` | 204 |
 
 Todos los endpoints de `/api/` (excepto `/api/auth/*`) requieren `Authorization: Bearer <JWT>`. Sin auth → 401.
 
@@ -118,7 +137,7 @@ La versión original desarrollada durante 1ºDAM se conserva en:
 - [x] **Fase 0** — Scaffold Spring Boot + Postgres + CI
 - [x] **Fase 1** — Auth (sesión web + JWT API) + reset de contraseña + deploy en Render
 - [x] **Fase 2** — CRUD de movimientos (gastos/ingresos) + categorías con seed por defecto
-- [ ] **Fase 3** — Objetivos de ahorro + tareas financieras
+- [x] **Fase 3** — Objetivos de ahorro (con aportes + autocompletado) + tareas financieras (con vencimientos)
 - [ ] **Fase 4** — Dashboard con estadísticas (Chart.js) + export CSV/PDF
 - [ ] **Fase 5** — Tips de economía + i18n ES/EN + dark mode
 
