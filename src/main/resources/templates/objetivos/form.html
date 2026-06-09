@@ -1,40 +1,58 @@
 <!DOCTYPE html>
 <html lang="es" xmlns:th="http://www.thymeleaf.org">
-<head>
-    <meta charset="UTF-8"><title>Objetivo — SafeInvestor</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-</head>
-<body class="bg-gray-50 min-h-screen">
-<nav class="bg-white shadow">
-    <div class="max-w-5xl mx-auto px-4 py-3">
-        <a href="/" class="text-xl font-bold text-blue-600">SafeInvestor</a>
-    </div>
-</nav>
-<main class="max-w-md mx-auto px-4 py-6">
-    <h1 class="text-2xl font-bold mb-4" th:text="${form.id == null ? 'Nuevo objetivo' : 'Editar objetivo'}">Objetivo</h1>
+<head th:replace="~{fragments/head :: head('Objetivo')}"></head>
+<body>
+<nav th:replace="~{fragments/nav :: nav('objetivos')}"></nav>
+
+<main class="max-w-2xl mx-auto px-5 py-10">
+
+    <a href="/objetivos" class="text-sm text-ink-soft hover:text-brand inline-flex items-center gap-1.5 mb-6">
+        <i class="ph ph-arrow-left"></i> Volver
+    </a>
+
+    <header class="mb-8 fade-up">
+        <p class="text-xs tracking-[0.18em] uppercase text-ink-soft mb-1" th:text="${form.id == null ? 'Nuevo' : 'Edición'}">Nuevo</p>
+        <h1 class="font-display text-4xl" th:text="${form.id == null ? 'Nuevo objetivo' : 'Editar objetivo'}">Nuevo objetivo</h1>
+    </header>
+
     <form th:action="${form.id == null ? '/objetivos' : '/objetivos/' + form.id}"
-          th:object="${form}" method="post" class="bg-white p-6 rounded shadow space-y-3">
+          th:object="${form}" method="post"
+          class="bg-surface border border-line rounded-lg p-6 sm:p-8 shadow-sm space-y-5">
+
         <label class="block">
-            <span class="text-sm text-gray-700">Nombre</span>
-            <input th:field="*{nombre}" type="text" required maxlength="100" class="mt-1 w-full px-3 py-2 border rounded">
-            <span class="text-red-600 text-xs" th:if="${#fields.hasErrors('nombre')}" th:errors="*{nombre}"></span>
+            <span class="text-sm text-ink-soft mb-1.5 block">¿Qué quieres conseguir?</span>
+            <input th:field="*{nombre}" type="text" required maxlength="100"
+                   placeholder="Vacaciones en Tailandia, MacBook nuevo..." class="input">
+            <span class="text-negative text-xs mt-1 block" th:if="${#fields.hasErrors('nombre')}" th:errors="*{nombre}"></span>
         </label>
+
         <label class="block">
-            <span class="text-sm text-gray-700">Importe a alcanzar (€)</span>
-            <input th:field="*{importeObjetivo}" type="number" step="0.01" min="0.01" required
-                   class="mt-1 w-full px-3 py-2 border rounded">
+            <span class="text-sm text-ink-soft mb-1.5 block">Cantidad a alcanzar</span>
+            <div class="relative">
+                <input th:field="*{importeObjetivo}" type="number" step="0.01" min="0.01" required
+                       placeholder="2000.00" class="input font-mono text-2xl py-3 pr-10 text-right">
+                <span class="absolute right-4 top-1/2 -translate-y-1/2 font-mono text-xl text-ink-soft">€</span>
+            </div>
         </label>
+
         <label class="block">
-            <span class="text-sm text-gray-700">Fecha límite (opcional)</span>
-            <input th:field="*{fechaLimite}" type="date" class="mt-1 w-full px-3 py-2 border rounded">
+            <span class="text-sm text-ink-soft mb-1.5 block">Fecha límite <span class="text-ink-soft/60 font-normal">(opcional)</span></span>
+            <input th:field="*{fechaLimite}" type="date" class="input">
         </label>
+
         <label class="block">
-            <span class="text-sm text-gray-700">Color</span>
-            <input th:field="*{color}" type="color" class="mt-1 h-10 w-20 border rounded">
+            <span class="text-sm text-ink-soft mb-1.5 block">Color</span>
+            <div class="flex items-center gap-3">
+                <input th:field="*{color}" type="color" class="w-14 h-12 rounded-lg border border-line cursor-pointer">
+                <span class="text-sm text-ink-soft">Identifica visualmente tu objetivo</span>
+            </div>
         </label>
-        <div class="flex justify-between pt-2">
-            <a href="/objetivos" class="text-gray-600 hover:underline">Cancelar</a>
-            <button class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">Guardar</button>
+
+        <div class="flex justify-end gap-3 pt-3 border-t border-line">
+            <a href="/objetivos" class="btn btn-ghost">Cancelar</a>
+            <button class="btn btn-primary">
+                <i class="ph ph-check"></i> Guardar
+            </button>
         </div>
     </form>
 </main>

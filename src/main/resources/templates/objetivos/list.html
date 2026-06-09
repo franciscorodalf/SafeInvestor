@@ -1,60 +1,76 @@
 <!DOCTYPE html>
 <html lang="es" xmlns:th="http://www.thymeleaf.org">
-<head>
-    <meta charset="UTF-8"><title>Objetivos — SafeInvestor</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-</head>
-<body class="bg-gray-50 min-h-screen">
-<nav class="bg-white shadow">
-    <div class="max-w-5xl mx-auto px-4 py-3 flex justify-between items-center">
-        <a href="/" class="text-xl font-bold text-blue-600">SafeInvestor</a>
-        <div class="flex items-center gap-4 text-sm">
-            <a href="/movimientos" class="text-gray-700 hover:text-blue-600">Movimientos</a>
-            <a href="/categorias" class="text-gray-700 hover:text-blue-600">Categorías</a>
-            <a href="/objetivos" class="text-blue-600 font-semibold">Objetivos</a>
-            <a href="/tareas" class="text-gray-700 hover:text-blue-600">Tareas</a>
-            <form th:action="@{/logout}" method="post" class="inline">
-                <button class="text-red-600 hover:underline">Cerrar sesión</button>
-            </form>
+<head th:replace="~{fragments/head :: head('Objetivos de ahorro')}"></head>
+<body>
+<nav th:replace="~{fragments/nav :: nav('objetivos')}"></nav>
+
+<main class="max-w-6xl mx-auto px-5 py-8">
+
+    <header class="flex items-end justify-between mb-8 flex-wrap gap-4 fade-up">
+        <div>
+            <p class="text-xs tracking-[0.18em] uppercase text-ink-soft mb-1">Hacia dónde</p>
+            <h1 class="font-display text-5xl leading-tight">Objetivos de ahorro</h1>
         </div>
-    </div>
-</nav>
-<main class="max-w-5xl mx-auto px-4 py-6">
-    <div class="flex justify-between items-center mb-4">
-        <h1 class="text-2xl font-bold">Mis objetivos de ahorro</h1>
-        <a href="/objetivos/nuevo" class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">+ Nuevo</a>
+        <a href="/objetivos/nuevo" class="btn btn-primary">
+            <i class="ph ph-plus text-lg"></i> Nuevo objetivo
+        </a>
+    </header>
+
+    <!-- Empty state -->
+    <div th:if="${#lists.isEmpty(objetivos)}" class="bg-surface border border-line rounded-lg p-12 text-center fade-up">
+        <div class="inline-flex w-16 h-16 rounded-full bg-brand-soft items-center justify-center text-brand mb-4">
+            <i class="ph ph-target text-3xl"></i>
+        </div>
+        <p class="font-display text-2xl mb-2">Sin objetivos todavía.</p>
+        <p class="text-ink-soft mb-6 max-w-md mx-auto">
+            ¿Quieres ahorrar para algo concreto? Define un objetivo con fecha límite y ve aportando poco a poco.
+        </p>
+        <a href="/objetivos/nuevo" class="btn btn-primary">
+            <i class="ph ph-plus"></i> Crear el primero
+        </a>
     </div>
 
-    <div th:if="${#lists.isEmpty(objetivos)}" class="bg-white rounded shadow p-8 text-center text-gray-500">
-        No tienes objetivos todavía. <a href="/objetivos/nuevo" class="text-blue-600">Crear el primero</a>.
-    </div>
-
-    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+    <!-- Grid de objetivos -->
+    <div th:unless="${#lists.isEmpty(objetivos)}" class="grid grid-cols-1 md:grid-cols-2 gap-4 stagger">
         <a th:each="o : ${objetivos}" th:href="@{/objetivos/{id}(id=${o.id})}"
-           class="bg-white rounded shadow p-4 hover:shadow-md transition"
-           th:classappend="${o.completado} ? 'opacity-70'">
-            <div class="flex items-center justify-between mb-2">
-                <div class="flex items-center gap-2">
-                    <span class="inline-block w-3 h-3 rounded-full" th:style="'background-color:' + ${o.color}"></span>
-                    <h2 class="font-semibold" th:text="${o.nombre}"></h2>
+           class="bg-surface border border-line rounded-lg p-6 shadow-sm card-hover block relative overflow-hidden"
+           th:classappend="${o.completado} ? 'opacity-80'">
+
+            <!-- Decoración de color en la esquina -->
+            <div class="absolute -right-8 -top-8 w-24 h-24 rounded-full opacity-10"
+                 th:style="'background-color:' + ${o.color}"></div>
+
+            <div class="flex items-start justify-between mb-4 relative">
+                <div class="flex items-center gap-2.5">
+                    <span class="inline-block w-3 h-3 rounded-full shrink-0" th:style="'background-color:' + ${o.color}"></span>
+                    <h2 class="font-display text-2xl truncate" th:text="${o.nombre}">Vacaciones</h2>
                 </div>
-                <span th:if="${o.completado}" class="text-green-600 text-xs font-semibold">✓ Completado</span>
-            </div>
-            <div class="text-sm text-gray-600 mb-2">
-                <span th:text="${#numbers.formatDecimal(o.importeAhorrado, 1, 2)} + ' € de '"></span>
-                <span th:text="${#numbers.formatDecimal(o.importeObjetivo, 1, 2)} + ' €'"></span>
-                <span th:if="${o.fechaLimite}" class="text-gray-400 ml-2">
-                    · antes de <span th:text="${#temporals.format(o.fechaLimite, 'dd/MM/yyyy')}"></span>
+                <span th:if="${o.completado}" class="pill bg-positive-soft text-positive whitespace-nowrap">
+                    <i class="ph ph-check-circle-fill"></i> Completado
                 </span>
             </div>
-            <div class="bg-gray-200 rounded h-3 overflow-hidden">
-                <div class="h-full transition-all" th:style="'width:' + ${o.porcentaje} + '%; background-color:' + ${o.color}"></div>
+
+            <div class="flex items-baseline gap-2 mb-4 relative">
+                <span class="font-mono font-semibold text-2xl" th:text="${#numbers.formatDecimal(o.importeAhorrado, 1, 2) + ' €'}">0,00 €</span>
+                <span class="text-ink-soft text-sm" th:text="'de ' + ${#numbers.formatDecimal(o.importeObjetivo, 1, 2)} + ' €'">de 0,00 €</span>
             </div>
-            <div class="text-xs text-gray-500 mt-1 text-right">
-                <span th:text="${o.porcentaje} + '%'"></span>
+
+            <!-- Progress bar -->
+            <div class="bg-bg-soft rounded-full h-2.5 overflow-hidden mb-2 relative">
+                <div class="h-full rounded-full transition-all"
+                     th:style="'width:' + ${o.porcentaje} + '%; background-color:' + ${o.color}"></div>
+            </div>
+            <div class="flex items-center justify-between text-xs text-ink-soft relative">
+                <span th:if="${o.fechaLimite}" class="flex items-center gap-1">
+                    <i class="ph ph-calendar"></i>
+                    <span th:text="'Hasta ' + ${#temporals.format(o.fechaLimite, 'dd MMM yyyy')}">Hasta 31 dic 2026</span>
+                </span>
+                <span th:unless="${o.fechaLimite}" class="text-ink-soft/60">Sin fecha límite</span>
+                <span class="font-mono font-semibold" th:text="${o.porcentaje} + '%'">0%</span>
             </div>
         </a>
     </div>
+
 </main>
 </body>
 </html>
