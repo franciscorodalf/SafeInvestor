@@ -15,8 +15,12 @@
         </div>
         <div sec:authorize="isAuthenticated()" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
             <p class="mb-4">Hola <span sec:authentication="name" class="font-semibold"></span>.</p>
-            <a href="/movimientos" class="bg-blue-600 text-white px-6 py-2 rounded hover:bg-blue-700">Mis movimientos</a>
-            <a href="/categorias" class="ml-2 border border-blue-600 text-blue-600 px-6 py-2 rounded hover:bg-blue-50">Categorías</a>
+            <div class="grid grid-cols-2 gap-3 max-w-md">
+                <a href="/movimientos" class="bg-blue-600 text-white px-4 py-3 rounded hover:bg-blue-700">💰 Movimientos</a>
+                <a href="/objetivos" class="bg-green-600 text-white px-4 py-3 rounded hover:bg-green-700">🎯 Objetivos</a>
+                <a href="/tareas" class="bg-purple-600 text-white px-4 py-3 rounded hover:bg-purple-700">✅ Tareas</a>
+                <a href="/categorias" class="border border-blue-600 text-blue-600 px-4 py-3 rounded hover:bg-blue-50">🏷 Categorías</a>
+            </div>
         </div>
     </div>
 </body>
