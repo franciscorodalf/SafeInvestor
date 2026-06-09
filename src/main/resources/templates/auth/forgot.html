@@ -1,22 +1,54 @@
 <!DOCTYPE html>
 <html lang="es" xmlns:th="http://www.thymeleaf.org">
-<head>
-    <meta charset="UTF-8"><title>Recuperar contraseña — SafeInvestor</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-</head>
-<body class="bg-gray-50 min-h-screen flex items-center justify-center">
-<form th:action="@{/forgot}" method="post" class="bg-white p-8 rounded shadow w-full max-w-sm">
-    <h1 class="text-2xl font-bold mb-4 text-center">Recuperar contraseña</h1>
-    <p class="text-sm text-gray-600 mb-4">Te enviaremos un enlace para restablecerla.</p>
-    <div th:if="${sent}" class="bg-green-100 text-green-700 p-3 rounded mb-4 text-sm">
-        Si el email existe, recibirás instrucciones (en dev, mira los logs).
+<head th:replace="~{fragments/head :: head('Recuperar contraseña')}"></head>
+<body class="min-h-screen flex flex-col bg-bg">
+
+<header class="px-6 py-5">
+    <a href="/" class="flex items-center gap-2.5">
+        <span class="w-9 h-9 rounded-lg bg-brand text-bg flex items-center justify-center font-display text-xl">S</span>
+        <span class="font-display text-2xl">SafeInvestor</span>
+    </a>
+</header>
+
+<main class="flex-1 flex items-center justify-center px-6 py-8">
+    <div class="w-full max-w-md fade-up">
+        <div class="text-center mb-8">
+            <div class="inline-flex items-center justify-center w-14 h-14 rounded-full bg-accent-soft text-accent mb-5">
+                <i class="ph ph-key text-2xl"></i>
+            </div>
+            <p class="text-xs tracking-[0.18em] uppercase text-ink-soft mb-2">Sin pánico</p>
+            <h1 class="font-display text-4xl mb-3 leading-tight">Recuperar contraseña</h1>
+            <p class="text-ink-soft">Te enviamos un enlace para que la restablezcas.</p>
+        </div>
+
+        <div th:if="${sent}" class="mb-5 p-4 rounded-lg bg-positive-soft text-positive text-sm flex items-start gap-2.5">
+            <i class="ph ph-check-circle text-lg shrink-0 mt-0.5"></i>
+            <div>
+                <p class="font-medium">Listo.</p>
+                <p>Si el email existe, recibirás un enlace para restablecer tu contraseña. En dev, mira los logs.</p>
+            </div>
+        </div>
+
+        <form th:action="@{/forgot}" method="post" class="bg-surface border border-line rounded-lg p-6 shadow-sm space-y-4">
+            <label class="block">
+                <span class="text-sm text-ink-soft mb-1.5 block">Tu email</span>
+                <div class="relative">
+                    <i class="ph ph-envelope absolute left-3.5 top-1/2 -translate-y-1/2 text-ink-soft"></i>
+                    <input name="email" type="email" required autofocus
+                           placeholder="tucorreo@ejemplo.com" class="input pl-10">
+                </div>
+            </label>
+            <button class="btn btn-primary w-full">
+                <i class="ph ph-paper-plane-tilt text-lg"></i>
+                <span>Enviar enlace</span>
+            </button>
+        </form>
+
+        <p class="text-center text-sm text-ink-soft mt-6">
+            <a href="/login" class="text-brand font-medium hover:underline">← Volver a entrar</a>
+        </p>
     </div>
-    <label class="block mb-4">
-        <span class="text-sm text-gray-700">Email</span>
-        <input name="email" type="email" required class="mt-1 w-full px-3 py-2 border rounded">
-    </label>
-    <button class="w-full bg-blue-600 text-white py-2 rounded hover:bg-blue-700">Enviar enlace</button>
-    <a href="/login" class="block mt-4 text-sm text-center text-blue-600 hover:underline">Volver a entrar</a>
-</form>
+</main>
+
 </body>
 </html>
