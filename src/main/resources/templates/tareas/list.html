@@ -1,74 +1,96 @@
 <!DOCTYPE html>
 <html lang="es" xmlns:th="http://www.thymeleaf.org">
-<head>
-    <meta charset="UTF-8"><title>Tareas — SafeInvestor</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-</head>
-<body class="bg-gray-50 min-h-screen">
-<nav class="bg-white shadow">
-    <div class="max-w-3xl mx-auto px-4 py-3 flex justify-between items-center">
-        <a href="/" class="text-xl font-bold text-blue-600">SafeInvestor</a>
-        <div class="flex items-center gap-4 text-sm">
-            <a href="/movimientos" class="text-gray-700 hover:text-blue-600">Movimientos</a>
-            <a href="/categorias" class="text-gray-700 hover:text-blue-600">Categorías</a>
-            <a href="/objetivos" class="text-gray-700 hover:text-blue-600">Objetivos</a>
-            <a href="/tareas" class="text-blue-600 font-semibold">Tareas</a>
-            <form th:action="@{/logout}" method="post" class="inline">
-                <button class="text-red-600 hover:underline">Cerrar sesión</button>
-            </form>
-        </div>
-    </div>
-</nav>
-<main class="max-w-3xl mx-auto px-4 py-6">
-    <h1 class="text-2xl font-bold mb-4">Mis tareas financieras</h1>
+<head th:replace="~{fragments/head :: head('Tareas')}"></head>
+<body>
+<nav th:replace="~{fragments/nav :: nav('tareas')}"></nav>
 
-    <form th:action="@{/tareas}" th:object="${form}" method="post" class="bg-white p-4 rounded shadow mb-6 space-y-3">
-        <h2 class="font-semibold">Añadir tarea</h2>
+<main class="max-w-3xl mx-auto px-5 py-8">
+
+    <header class="mb-8 fade-up">
+        <p class="text-xs tracking-[0.18em] uppercase text-ink-soft mb-1">No se te olvida nada</p>
+        <h1 class="font-display text-5xl leading-tight">Tareas financieras</h1>
+    </header>
+
+    <!-- Form crear nueva -->
+    <form th:action="@{/tareas}" th:object="${form}" method="post"
+          class="bg-surface border border-line rounded-lg p-5 sm:p-6 mb-6 shadow-sm space-y-4">
+        <p class="text-sm text-ink-soft flex items-center gap-1.5">
+            <i class="ph ph-plus-circle text-brand"></i> Añadir tarea
+        </p>
         <label class="block">
-            <span class="text-sm text-gray-700">Título</span>
-            <input th:field="*{titulo}" type="text" required maxlength="150" class="mt-1 w-full px-3 py-2 border rounded" placeholder="Pagar alquiler antes del día 5">
-            <span class="text-red-600 text-xs" th:if="${#fields.hasErrors('titulo')}" th:errors="*{titulo}"></span>
+            <input th:field="*{titulo}" type="text" required maxlength="150"
+                   placeholder="Pagar alquiler antes del día 5..." class="input">
+            <span class="text-negative text-xs mt-1 block" th:if="${#fields.hasErrors('titulo')}" th:errors="*{titulo}"></span>
         </label>
-        <label class="block">
-            <span class="text-sm text-gray-700">Descripción (opcional)</span>
-            <textarea th:field="*{descripcion}" maxlength="500" rows="2" class="mt-1 w-full px-3 py-2 border rounded"></textarea>
-        </label>
-        <label class="block">
-            <span class="text-sm text-gray-700">Fecha de vencimiento (opcional)</span>
-            <input th:field="*{fechaVencimiento}" type="date" class="mt-1 w-full px-3 py-2 border rounded">
-        </label>
-        <button class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">+ Añadir</button>
+        <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+            <label class="block sm:col-span-2">
+                <span class="text-xs text-ink-soft mb-1 block uppercase tracking-wider">Detalle (opcional)</span>
+                <input th:field="*{descripcion}" type="text" maxlength="500" class="input">
+            </label>
+            <label class="block">
+                <span class="text-xs text-ink-soft mb-1 block uppercase tracking-wider">Vence el</span>
+                <input th:field="*{fechaVencimiento}" type="date" class="input">
+            </label>
+        </div>
+        <div class="flex justify-end">
+            <button class="btn btn-primary"><i class="ph ph-plus"></i> Añadir</button>
+        </div>
     </form>
 
-    <div th:if="${#lists.isEmpty(tareas)}" class="bg-white rounded shadow p-8 text-center text-gray-500">
-        No tienes tareas todavía.
+    <!-- Empty state -->
+    <div th:if="${#lists.isEmpty(tareas)}" class="bg-surface border border-line rounded-lg p-10 text-center fade-up">
+        <div class="inline-flex w-14 h-14 rounded-full bg-positive-soft items-center justify-center text-positive mb-3">
+            <i class="ph ph-check-circle text-3xl"></i>
+        </div>
+        <p class="font-display text-2xl mb-1">Todo bajo control.</p>
+        <p class="text-ink-soft">Cuando añadas tareas, aparecerán aquí.</p>
     </div>
 
-    <div class="bg-white rounded shadow divide-y">
-        <div th:each="t : ${tareas}" class="flex items-start gap-3 p-4"
-             th:classappend="${t.completada} ? 'opacity-60' : (${t.vencida} ? 'bg-red-50' : '')">
-            <form th:if="${!t.completada}" th:action="@{/tareas/{id}/completar(id=${t.id})}" method="post" class="pt-1">
-                <button class="w-5 h-5 border-2 border-gray-400 rounded hover:bg-blue-100" title="Marcar completada"></button>
-            </form>
-            <form th:if="${t.completada}" th:action="@{/tareas/{id}/descompletar(id=${t.id})}" method="post" class="pt-1">
-                <button class="w-5 h-5 bg-green-500 border-2 border-green-500 rounded text-white text-xs flex items-center justify-center" title="Desmarcar">✓</button>
-            </form>
-            <div class="flex-1">
-                <div class="flex items-center gap-2">
-                    <h3 class="font-semibold" th:text="${t.titulo}"
-                        th:classappend="${t.completada} ? 'line-through'"></h3>
-                    <span th:if="${t.vencida}" class="text-red-600 text-xs font-semibold">VENCIDA</span>
+    <!-- Lista -->
+    <section th:unless="${#lists.isEmpty(tareas)}" class="bg-surface border border-line rounded-lg shadow-sm overflow-hidden">
+        <ul class="divide-y divide-line">
+            <li th:each="t : ${tareas}" class="px-5 py-4 flex items-start gap-3 group hover:bg-bg-soft/40"
+                th:classappend="${t.completada} ? 'opacity-60' : (${t.vencida} ? 'bg-negative-soft/30' : '')">
+
+                <!-- Checkbox -->
+                <form th:if="${!t.completada}" th:action="@{/tareas/{id}/completar(id=${t.id})}" method="post" class="mt-0.5 shrink-0">
+                    <button class="w-5 h-5 border-2 border-line rounded hover:border-brand hover:bg-brand-soft flex items-center justify-center" title="Marcar completada">
+                    </button>
+                </form>
+                <form th:if="${t.completada}" th:action="@{/tareas/{id}/descompletar(id=${t.id})}" method="post" class="mt-0.5 shrink-0">
+                    <button class="w-5 h-5 bg-positive border-2 border-positive rounded text-bg flex items-center justify-center" title="Desmarcar">
+                        <i class="ph ph-check text-xs"></i>
+                    </button>
+                </form>
+
+                <!-- Contenido -->
+                <div class="flex-1 min-w-0">
+                    <div class="flex items-center gap-2 flex-wrap">
+                        <h3 class="font-medium" th:text="${t.titulo}"
+                            th:classappend="${t.completada} ? 'line-through text-ink-soft'">Pagar alquiler</h3>
+                        <span th:if="${t.vencida}" class="pill bg-negative text-bg">
+                            <i class="ph ph-warning-fill"></i> Vencida
+                        </span>
+                    </div>
+                    <p th:if="${t.descripcion}" class="text-sm text-ink-soft mt-0.5" th:text="${t.descripcion}"></p>
+                    <p th:if="${t.fechaVencimiento}" class="text-xs mt-1 flex items-center gap-1"
+                       th:classappend="${t.vencida} ? 'text-negative' : 'text-ink-soft'">
+                        <i class="ph ph-calendar"></i>
+                        <span th:text="(${t.vencida} ? 'Venció ' : 'Vence ') + #temporals.format(t.fechaVencimiento, 'dd MMM yyyy')">Vence 31 dic 2026</span>
+                    </p>
                 </div>
-                <p th:if="${t.descripcion}" class="text-sm text-gray-600" th:text="${t.descripcion}"></p>
-                <p th:if="${t.fechaVencimiento}" class="text-xs text-gray-500 mt-1">
-                    Vence: <span th:text="${#temporals.format(t.fechaVencimiento, 'dd/MM/yyyy')}"></span>
-                </p>
-            </div>
-            <form th:action="@{/tareas/{id}/borrar(id=${t.id})}" method="post">
-                <button class="text-red-600 text-sm hover:underline" onclick="return confirm('¿Borrar?')">Borrar</button>
-            </form>
-        </div>
-    </div>
+
+                <!-- Delete -->
+                <form th:action="@{/tareas/{id}/borrar(id=${t.id})}" method="post" class="opacity-0 group-hover:opacity-100 transition-opacity">
+                    <button class="w-8 h-8 rounded-lg hover:bg-negative-soft flex items-center justify-center text-ink-soft hover:text-negative"
+                            onclick="return confirm('¿Borrar esta tarea?')" title="Borrar">
+                        <i class="ph ph-trash text-sm"></i>
+                    </button>
+                </form>
+            </li>
+        </ul>
+    </section>
+
 </main>
 </body>
 </html>
