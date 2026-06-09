@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<!--
+    Fragment central de SafeInvestor.
+    Diseño: "Domestic Modern" — cremas cálidos + teal profundo + serifs editoriales.
+    Uso: <head th:replace="~{fragments/head :: head('Título de la página')}"></head>
+-->
+<head th:fragment="head(title)">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#FAF7F2">
+    <title th:text="${title} + ' · SafeInvestor'">SafeInvestor</title>
+
+    <!-- Tipografías: Instrument Serif (display), Sora (body), JetBrains Mono (cifras) -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Sora:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+
+    <!-- Iconos Phosphor (CDN) -->
+    <script src="https://unpkg.com/@phosphor-icons/web@2.1.1"></script>
+
+    <!-- Tailwind CDN con configuración custom -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        bg:      '#FAF7F2',
+                        'bg-soft': '#F2EDE4',
+                        surface: '#FFFFFF',
+                        ink:     '#1A1410',
+                        'ink-soft': '#6B6358',
+                        line:    '#E8DFD2',
+                        brand:   '#0E5C5F',
+                        'brand-deep': '#0A4547',
+                        'brand-soft': '#E5F0EF',
+                        accent:  '#E8945A',
+                        'accent-soft': '#FBEFE0',
+                        positive:  '#2D6A4F',
+                        'positive-soft': '#E3F0E8',
+                        negative:  '#9B2D2D',
+                        'negative-soft': '#F5E3E3',
+                        warning: '#C49B4A'
+                    },
+                    fontFamily: {
+                        display: ['"Instrument Serif"', 'Georgia', 'serif'],
+                        sans:    ['Sora', 'system-ui', 'sans-serif'],
+                        mono:    ['"JetBrains Mono"', 'monospace']
+                    },
+                    boxShadow: {
+                        sm:  '0 1px 2px rgba(26,20,16,0.04), 0 1px 1px rgba(26,20,16,0.02)',
+                        DEFAULT: '0 4px 14px rgba(26,20,16,0.05), 0 1px 3px rgba(26,20,16,0.03)',
+                        lg:  '0 12px 32px rgba(26,20,16,0.08), 0 2px 6px rgba(26,20,16,0.04)'
+                    },
+                    borderRadius: {
+                        DEFAULT: '12px',
+                        sm: '8px',
+                        lg: '20px',
+                        xl: '28px'
+                    }
+                }
+            }
+        };
+    </script>
+
+    <!-- Estilos custom: grano sutil, transiciones, micro-detalles -->
+    <style>
+        html { color-scheme: light; }
+        body {
+            font-family: 'Sora', system-ui, sans-serif;
+            font-weight: 400;
+            color: #1A1410;
+            background-color: #FAF7F2;
+            /* Textura grano muy sutil (SVG inline) */
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 0.1 0 0 0 0 0.08 0 0 0 0 0.06 0 0 0 0.018 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+            background-attachment: fixed;
+            -webkit-font-smoothing: antialiased;
+            text-rendering: optimizeLegibility;
+        }
+        .font-display { font-family: 'Instrument Serif', Georgia, serif; font-weight: 400; }
+        .font-mono { font-family: 'JetBrains Mono', monospace; font-feature-settings: 'tnum'; }
+        /* Suaviza todas las transiciones */
+        a, button, input, select, .card { transition: all 180ms cubic-bezier(.4,0,.2,1); }
+        /* Card con hover lift sutil */
+        .card-hover:hover { transform: translateY(-2px); box-shadow: 0 12px 32px rgba(26,20,16,0.08), 0 2px 6px rgba(26,20,16,0.04); }
+        /* Inputs custom */
+        .input {
+            width: 100%;
+            background: #FFFFFF;
+            border: 1px solid #E8DFD2;
+            border-radius: 10px;
+            padding: 12px 14px;
+            font-family: 'Sora', sans-serif;
+            color: #1A1410;
+            font-size: 15px;
+        }
+        .input:focus {
+            outline: none;
+            border-color: #0E5C5F;
+            box-shadow: 0 0 0 3px rgba(14,92,95,0.12);
+        }
+        /* Botones */
+        .btn { display: inline-flex; align-items: center; justify-content: center; gap: 8px; padding: 11px 20px; border-radius: 10px; font-weight: 500; font-size: 14.5px; letter-spacing: -0.01em; cursor: pointer; }
+        .btn-primary { background: #0E5C5F; color: #FAF7F2; }
+        .btn-primary:hover { background: #0A4547; }
+        .btn-ghost { background: transparent; color: #1A1410; border: 1px solid #E8DFD2; }
+        .btn-ghost:hover { background: #F2EDE4; }
+        .btn-danger-ghost { background: transparent; color: #9B2D2D; }
+        .btn-danger-ghost:hover { background: #F5E3E3; }
+        /* Tag pill */
+        .pill { display: inline-flex; align-items: center; gap: 6px; padding: 3px 10px; border-radius: 999px; font-size: 12px; font-weight: 500; }
+        /* Page entry animation */
+        @keyframes fadeUp { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+        .fade-up { animation: fadeUp 480ms cubic-bezier(.2,.6,.2,1) backwards; }
+        /* Stagger children */
+        .stagger > * { animation: fadeUp 520ms cubic-bezier(.2,.6,.2,1) backwards; }
+        .stagger > *:nth-child(1) { animation-delay: 0ms; }
+        .stagger > *:nth-child(2) { animation-delay: 60ms; }
+        .stagger > *:nth-child(3) { animation-delay: 120ms; }
+        .stagger > *:nth-child(4) { animation-delay: 180ms; }
+        .stagger > *:nth-child(5) { animation-delay: 240ms; }
+        .stagger > *:nth-child(6) { animation-delay: 300ms; }
+        .stagger > *:nth-child(7) { animation-delay: 360ms; }
+        .stagger > *:nth-child(8) { animation-delay: 420ms; }
+        /* Subtle dotted divider */
+        .dotted { background-image: radial-gradient(#E8DFD2 1px, transparent 1px); background-size: 8px 1px; background-repeat: repeat-x; background-position: 0 50%; height: 1px; }
+        /* Hero decorative number streaks for auth pages */
+        .deco-numbers {
+            position: absolute; inset: 0; overflow: hidden; pointer-events: none; opacity: 0.05;
+            font-family: 'JetBrains Mono', monospace; font-size: 14rem; line-height: 1; color: #0E5C5F;
+            user-select: none;
+        }
+    </style>
+</head>
+</html>

@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<!--
+    Top nav reutilizable.
+    Uso: <nav th:replace="~{fragments/nav :: nav('movimientos')}"></nav>
+    Pasar la sección activa: home, movimientos, categorias, objetivos, tareas
+-->
+<body>
+<nav th:fragment="nav(active)" class="bg-surface/80 backdrop-blur border-b border-line sticky top-0 z-20">
+    <div class="max-w-6xl mx-auto px-5 py-4 flex justify-between items-center">
+        <a href="/" class="flex items-center gap-2.5 group">
+            <span class="w-9 h-9 rounded-lg bg-brand text-bg flex items-center justify-center font-display text-xl group-hover:bg-brand-deep">S</span>
+            <span class="font-display text-2xl tracking-tight">SafeInvestor</span>
+        </a>
+        <div sec:authorize="isAuthenticated()" class="hidden md:flex items-center gap-1 text-sm">
+            <a href="/movimientos"
+               th:classappend="${active == 'movimientos'} ? 'bg-bg-soft text-ink font-medium' : 'text-ink-soft hover:text-ink hover:bg-bg-soft'"
+               class="px-3 py-2 rounded-lg flex items-center gap-1.5">
+                <i class="ph ph-arrows-down-up text-base"></i> Movimientos
+            </a>
+            <a href="/categorias"
+               th:classappend="${active == 'categorias'} ? 'bg-bg-soft text-ink font-medium' : 'text-ink-soft hover:text-ink hover:bg-bg-soft'"
+               class="px-3 py-2 rounded-lg flex items-center gap-1.5">
+                <i class="ph ph-tag text-base"></i> Categorías
+            </a>
+            <a href="/objetivos"
+               th:classappend="${active == 'objetivos'} ? 'bg-bg-soft text-ink font-medium' : 'text-ink-soft hover:text-ink hover:bg-bg-soft'"
+               class="px-3 py-2 rounded-lg flex items-center gap-1.5">
+                <i class="ph ph-target text-base"></i> Objetivos
+            </a>
+            <a href="/tareas"
+               th:classappend="${active == 'tareas'} ? 'bg-bg-soft text-ink font-medium' : 'text-ink-soft hover:text-ink hover:bg-bg-soft'"
+               class="px-3 py-2 rounded-lg flex items-center gap-1.5">
+                <i class="ph ph-list-checks text-base"></i> Tareas
+            </a>
+        </div>
+        <div sec:authorize="isAuthenticated()" class="flex items-center gap-3">
+            <span class="hidden sm:flex items-center gap-2 text-sm text-ink-soft">
+                <span class="w-7 h-7 rounded-full bg-accent-soft text-accent flex items-center justify-center text-xs font-semibold uppercase"
+                      sec:authentication="name" th:text="${#authentication.name.substring(0, 1)}"></span>
+                <span sec:authentication="name"></span>
+            </span>
+            <form th:action="@{/logout}" method="post" class="inline">
+                <button class="text-ink-soft hover:text-negative text-sm flex items-center gap-1.5" title="Cerrar sesión">
+                    <i class="ph ph-sign-out text-base"></i>
+                </button>
+            </form>
+        </div>
+        <div sec:authorize="!isAuthenticated()" class="flex items-center gap-3 text-sm">
+            <a href="/login" class="text-ink-soft hover:text-ink">Entrar</a>
+            <a href="/register" class="btn btn-primary">Crear cuenta</a>
+        </div>
+    </div>
+
+    <!-- Mobile nav (visible cuando autenticado) -->
+    <div sec:authorize="isAuthenticated()" class="md:hidden border-t border-line bg-surface/60">
+        <div class="max-w-6xl mx-auto px-2 py-2 flex justify-around text-xs">
+            <a href="/movimientos" class="px-3 py-1 rounded flex flex-col items-center gap-0.5"
+               th:classappend="${active == 'movimientos'} ? 'text-brand' : 'text-ink-soft'">
+                <i class="ph ph-arrows-down-up text-lg"></i>
+                Movimientos
+            </a>
+            <a href="/categorias" class="px-3 py-1 rounded flex flex-col items-center gap-0.5"
+               th:classappend="${active == 'categorias'} ? 'text-brand' : 'text-ink-soft'">
+                <i class="ph ph-tag text-lg"></i>
+                Categorías
+            </a>
+            <a href="/objetivos" class="px-3 py-1 rounded flex flex-col items-center gap-0.5"
+               th:classappend="${active == 'objetivos'} ? 'text-brand' : 'text-ink-soft'">
+                <i class="ph ph-target text-lg"></i>
+                Objetivos
+            </a>
+            <a href="/tareas" class="px-3 py-1 rounded flex flex-col items-center gap-0.5"
+               th:classappend="${active == 'tareas'} ? 'text-brand' : 'text-ink-soft'">
+                <i class="ph ph-list-checks text-lg"></i>
+                Tareas
+            </a>
+        </div>
+    </div>
+</nav>
+</body>
+</html>

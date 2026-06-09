@@ -1,37 +1,119 @@
 <!DOCTYPE html>
 <html lang="es" xmlns:th="http://www.thymeleaf.org">
-<head>
-    <meta charset="UTF-8"><title>Entrar — SafeInvestor</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-</head>
-<body class="bg-gray-50 min-h-screen flex items-center justify-center">
-<form th:action="@{/login}" method="post" class="bg-white p-8 rounded shadow w-full max-w-sm">
-    <h1 class="text-2xl font-bold mb-6 text-center">Entrar</h1>
-    <div th:if="${param.error}" class="bg-red-100 text-red-700 p-3 rounded mb-4 text-sm">
-        Email o contraseña incorrectos.
-    </div>
-    <div th:if="${param.logout}" class="bg-green-100 text-green-700 p-3 rounded mb-4 text-sm">
-        Has cerrado sesión correctamente.
-    </div>
-    <div th:if="${param.registered}" class="bg-green-100 text-green-700 p-3 rounded mb-4 text-sm">
-        Cuenta creada. Inicia sesión.
-    </div>
-    <div th:if="${param.reset}" class="bg-green-100 text-green-700 p-3 rounded mb-4 text-sm">
-        Contraseña restablecida. Entra con la nueva.
-    </div>
-    <label class="block mb-3">
-        <span class="text-sm text-gray-700">Email</span>
-        <input name="username" type="email" required class="mt-1 w-full px-3 py-2 border rounded">
-    </label>
-    <label class="block mb-4">
-        <span class="text-sm text-gray-700">Contraseña</span>
-        <input name="password" type="password" required class="mt-1 w-full px-3 py-2 border rounded">
-    </label>
-    <button class="w-full bg-blue-600 text-white py-2 rounded hover:bg-blue-700">Entrar</button>
-    <div class="mt-4 text-sm text-center space-y-1">
-        <a href="/register" class="text-blue-600 hover:underline block">¿No tienes cuenta? Regístrate</a>
-        <a href="/forgot" class="text-gray-500 hover:underline block">¿Olvidaste tu contraseña?</a>
-    </div>
-</form>
+<head th:replace="~{fragments/head :: head('Entrar')}"></head>
+<body class="min-h-screen flex flex-col">
+
+<!-- Hero split: brand a la izquierda, form a la derecha -->
+<main class="flex-1 grid lg:grid-cols-5 min-h-screen">
+
+    <!-- Lado izquierdo: marca + filosofía (oculto en móvil) -->
+    <aside class="hidden lg:flex lg:col-span-3 bg-brand text-bg p-12 xl:p-16 flex-col justify-between relative overflow-hidden">
+        <!-- Decoración numérica de fondo -->
+        <div class="absolute -right-10 -top-10 opacity-[0.06] font-mono text-[14rem] leading-none select-none pointer-events-none">€</div>
+        <div class="absolute right-20 bottom-32 opacity-[0.04] font-mono text-[8rem] leading-none select-none pointer-events-none rotate-12">2,847.50</div>
+
+        <div class="relative">
+            <a href="/" class="flex items-center gap-3">
+                <span class="w-10 h-10 rounded-lg bg-bg text-brand flex items-center justify-center font-display text-xl">S</span>
+                <span class="font-display text-3xl">SafeInvestor</span>
+            </a>
+        </div>
+
+        <div class="relative fade-up">
+            <p class="text-accent text-xs tracking-[0.2em] uppercase mb-4">Finanzas personales · 2026</p>
+            <h1 class="font-display text-5xl xl:text-6xl leading-[1.05] mb-6">
+                Lleva tu dinero con la calma <em class="italic text-accent">que merece</em>.
+            </h1>
+            <p class="text-bg/70 text-lg leading-relaxed max-w-md">
+                Gastos, ahorros, objetivos y tareas. Todo en un mismo sitio, sin ruido,
+                con cifras claras y un diseño que respira.
+            </p>
+        </div>
+
+        <div class="relative flex items-center gap-8 text-xs text-bg/60 tracking-wider uppercase">
+            <span class="flex items-center gap-2">
+                <span class="w-1.5 h-1.5 rounded-full bg-accent"></span> Privado
+            </span>
+            <span class="flex items-center gap-2">
+                <span class="w-1.5 h-1.5 rounded-full bg-accent"></span> Sin terceros
+            </span>
+            <span class="flex items-center gap-2">
+                <span class="w-1.5 h-1.5 rounded-full bg-accent"></span> Código abierto
+            </span>
+        </div>
+    </aside>
+
+    <!-- Lado derecho: formulario -->
+    <section class="lg:col-span-2 flex flex-col justify-center items-center px-6 py-12 bg-bg">
+        <!-- Logo mobile -->
+        <a href="/" class="lg:hidden flex items-center gap-2.5 mb-10">
+            <span class="w-9 h-9 rounded-lg bg-brand text-bg flex items-center justify-center font-display text-xl">S</span>
+            <span class="font-display text-2xl">SafeInvestor</span>
+        </a>
+
+        <div class="w-full max-w-sm fade-up">
+            <p class="text-xs tracking-[0.18em] uppercase text-ink-soft mb-2">Bienvenido de nuevo</p>
+            <h2 class="font-display text-4xl mb-8 leading-tight">Entra a tu cuenta.</h2>
+
+            <!-- Mensajes -->
+            <div th:if="${param.error}" class="mb-4 p-3 rounded-lg bg-negative-soft text-negative text-sm flex items-start gap-2">
+                <i class="ph ph-warning-circle text-lg shrink-0 mt-0.5"></i>
+                <span>Email o contraseña incorrectos. Vuelve a intentarlo.</span>
+            </div>
+            <div th:if="${param.logout}" class="mb-4 p-3 rounded-lg bg-positive-soft text-positive text-sm flex items-start gap-2">
+                <i class="ph ph-check-circle text-lg shrink-0 mt-0.5"></i>
+                <span>Has cerrado sesión correctamente.</span>
+            </div>
+            <div th:if="${param.registered}" class="mb-4 p-3 rounded-lg bg-positive-soft text-positive text-sm flex items-start gap-2">
+                <i class="ph ph-confetti text-lg shrink-0 mt-0.5"></i>
+                <span>Cuenta creada. Inicia sesión con tus credenciales.</span>
+            </div>
+            <div th:if="${param.reset}" class="mb-4 p-3 rounded-lg bg-positive-soft text-positive text-sm flex items-start gap-2">
+                <i class="ph ph-key text-lg shrink-0 mt-0.5"></i>
+                <span>Contraseña restablecida. Entra con la nueva.</span>
+            </div>
+
+            <form th:action="@{/login}" method="post" class="space-y-4">
+                <label class="block">
+                    <span class="text-sm text-ink-soft mb-1.5 block">Email</span>
+                    <div class="relative">
+                        <i class="ph ph-envelope absolute left-3.5 top-1/2 -translate-y-1/2 text-ink-soft"></i>
+                        <input name="username" type="email" required autofocus
+                               placeholder="tucorreo@ejemplo.com"
+                               class="input pl-10">
+                    </div>
+                </label>
+                <label class="block">
+                    <span class="text-sm text-ink-soft mb-1.5 block flex justify-between">
+                        <span>Contraseña</span>
+                        <a href="/forgot" class="text-brand hover:underline text-xs">¿Olvidaste tu contraseña?</a>
+                    </span>
+                    <div class="relative">
+                        <i class="ph ph-lock absolute left-3.5 top-1/2 -translate-y-1/2 text-ink-soft"></i>
+                        <input name="password" type="password" required
+                               placeholder="••••••••"
+                               class="input pl-10">
+                    </div>
+                </label>
+                <button class="btn btn-primary w-full mt-2">
+                    <span>Entrar</span>
+                    <i class="ph ph-arrow-right text-lg"></i>
+                </button>
+            </form>
+
+            <div class="my-8 flex items-center gap-3 text-ink-soft text-xs uppercase tracking-wider">
+                <div class="flex-1 h-px bg-line"></div>
+                <span>o</span>
+                <div class="flex-1 h-px bg-line"></div>
+            </div>
+
+            <p class="text-center text-sm text-ink-soft">
+                ¿Es tu primera vez aquí?
+                <a href="/register" class="text-brand font-medium hover:underline">Crea una cuenta</a>
+            </p>
+        </div>
+    </section>
+</main>
+
 </body>
 </html>
