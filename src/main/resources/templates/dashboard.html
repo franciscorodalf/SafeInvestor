@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/head :: head('Tu panel')}"></head>
+<body>
+<nav th:replace="~{fragments/nav :: nav('home')}"></nav>
+
+<main class="max-w-6xl mx-auto px-5 py-8 sm:py-12">
+
+    <!-- Saludo -->
+    <header class="mb-10 fade-up">
+        <p class="text-xs tracking-[0.18em] uppercase text-ink-soft mb-2"
+           th:text="${#temporals.format(fecha, 'EEEE, dd ''de'' MMMM ''de'' yyyy')}">viernes, 6 de junio de 2026</p>
+        <h1 class="font-display text-5xl sm:text-6xl leading-tight">
+            <span th:text="${saludo}">Buenos días</span>,
+            <em class="italic" th:text="${usuario.nombre}">Francisco</em>.
+        </h1>
+    </header>
+
+    <!-- KPIs del mes -->
+    <section class="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-10 stagger">
+        <div class="bg-surface border border-line rounded-lg p-5 shadow-sm">
+            <div class="flex items-center justify-between text-ink-soft text-xs uppercase tracking-wider mb-3">
+                <span>Balance del mes</span>
+                <i class="ph ph-scales text-lg"></i>
+            </div>
+            <p class="font-mono text-3xl font-semibold leading-none"
+               th:classappend="${balanceMes.signum() >= 0} ? 'text-positive' : 'text-negative'"
+               th:text="${(balanceMes.signum() >= 0 ? '+' : '') + #numbers.formatDecimal(balanceMes, 1, 2) + ' €'}">+0,00 €</p>
+        </div>
+        <div class="bg-surface border border-line rounded-lg p-5 shadow-sm">
+            <div class="flex items-center justify-between text-ink-soft text-xs uppercase tracking-wider mb-3">
+                <span>Ingresos</span>
+                <i class="ph ph-arrow-down-left text-lg text-positive"></i>
+            </div>
+            <p class="font-mono text-3xl font-semibold leading-none text-positive"
+               th:text="${'+' + #numbers.formatDecimal(ingresosMes, 1, 2) + ' €'}">+0,00 €</p>
+        </div>
+        <div class="bg-surface border border-line rounded-lg p-5 shadow-sm">
+            <div class="flex items-center justify-between text-ink-soft text-xs uppercase tracking-wider mb-3">
+                <span>Gastos</span>
+                <i class="ph ph-arrow-up-right text-lg text-negative"></i>
+            </div>
+            <p class="font-mono text-3xl font-semibold leading-none text-negative"
+               th:text="${'-' + #numbers.formatDecimal(gastosMes, 1, 2) + ' €'}">-0,00 €</p>
+        </div>
+    </section>
+
+    <!-- Dos columnas: últimos movimientos + tareas/objetivos -->
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+
+        <!-- Movimientos recientes (col-span 2) -->
+        <section class="lg:col-span-2 bg-surface border border-line rounded-lg shadow-sm">
+            <div class="flex items-center justify-between px-6 py-4 border-b border-line">
+                <h2 class="font-display text-2xl">Últimos movimientos</h2>
+                <a href="/movimientos" class="text-sm text-brand hover:underline flex items-center gap-1">
+                    Ver todos <i class="ph ph-arrow-right"></i>
+                </a>
+            </div>
+
+            <div th:if="${#lists.isEmpty(ultimosMovimientos)}" class="px-6 py-12 text-center">
+                <div class="inline-flex w-14 h-14 rounded-full bg-bg-soft items-center justify-center text-ink-soft mb-3">
+                    <i class="ph ph-receipt text-2xl"></i>
+                </div>
+                <p class="text-ink-soft mb-4">Aún no has registrado ningún movimiento.</p>
+                <a href="/movimientos/nuevo" class="btn btn-primary">
+                    <i class="ph ph-plus"></i> Crear el primero
+                </a>
+            </div>
+
+            <ul th:unless="${#lists.isEmpty(ultimosMovimientos)}" class="divide-y divide-line">
+                <li th:each="m : ${ultimosMovimientos}" class="px-6 py-4 flex items-center gap-4 hover:bg-bg-soft/40">
+                    <div class="w-10 h-10 rounded-full flex items-center justify-center shrink-0"
+                         th:classappend="${m.tipo.name() == 'GASTO'} ? 'bg-negative-soft text-negative' : 'bg-positive-soft text-positive'">
+                        <i class="ph text-xl"
+                           th:classappend="${m.tipo.name() == 'GASTO'} ? 'ph-arrow-up-right' : 'ph-arrow-down-left'"></i>
+                    </div>
+                    <div class="flex-1 min-w-0">
+                        <p class="font-medium truncate" th:text="${m.descripcion} ?: '—'">Movimiento</p>
+                        <div class="flex items-center gap-2 text-xs text-ink-soft">
+                            <span th:if="${m.categoria != null}" class="pill"
+                                  th:style="'background-color:' + ${m.categoria.color} + '15; color:' + ${m.categoria.color}">
+                                <span class="w-1.5 h-1.5 rounded-full" th:style="'background-color:' + ${m.categoria.color}"></span>
+                                <span th:text="${m.categoria.nombre}"></span>
+                            </span>
+                            <span th:text="${#temporals.format(m.fecha, 'dd MMM')}">06 jun</span>
+                        </div>
+                    </div>
+                    <p class="font-mono font-semibold shrink-0"
+                       th:classappend="${m.tipo.name() == 'GASTO'} ? 'text-negative' : 'text-positive'"
+                       th:text="${(m.tipo.name() == 'GASTO' ? '-' : '+') + #numbers.formatDecimal(m.importe, 1, 2) + ' €'}">+0,00 €</p>
+                </li>
+            </ul>
+        </section>
+
+        <!-- Side col: objetivos + tareas -->
+        <aside class="space-y-6">
+
+            <!-- Objetivos -->
+            <section class="bg-surface border border-line rounded-lg shadow-sm">
+                <div class="flex items-center justify-between px-5 py-4 border-b border-line">
+                    <h2 class="font-display text-xl">Objetivos</h2>
+                    <a href="/objetivos" class="text-xs text-brand hover:underline">Ver todos</a>
+                </div>
+
+                <div th:if="${#lists.isEmpty(objetivosActivos)}" class="px-5 py-6 text-center text-sm text-ink-soft">
+                    <i class="ph ph-target text-3xl text-ink-soft/50 block mb-2"></i>
+                    <p th:if="${objetivosCompletados == 0}" class="mb-3">Sin objetivos todavía</p>
+                    <p th:if="${objetivosCompletados > 0}" class="mb-3 text-positive">
+                        <i class="ph ph-trophy"></i>
+                        <span th:text="${objetivosCompletados} + ' completado' + (${objetivosCompletados} == 1 ? '' : 's')"></span>
+                    </p>
+                    <a href="/objetivos/nuevo" class="text-brand text-sm hover:underline">+ Crear objetivo</a>
+                </div>
+
+                <ul th:unless="${#lists.isEmpty(objetivosActivos)}" class="divide-y divide-line">
+                    <li th:each="o : ${objetivosActivos}" class="px-5 py-4">
+                        <a th:href="@{/objetivos/{id}(id=${o.id})}" class="block">
+                            <div class="flex items-center justify-between mb-2">
+                                <p class="font-medium truncate flex items-center gap-2">
+                                    <span class="w-2 h-2 rounded-full shrink-0" th:style="'background-color:' + ${o.color}"></span>
+                                    <span th:text="${o.nombre}">Vacaciones</span>
+                                </p>
+                                <p class="font-mono text-xs text-ink-soft shrink-0 ml-2" th:text="${o.porcentaje} + '%'">35%</p>
+                            </div>
+                            <div class="bg-line rounded-full h-1.5 overflow-hidden">
+                                <div class="h-full rounded-full transition-all"
+                                     th:style="'width:' + ${o.porcentaje} + '%; background-color:' + ${o.color}"></div>
+                            </div>
+                        </a>
+                    </li>
+                </ul>
+            </section>
+
+            <!-- Tareas -->
+            <section class="bg-surface border border-line rounded-lg shadow-sm">
+                <div class="flex items-center justify-between px-5 py-4 border-b border-line">
+                    <h2 class="font-display text-xl">Tareas pendientes</h2>
+                    <a href="/tareas" class="text-xs text-brand hover:underline">Ver todas</a>
+                </div>
+
+                <div th:if="${tareasVencidas > 0}" class="px-5 py-2 bg-negative-soft text-negative text-xs flex items-center gap-2">
+                    <i class="ph ph-warning-circle"></i>
+                    <span th:text="${tareasVencidas} + ' tarea' + (${tareasVencidas} == 1 ? '' : 's') + ' vencida' + (${tareasVencidas} == 1 ? '' : 's')"></span>
+                </div>
+
+                <div th:if="${#lists.isEmpty(tareasPendientes)}" class="px-5 py-6 text-center text-sm text-ink-soft">
+                    <i class="ph ph-check-square text-3xl text-positive/60 block mb-2"></i>
+                    <p>Sin pendientes. ¡Bien!</p>
+                </div>
+
+                <ul th:unless="${#lists.isEmpty(tareasPendientes)}" class="divide-y divide-line">
+                    <li th:each="t : ${tareasPendientes}" class="px-5 py-3 flex items-start gap-3">
+                        <i class="ph ph-circle text-ink-soft text-lg mt-0.5 shrink-0"></i>
+                        <div class="flex-1 min-w-0">
+                            <p class="text-sm font-medium truncate" th:text="${t.titulo}">Pagar alquiler</p>
+                            <p th:if="${t.fechaVencimiento}" class="text-xs"
+                               th:classappend="${t.vencida} ? 'text-negative' : 'text-ink-soft'"
+                               th:text="${t.vencida} ? 'Vencida · ' + #temporals.format(t.fechaVencimiento, 'dd MMM') : 'Vence ' + #temporals.format(t.fechaVencimiento, 'dd MMM')"></p>
+                        </div>
+                    </li>
+                </ul>
+            </section>
+        </aside>
+
+    </div>
+
+    <!-- Quick actions floating -->
+    <a href="/movimientos/nuevo"
+       class="fixed bottom-6 right-6 w-14 h-14 rounded-full bg-brand text-bg shadow-lg flex items-center justify-center hover:bg-brand-deep z-30"
+       title="Nuevo movimiento">
+        <i class="ph ph-plus text-2xl"></i>
+    </a>
+
+</main>
+
+</body>
+</html>

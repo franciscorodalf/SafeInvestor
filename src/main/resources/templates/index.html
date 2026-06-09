@@ -1,27 +1,82 @@
 <!DOCTYPE html>
 <html lang="es" xmlns:th="http://www.thymeleaf.org">
-<head>
-    <meta charset="UTF-8">
-    <title>SafeInvestor</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-</head>
-<body class="bg-gray-50 min-h-screen flex items-center justify-center">
-    <div class="text-center">
-        <h1 class="text-4xl font-bold text-blue-600 mb-4">SafeInvestor v2</h1>
-        <p class="text-gray-600 mb-6">Tu app de finanzas personales.</p>
-        <div sec:authorize="!isAuthenticated()" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
-            <a href="/login" class="bg-blue-600 text-white px-6 py-2 rounded hover:bg-blue-700">Entrar</a>
-            <a href="/register" class="ml-2 border border-blue-600 text-blue-600 px-6 py-2 rounded hover:bg-blue-50">Crear cuenta</a>
+<head th:replace="~{fragments/head :: head('Tu dinero, con calma')}"></head>
+<body class="min-h-screen flex flex-col">
+
+<header class="px-6 py-5">
+    <a href="/" class="flex items-center gap-2.5">
+        <span class="w-9 h-9 rounded-lg bg-brand text-bg flex items-center justify-center font-display text-xl">S</span>
+        <span class="font-display text-2xl">SafeInvestor</span>
+    </a>
+</header>
+
+<main class="flex-1 flex flex-col">
+
+    <!-- Hero -->
+    <section class="px-6 py-16 sm:py-24 max-w-5xl mx-auto w-full text-center fade-up">
+        <p class="text-xs tracking-[0.2em] uppercase text-ink-soft mb-5">Finanzas personales · 2026</p>
+        <h1 class="font-display text-5xl sm:text-7xl lg:text-8xl leading-[1.02] mb-8">
+            Tu dinero,<br>
+            <em class="italic text-brand">con la calma</em><br>
+            que merece.
+        </h1>
+        <p class="text-lg sm:text-xl text-ink-soft max-w-2xl mx-auto mb-10 leading-relaxed">
+            Gastos, ahorros, objetivos y tareas. Todo en un mismo sitio, sin ruido,
+            con cifras claras y un diseño que respira.
+        </p>
+        <div class="flex flex-col sm:flex-row items-center justify-center gap-3">
+            <a href="/register" class="btn btn-primary text-base px-7 py-3">
+                Crear cuenta gratis <i class="ph ph-arrow-right text-lg"></i>
+            </a>
+            <a href="/login" class="btn btn-ghost text-base px-7 py-3">Entrar</a>
         </div>
-        <div sec:authorize="isAuthenticated()" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
-            <p class="mb-4">Hola <span sec:authentication="name" class="font-semibold"></span>.</p>
-            <div class="grid grid-cols-2 gap-3 max-w-md">
-                <a href="/movimientos" class="bg-blue-600 text-white px-4 py-3 rounded hover:bg-blue-700">💰 Movimientos</a>
-                <a href="/objetivos" class="bg-green-600 text-white px-4 py-3 rounded hover:bg-green-700">🎯 Objetivos</a>
-                <a href="/tareas" class="bg-purple-600 text-white px-4 py-3 rounded hover:bg-purple-700">✅ Tareas</a>
-                <a href="/categorias" class="border border-blue-600 text-blue-600 px-4 py-3 rounded hover:bg-blue-50">🏷 Categorías</a>
+        <p class="text-xs text-ink-soft mt-5">Sin tarjeta · Sin tracking · Código abierto</p>
+    </section>
+
+    <!-- Features grid -->
+    <section class="max-w-6xl mx-auto px-6 py-16 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5 stagger w-full">
+        <div class="bg-surface border border-line rounded-lg p-6 shadow-sm card-hover">
+            <div class="w-11 h-11 rounded-lg bg-brand-soft text-brand flex items-center justify-center mb-4">
+                <i class="ph ph-arrows-down-up text-xl"></i>
+            </div>
+            <h3 class="font-display text-xl mb-2">Movimientos</h3>
+            <p class="text-sm text-ink-soft leading-relaxed">Registra cada gasto e ingreso con su categoría. Filtra por fecha y exporta.</p>
+        </div>
+        <div class="bg-surface border border-line rounded-lg p-6 shadow-sm card-hover">
+            <div class="w-11 h-11 rounded-lg bg-accent-soft text-accent flex items-center justify-center mb-4">
+                <i class="ph ph-tag text-xl"></i>
+            </div>
+            <h3 class="font-display text-xl mb-2">Categorías</h3>
+            <p class="text-sm text-ink-soft leading-relaxed">11 categorías por defecto al registrarte. Personalízalas con tus colores.</p>
+        </div>
+        <div class="bg-surface border border-line rounded-lg p-6 shadow-sm card-hover">
+            <div class="w-11 h-11 rounded-lg bg-positive-soft text-positive flex items-center justify-center mb-4">
+                <i class="ph ph-target text-xl"></i>
+            </div>
+            <h3 class="font-display text-xl mb-2">Objetivos</h3>
+            <p class="text-sm text-ink-soft leading-relaxed">Define metas de ahorro con fecha límite. Barra de progreso visual.</p>
+        </div>
+        <div class="bg-surface border border-line rounded-lg p-6 shadow-sm card-hover">
+            <div class="w-11 h-11 rounded-lg bg-bg-soft text-ink flex items-center justify-center mb-4">
+                <i class="ph ph-list-checks text-xl"></i>
+            </div>
+            <h3 class="font-display text-xl mb-2">Tareas</h3>
+            <p class="text-sm text-ink-soft leading-relaxed">Recordatorios financieros con vencimientos. Marca completadas.</p>
+        </div>
+    </section>
+
+    <footer class="border-t border-line py-8 mt-auto">
+        <div class="max-w-6xl mx-auto px-6 flex flex-col sm:flex-row items-center justify-between gap-3 text-sm text-ink-soft">
+            <p>© 2026 SafeInvestor — proyecto final de DAM</p>
+            <div class="flex items-center gap-4">
+                <a href="https://github.com/franciscorodalf/SafeInvestor" target="_blank" class="hover:text-brand flex items-center gap-1.5">
+                    <i class="ph ph-github-logo"></i> GitHub
+                </a>
             </div>
         </div>
-    </div>
+    </footer>
+
+</main>
+
 </body>
 </html>
