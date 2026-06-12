@@ -3,11 +3,15 @@
 <head th:replace="~{fragments/head :: head('Tu dinero, con calma')}"></head>
 <body class="min-h-screen flex flex-col">
 
-<header class="px-6 py-5">
+<header class="px-6 py-5 flex justify-between items-center max-w-6xl mx-auto w-full">
     <a href="/" class="flex items-center gap-2.5">
-        <span class="w-9 h-9 rounded-lg bg-brand text-bg flex items-center justify-center font-display text-xl">S</span>
+        <img src="/images/logo.png" alt="SafeInvestor" class="h-10 w-10 object-contain">
         <span class="font-display text-2xl">SafeInvestor</span>
     </a>
+    <div class="flex items-center gap-3 text-sm">
+        <a href="/login" class="text-ink hover:text-brand font-medium px-3 py-2">Entrar</a>
+        <a href="/register" class="btn btn-primary">Crear cuenta</a>
+    </div>
 </header>
 
 <main class="flex-1 flex flex-col">
@@ -25,10 +29,12 @@
             con cifras claras y un diseño que respira.
         </p>
         <div class="flex flex-col sm:flex-row items-center justify-center gap-3">
-            <a href="/register" class="btn btn-primary text-base px-7 py-3">
+            <a href="/register" class="btn btn-primary text-base px-7 py-3.5">
                 Crear cuenta gratis <i class="ph ph-arrow-right text-lg"></i>
             </a>
-            <a href="/login" class="btn btn-ghost text-base px-7 py-3">Entrar</a>
+            <a href="/login" class="btn text-base px-7 py-3.5 bg-surface border border-line text-ink hover:bg-bg-soft">
+                <i class="ph ph-sign-in"></i> Ya tengo cuenta
+            </a>
         </div>
         <p class="text-xs text-ink-soft mt-5">Sin tarjeta · Sin tracking · Código abierto</p>
     </section>
