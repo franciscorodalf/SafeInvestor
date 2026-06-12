@@ -107,11 +107,11 @@
 
     <!-- Pagination -->
     <nav class="flex items-center justify-between mt-6 text-sm" th:if="${hasNext or hasPrev}">
-        <a th:if="${hasPrev}" th:href="@{/movimientos(page=${page - 1}, categoriaId=${currentCategoriaId}, desde=${desde}, hasta=${hasta})}"
+        <a th:if="${hasPrev != null and hasPrev}" th:href="@{/movimientos(page=${page - 1}, categoriaId=${currentCategoriaId}, desde=${desde}, hasta=${hasta})}"
            class="btn btn-ghost"><i class="ph ph-arrow-left"></i> Anterior</a>
         <span th:unless="${hasPrev}"></span>
         <span class="text-ink-soft text-xs" th:text="'Página ' + (${page} + 1)">Página 1</span>
-        <a th:if="${hasNext}" th:href="@{/movimientos(page=${page + 1}, categoriaId=${currentCategoriaId}, desde=${desde}, hasta=${hasta})}"
+        <a th:if="${hasNext != null and hasNext}" th:href="@{/movimientos(page=${page + 1}, categoriaId=${currentCategoriaId}, desde=${desde}, hasta=${hasta})}"
            class="btn btn-ghost">Siguiente <i class="ph ph-arrow-right"></i></a>
     </nav>
 

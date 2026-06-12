@@ -61,7 +61,7 @@
                      th:style="'width:' + ${o.porcentaje} + '%; background-color:' + ${o.color}"></div>
             </div>
             <div class="flex items-center justify-between text-xs text-ink-soft relative">
-                <span th:if="${o.fechaLimite}" class="flex items-center gap-1">
+                <span th:if="${o.fechaLimite != null}" class="flex items-center gap-1">
                     <i class="ph ph-calendar"></i>
                     <span th:text="'Hasta ' + ${#temporals.format(o.fechaLimite, 'dd MMM yyyy')}">Hasta 31 dic 2026</span>
                 </span>

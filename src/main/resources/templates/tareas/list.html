@@ -72,8 +72,8 @@
                             <i class="ph ph-warning-fill"></i> Vencida
                         </span>
                     </div>
-                    <p th:if="${t.descripcion}" class="text-sm text-ink-soft mt-0.5" th:text="${t.descripcion}"></p>
-                    <p th:if="${t.fechaVencimiento}" class="text-xs mt-1 flex items-center gap-1"
+                    <p th:if="${t.descripcion != null}" class="text-sm text-ink-soft mt-0.5" th:text="${t.descripcion}"></p>
+                    <p th:if="${t.fechaVencimiento != null}" class="text-xs mt-1 flex items-center gap-1"
                        th:classappend="${t.vencida} ? 'text-negative' : 'text-ink-soft'">
                         <i class="ph ph-calendar"></i>
                         <span th:text="(${t.vencida} ? 'Venció ' : 'Vence ') + #temporals.format(t.fechaVencimiento, 'dd MMM yyyy')">Vence 31 dic 2026</span>

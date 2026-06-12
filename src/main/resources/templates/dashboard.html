@@ -153,7 +153,7 @@
                         <i class="ph ph-circle text-ink-soft text-lg mt-0.5 shrink-0"></i>
                         <div class="flex-1 min-w-0">
                             <p class="text-sm font-medium truncate" th:text="${t.titulo}">Pagar alquiler</p>
-                            <p th:if="${t.fechaVencimiento}" class="text-xs"
+                            <p th:if="${t.fechaVencimiento != null}" class="text-xs"
                                th:classappend="${t.vencida} ? 'text-negative' : 'text-ink-soft'"
                                th:text="${t.vencida} ? 'Vencida · ' + #temporals.format(t.fechaVencimiento, 'dd MMM') : 'Vence ' + #temporals.format(t.fechaVencimiento, 'dd MMM')"></p>
                         </div>
