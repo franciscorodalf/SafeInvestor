@@ -6,13 +6,18 @@ import es.franciscorodalf.safeinvestor.movimientos.domain.CategoriaRepository;
 import es.franciscorodalf.safeinvestor.movimientos.domain.Movimiento;
 import es.franciscorodalf.safeinvestor.movimientos.domain.MovimientoRepository;
 import es.franciscorodalf.safeinvestor.movimientos.domain.TipoMovimiento;
+import jakarta.persistence.criteria.Predicate;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
 
 @Service
 public class MovimientoService {
@@ -29,8 +34,23 @@ public class MovimientoService {
 
     public Page<Movimiento> search(Usuario usuario, Long categoriaId,
                                    LocalDate desde, LocalDate hasta, int page) {
-        return movimientos.search(usuario, categoriaId, desde, hasta,
-            PageRequest.of(Math.max(0, page), PAGE_SIZE));
+        Specification<Movimiento> spec = (root, query, cb) -> {
+            List<Predicate> preds = new ArrayList<>();
+            preds.add(cb.equal(root.get("usuario"), usuario));
+            if (categoriaId != null) {
+                preds.add(cb.equal(root.get("categoria").get("id"), categoriaId));
+            }
+            if (desde != null) {
+                preds.add(cb.greaterThanOrEqualTo(root.get("fecha"), desde));
+            }
+            if (hasta != null) {
+                preds.add(cb.lessThanOrEqualTo(root.get("fecha"), hasta));
+            }
+            return cb.and(preds.toArray(Predicate[]::new));
+        };
+        return movimientos.findAll(spec,
+            PageRequest.of(Math.max(0, page), PAGE_SIZE,
+                Sort.by(Sort.Direction.DESC, "fecha").and(Sort.by(Sort.Direction.DESC, "id"))));
     }
 
     public Movimiento get(Usuario usuario, Long id) {
