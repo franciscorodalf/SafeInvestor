@@ -43,7 +43,7 @@
             <p class="text-xs tracking-[0.18em] uppercase text-ink-soft mb-2">Bienvenido</p>
             <h2 class="font-display text-4xl mb-8 leading-tight">Crea tu cuenta.</h2>
 
-            <div th:if="${error}" class="mb-4 p-3 rounded-lg bg-negative-soft text-negative text-sm flex items-start gap-2">
+            <div th:if="${error != null}" class="mb-4 p-3 rounded-lg bg-negative-soft text-negative text-sm flex items-start gap-2">
                 <i class="ph ph-warning-circle text-lg shrink-0 mt-0.5"></i>
                 <span th:text="${error}"></span>
             </div>

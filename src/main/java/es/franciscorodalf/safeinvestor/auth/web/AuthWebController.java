@@ -21,7 +21,17 @@ public class AuthWebController {
     }
 
     @GetMapping("/login")
-    public String loginPage() { return "auth/login"; }
+    public String loginPage(@RequestParam(required = false) String error,
+                            @RequestParam(required = false) String logout,
+                            @RequestParam(required = false) String registered,
+                            @RequestParam(required = false) String reset,
+                            Model model) {
+        if (error != null) model.addAttribute("msgError", true);
+        if (logout != null) model.addAttribute("msgLogout", true);
+        if (registered != null) model.addAttribute("msgRegistered", true);
+        if (reset != null) model.addAttribute("msgReset", true);
+        return "auth/login";
+    }
 
     @GetMapping("/register")
     public String registerPage(Model model) {
