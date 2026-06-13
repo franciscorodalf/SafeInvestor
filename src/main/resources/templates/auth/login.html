@@ -8,9 +8,8 @@
 
     <!-- Lado izquierdo: marca + filosofía (oculto en móvil) -->
     <aside class="hidden lg:flex lg:col-span-3 bg-brand text-bg p-12 xl:p-16 flex-col justify-between relative overflow-hidden">
-        <!-- Decoración numérica de fondo -->
-        <div class="absolute -right-10 -top-10 opacity-[0.06] font-mono text-[14rem] leading-none select-none pointer-events-none">€</div>
-        <div class="absolute right-20 bottom-32 opacity-[0.04] font-mono text-[8rem] leading-none select-none pointer-events-none rotate-12">2,847.50</div>
+        <!-- Fondo animado: símbolos de monedas, cifras y mini-gráficas a la deriva -->
+        <div th:replace="~{fragments/auth-bg :: bg}"></div>
 
         <div class="relative">
             <a href="/" class="flex items-center gap-3">

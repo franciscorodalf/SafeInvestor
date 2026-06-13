@@ -7,7 +7,8 @@
 
     <!-- Lado izquierdo: marca + checklist -->
     <aside class="hidden lg:flex lg:col-span-3 bg-brand text-bg p-12 xl:p-16 flex-col justify-between relative overflow-hidden">
-        <div class="absolute -left-20 top-20 opacity-[0.05] font-mono text-[18rem] leading-none select-none pointer-events-none">+</div>
+        <!-- Fondo animado compartido con login -->
+        <div th:replace="~{fragments/auth-bg :: bg}"></div>
 
         <a href="/" class="relative flex items-center gap-3">
             <span class="bg-bg rounded-lg p-1 flex items-center justify-center">
