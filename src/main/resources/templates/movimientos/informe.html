@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Informe de movimientos · SafeInvestor</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif&family=Sora:wght@400;500;600;700&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet">
+    <link rel="icon" type="image/png" href="/images/logo.png">
+    <style>
+        :root {
+            --ink: #1A1410; --ink-soft: #6B6358; --line: #E8DFD2;
+            --brand: #0E5C5F; --positive: #2D6A4F; --negative: #9B2D2D;
+            --bg: #FAF7F2;
+        }
+        * { box-sizing: border-box; }
+        body {
+            font-family: 'Sora', system-ui, sans-serif; color: var(--ink);
+            background: var(--bg); margin: 0; padding: 40px;
+            -webkit-font-smoothing: antialiased;
+        }
+        .sheet { max-width: 880px; margin: 0 auto; background: white; padding: 56px; border-radius: 4px; box-shadow: 0 6px 24px rgba(0,0,0,0.06); }
+        .font-display { font-family: 'Instrument Serif', Georgia, serif; font-weight: 400; }
+        .font-mono { font-family: 'JetBrains Mono', monospace; font-feature-settings: 'tnum'; }
+        h1 { font-family: 'Instrument Serif', Georgia, serif; font-weight: 400; font-size: 48px; line-height: 1.1; margin: 6px 0 4px; }
+        h2 { font-family: 'Instrument Serif', Georgia, serif; font-weight: 400; font-size: 24px; margin: 32px 0 12px; }
+        .eyebrow { font-size: 11px; letter-spacing: 0.18em; text-transform: uppercase; color: var(--ink-soft); }
+        .header { display: flex; justify-content: space-between; align-items: flex-start; border-bottom: 1px solid var(--line); padding-bottom: 24px; }
+        .brand { display: flex; align-items: center; gap: 10px; }
+        .brand img { height: 40px; width: 40px; object-fit: contain; }
+        .brand span { font-family: 'Instrument Serif', Georgia, serif; font-size: 24px; }
+        .meta { text-align: right; font-size: 12px; color: var(--ink-soft); }
+        .kpis { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin: 28px 0; }
+        .kpi { border: 1px solid var(--line); border-radius: 8px; padding: 18px; }
+        .kpi .label { font-size: 11px; text-transform: uppercase; letter-spacing: 0.1em; color: var(--ink-soft); margin-bottom: 8px; }
+        .kpi .value { font-family: 'JetBrains Mono', monospace; font-size: 22px; font-weight: 600; line-height: 1; }
+        .pos { color: var(--positive); }
+        .neg { color: var(--negative); }
+        table { width: 100%; border-collapse: collapse; font-size: 13px; }
+        thead th { text-align: left; padding: 10px 8px; border-bottom: 2px solid var(--ink); font-size: 11px; text-transform: uppercase; letter-spacing: 0.08em; color: var(--ink-soft); }
+        tbody td { padding: 10px 8px; border-bottom: 1px solid var(--line); vertical-align: top; }
+        tbody tr:last-child td { border-bottom: 0; }
+        .num { text-align: right; font-family: 'JetBrains Mono', monospace; font-weight: 500; }
+        .pill { display: inline-block; padding: 2px 8px; border-radius: 999px; background: #F2EDE4; color: var(--ink-soft); font-size: 11px; }
+        .footer { margin-top: 40px; padding-top: 16px; border-top: 1px solid var(--line); font-size: 11px; color: var(--ink-soft); display: flex; justify-content: space-between; }
+        .actions { max-width: 880px; margin: 16px auto 24px; display: flex; gap: 8px; justify-content: flex-end; }
+        .actions button, .actions a { font-family: inherit; padding: 9px 16px; border-radius: 8px; border: 1px solid var(--line); background: white; color: var(--ink); cursor: pointer; text-decoration: none; font-size: 14px; display: inline-flex; align-items: center; gap: 6px; }
+        .actions button.primary { background: var(--brand); color: var(--bg); border-color: var(--brand); }
+
+        @media print {
+            body { background: white; padding: 0; }
+            .sheet { box-shadow: none; padding: 0; max-width: none; }
+            .actions, .no-print { display: none !important; }
+            @page { margin: 18mm; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="actions no-print">
+    <a href="/movimientos">← Volver</a>
+    <button class="primary" onclick="window.print()">🖨 Imprimir / Guardar como PDF</button>
+</div>
+
+<div class="sheet">
+
+    <header class="header">
+        <div>
+            <div class="brand">
+                <img src="/images/logo.png" alt="SafeInvestor">
+                <span>SafeInvestor</span>
+            </div>
+            <p class="eyebrow" style="margin-top: 14px;">Informe de movimientos</p>
+            <h1>Resumen del periodo</h1>
+            <p class="font-mono" style="font-size: 13px; color: var(--ink-soft);">
+                <span th:text="${#temporals.format(desde, 'dd MMM yyyy')}">01 jun 2026</span>
+                —
+                <span th:text="${#temporals.format(hasta, 'dd MMM yyyy')}">30 jun 2026</span>
+            </p>
+        </div>
+        <div class="meta">
+            <p style="margin: 0;"><strong th:text="${usuario.nombre}">Usuario</strong></p>
+            <p style="margin: 2px 0 0;" th:text="${usuario.email}">email@ejemplo.com</p>
+            <p style="margin: 12px 0 0;" th:text="'Generado ' + #temporals.format(generadoEn, 'dd MMM yyyy, HH:mm')">Generado 13 jun 2026, 18:20</p>
+        </div>
+    </header>
+
+    <section class="kpis">
+        <div class="kpi">
+            <p class="label">Balance</p>
+            <p class="value" th:classappend="${balance.signum() >= 0} ? 'pos' : 'neg'"
+               th:text="${(balance.signum() >= 0 ? '+' : '') + #numbers.formatDecimal(balance, 1, 2)} + ' €'">+0,00 €</p>
+        </div>
+        <div class="kpi">
+            <p class="label">Ingresos</p>
+            <p class="value pos" th:text="${'+' + #numbers.formatDecimal(totalIngresos, 1, 2)} + ' €'">+0,00 €</p>
+        </div>
+        <div class="kpi">
+            <p class="label">Gastos</p>
+            <p class="value neg" th:text="${'-' + #numbers.formatDecimal(totalGastos, 1, 2)} + ' €'">-0,00 €</p>
+        </div>
+    </section>
+
+    <h2>Movimientos</h2>
+    <p th:if="${#lists.isEmpty(movimientos)}" style="color: var(--ink-soft); padding: 18px 0;">
+        Sin movimientos en este periodo.
+    </p>
+    <table th:unless="${#lists.isEmpty(movimientos)}">
+        <thead>
+            <tr>
+                <th style="width: 90px;">Fecha</th>
+                <th style="width: 100px;">Tipo</th>
+                <th>Categoría</th>
+                <th>Descripción</th>
+                <th class="num" style="width: 120px;">Importe</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr th:each="m : ${movimientos}">
+                <td class="font-mono" th:text="${#temporals.format(m.fecha, 'dd/MM/yyyy')}">13/06/2026</td>
+                <td>
+                    <span class="pill" th:text="${m.tipo.name() == 'GASTO' ? 'Gasto' : 'Ingreso'}">Gasto</span>
+                </td>
+                <td th:text="${m.categoria != null ? m.categoria.nombre : '—'}">—</td>
+                <td th:text="${m.descripcion ?: ''}"></td>
+                <td class="num" th:classappend="${m.tipo.name() == 'GASTO'} ? 'neg' : 'pos'"
+                    th:text="${(m.tipo.name() == 'GASTO' ? '-' : '+') + #numbers.formatDecimal(m.importe, 1, 2)} + ' €'">-0,00 €</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <footer class="footer">
+        <span>SafeInvestor · Tu dinero con la calma que merece</span>
+        <span>safeinvestor.onrender.com</span>
+    </footer>
+</div>
+
+</body>
+</html>

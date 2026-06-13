@@ -3,14 +3,18 @@ package es.franciscorodalf.safeinvestor.movimientos.web;
 import es.franciscorodalf.safeinvestor.movimientos.domain.Movimiento;
 import es.franciscorodalf.safeinvestor.movimientos.security.CurrentUser;
 import es.franciscorodalf.safeinvestor.movimientos.service.MovimientoService;
+import es.franciscorodalf.safeinvestor.movimientos.domain.TipoMovimiento;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+
+import java.math.BigDecimal;
 
 import java.nio.charset.StandardCharsets;
 import java.time.LocalDate;
@@ -68,5 +72,42 @@ public class MovimientoExportController {
         boolean needsQuotes = s.contains(";") || s.contains("\"") || s.contains("\n");
         String escaped = s.replace("\"", "\"\"");
         return needsQuotes ? "\"" + escaped + "\"" : escaped;
+    }
+
+    /**
+     * Página HTML imprimible. El usuario hace "Imprimir → Guardar como PDF" del navegador.
+     * CSS optimizado para print: una columna, sin nav, márgenes adecuados.
+     */
+    @GetMapping("/informe")
+    public String informe(
+        @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate desde,
+        @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate hasta,
+        Model model
+    ) {
+        var u = currentUser.get();
+        LocalDate hoy = LocalDate.now();
+        if (desde == null) desde = hoy.withDayOfMonth(1);
+        if (hasta == null) hasta = hoy;
+
+        List<Movimiento> rows = movimientos.search(u, null, desde, hasta, 0).getContent();
+
+        BigDecimal totalIngresos = rows.stream()
+            .filter(m -> m.getTipo() == TipoMovimiento.INGRESO)
+            .map(Movimiento::getImporte)
+            .reduce(BigDecimal.ZERO, BigDecimal::add);
+        BigDecimal totalGastos = rows.stream()
+            .filter(m -> m.getTipo() == TipoMovimiento.GASTO)
+            .map(Movimiento::getImporte)
+            .reduce(BigDecimal.ZERO, BigDecimal::add);
+
+        model.addAttribute("usuario", u);
+        model.addAttribute("desde", desde);
+        model.addAttribute("hasta", hasta);
+        model.addAttribute("movimientos", rows);
+        model.addAttribute("totalIngresos", totalIngresos);
+        model.addAttribute("totalGastos", totalGastos);
+        model.addAttribute("balance", totalIngresos.subtract(totalGastos));
+        model.addAttribute("generadoEn", java.time.LocalDateTime.now());
+        return "movimientos/informe";
     }
 }
