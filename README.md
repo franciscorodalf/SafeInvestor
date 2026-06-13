@@ -7,7 +7,7 @@
 [![Spring Boot](https://img.shields.io/badge/Spring%20Boot-3.3-6DB33F?logo=spring)](https://spring.io/projects/spring-boot)
 [![License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 
-**Estado:** v2 Fase 3 desplegada. Auth + movimientos + categorías + objetivos de ahorro + tareas financieras.
+**Estado:** v2 Fase 4 desplegada. Auth + movimientos + categorías + objetivos + tareas + **dashboard con gráficas Chart.js + export CSV + informe imprimible**.
 
 ## 🚀 Demo en vivo
 
@@ -81,6 +81,10 @@ En CI, GitHub Actions levanta el mismo Postgres como service container.
 | GET/POST | `/movimientos/{id}/editar` | Editar |
 | POST | `/movimientos/{id}/borrar` | Eliminar |
 | GET/POST | `/categorias` | Gestión de categorías |
+| GET | `/movimientos/export.csv` | Descarga CSV de movimientos |
+| GET | `/movimientos/informe` | Informe imprimible → PDF desde navegador |
+| GET | `/estadisticas/gastos-por-categoria` | JSON gastos del mes por categoría |
+| GET | `/estadisticas/evolucion-mensual` | JSON ingresos vs gastos últimos 6 meses |
 | GET | `/objetivos` | Lista con barra de progreso |
 | GET/POST | `/objetivos/nuevo` | Crear objetivo |
 | GET | `/objetivos/{id}` | Detalle + form de aportar |
@@ -138,7 +142,7 @@ La versión original desarrollada durante 1ºDAM se conserva en:
 - [x] **Fase 1** — Auth (sesión web + JWT API) + reset de contraseña + deploy en Render
 - [x] **Fase 2** — CRUD de movimientos (gastos/ingresos) + categorías con seed por defecto
 - [x] **Fase 3** — Objetivos de ahorro (con aportes + autocompletado) + tareas financieras (con vencimientos)
-- [ ] **Fase 4** — Dashboard con estadísticas (Chart.js) + export CSV/PDF
+- [x] **Fase 4** — Dashboard con gráficas Chart.js (donut por categoría + line evolución 6 meses) + export CSV (formato Excel) + informe imprimible (HTML → PDF desde navegador)
 - [ ] **Fase 5** — Tips de economía + i18n ES/EN + dark mode
 
 ## Licencia
