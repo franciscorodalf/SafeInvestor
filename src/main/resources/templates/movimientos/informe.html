@@ -88,7 +88,7 @@
     <section class="kpis">
         <div class="kpi">
             <p class="label">Balance</p>
-            <p class="value" th:classappend="${balance.signum() >= 0} ? 'pos' : 'neg'"
+            <p class="value" th:classappend="${(balance.signum() >= 0) ? 'pos' : 'neg'}"
                th:text="${(balance.signum() >= 0 ? '+' : '') + #numbers.formatDecimal(balance, 1, 2) + ' €'}">+0,00 €</p>
         </div>
         <div class="kpi">
@@ -123,7 +123,7 @@
                 </td>
                 <td th:text="${m.categoria != null ? m.categoria.nombre : '—'}">—</td>
                 <td th:text="${m.descripcion ?: ''}"></td>
-                <td class="num" th:classappend="${m.tipo.name() == 'GASTO'} ? 'neg' : 'pos'"
+                <td class="num" th:classappend="${(m.tipo.name() == 'GASTO') ? 'neg' : 'pos'}"
                     th:text="${(m.tipo.name() == 'GASTO' ? '-' : '+') + #numbers.formatDecimal(m.importe, 1, 2) + ' €'}">-0,00 €</td>
             </tr>
         </tbody>
