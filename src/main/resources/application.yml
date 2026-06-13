@@ -26,6 +26,11 @@ spring:
   thymeleaf:
     cache: false
 
+  messages:
+    basename: messages
+    encoding: UTF-8
+    fallback-to-system-locale: false
+
 server:
   port: ${PORT:8080}
   error:

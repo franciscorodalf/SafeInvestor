@@ -29,11 +29,12 @@
         </div>
 
         <div class="relative fade-up">
-            <p class="text-accent text-xs tracking-[0.2em] uppercase mb-4">Finanzas personales · 2026</p>
+            <p class="text-accent text-xs tracking-[0.2em] uppercase mb-4" th:text="#{login.brand_eyebrow}">Finanzas personales · 2026</p>
             <h1 class="font-display text-5xl xl:text-6xl leading-[1.05] mb-6">
-                Lleva tu dinero con la calma <em class="italic text-accent">que merece</em>.
+                <span th:text="#{login.brand_headline}">Lleva tu dinero con la calma</span>
+                <em class="italic text-accent" th:text="#{login.brand_headline_em}">que merece</em>.
             </h1>
-            <p class="text-bg/70 text-lg leading-relaxed max-w-md">
+            <p class="text-bg/70 text-lg leading-relaxed max-w-md" th:text="#{login.brand_sub}">
                 Gastos, ahorros, objetivos y tareas. Todo en un mismo sitio, sin ruido,
                 con cifras claras y un diseño que respira.
             </p>
@@ -41,13 +42,13 @@
 
         <div class="relative flex items-center gap-8 text-xs text-bg/60 tracking-wider uppercase">
             <span class="flex items-center gap-2">
-                <span class="w-1.5 h-1.5 rounded-full bg-accent"></span> Privado
+                <span class="w-1.5 h-1.5 rounded-full bg-accent"></span> <span th:text="#{login.feature_private}">Privado</span>
             </span>
             <span class="flex items-center gap-2">
-                <span class="w-1.5 h-1.5 rounded-full bg-accent"></span> Sin terceros
+                <span class="w-1.5 h-1.5 rounded-full bg-accent"></span> <span th:text="#{login.feature_no_third}">Sin terceros</span>
             </span>
             <span class="flex items-center gap-2">
-                <span class="w-1.5 h-1.5 rounded-full bg-accent"></span> Código abierto
+                <span class="w-1.5 h-1.5 rounded-full bg-accent"></span> <span th:text="#{login.feature_open}">Código abierto</span>
             </span>
         </div>
     </aside>
@@ -61,25 +62,25 @@
         </a>
 
         <div class="w-full max-w-sm fade-up">
-            <p class="text-xs tracking-[0.18em] uppercase text-ink-soft mb-2">Bienvenido de nuevo</p>
-            <h2 class="font-display text-4xl mb-8 leading-tight">Entra a tu cuenta.</h2>
+            <p class="text-xs tracking-[0.18em] uppercase text-ink-soft mb-2" th:text="#{login.eyebrow}">Bienvenido de nuevo</p>
+            <h2 class="font-display text-4xl mb-8 leading-tight" th:text="#{login.title}">Entra a tu cuenta.</h2>
 
             <!-- Mensajes (mostrados por JS según query params, NO Thymeleaf) -->
             <div id="msg-error" style="display:none" class="mb-4 p-3 rounded-lg bg-negative-soft text-negative text-sm flex items-start gap-2">
                 <i class="ph ph-warning-circle text-lg shrink-0 mt-0.5"></i>
-                <span>Email o contraseña incorrectos. Vuelve a intentarlo.</span>
+                <span th:text="#{login.error}">Email o contraseña incorrectos. Vuelve a intentarlo.</span>
             </div>
             <div id="msg-logout" style="display:none" class="mb-4 p-3 rounded-lg bg-positive-soft text-positive text-sm flex items-start gap-2">
                 <i class="ph ph-check-circle text-lg shrink-0 mt-0.5"></i>
-                <span>Has cerrado sesión correctamente.</span>
+                <span th:text="#{login.logout_ok}">Has cerrado sesión correctamente.</span>
             </div>
             <div id="msg-registered" style="display:none" class="mb-4 p-3 rounded-lg bg-positive-soft text-positive text-sm flex items-start gap-2">
                 <i class="ph ph-confetti text-lg shrink-0 mt-0.5"></i>
-                <span>Cuenta creada. Inicia sesión con tus credenciales.</span>
+                <span th:text="#{login.registered_ok}">Cuenta creada. Inicia sesión con tus credenciales.</span>
             </div>
             <div id="msg-reset" style="display:none" class="mb-4 p-3 rounded-lg bg-positive-soft text-positive text-sm flex items-start gap-2">
                 <i class="ph ph-key text-lg shrink-0 mt-0.5"></i>
-                <span>Contraseña restablecida. Entra con la nueva.</span>
+                <span th:text="#{login.reset_ok}">Contraseña restablecida. Entra con la nueva.</span>
             </div>
             <script>
                 (function() {
@@ -95,7 +96,7 @@
 
             <form action="/login" method="post" class="space-y-4">
                 <label class="block">
-                    <span class="text-sm text-ink-soft mb-1.5 block">Email</span>
+                    <span class="text-sm text-ink-soft mb-1.5 block" th:text="#{login.email}">Email</span>
                     <div class="relative">
                         <i class="ph ph-envelope absolute left-3.5 top-1/2 -translate-y-1/2 text-ink-soft"></i>
                         <input name="username" type="email" required autofocus
@@ -105,8 +106,8 @@
                 </label>
                 <label class="block">
                     <span class="text-sm text-ink-soft mb-1.5 block flex justify-between">
-                        <span>Contraseña</span>
-                        <a href="/forgot" class="text-brand hover:underline text-xs">¿Olvidaste tu contraseña?</a>
+                        <span th:text="#{login.password}">Contraseña</span>
+                        <a href="/forgot" class="text-brand hover:underline text-xs" th:text="#{login.forgot}">¿Olvidaste tu contraseña?</a>
                     </span>
                     <div class="relative">
                         <i class="ph ph-lock absolute left-3.5 top-1/2 -translate-y-1/2 text-ink-soft"></i>
@@ -116,7 +117,7 @@
                     </div>
                 </label>
                 <button class="btn btn-primary w-full mt-2">
-                    <span>Entrar</span>
+                    <span th:text="#{login.submit}">Entrar</span>
                     <i class="ph ph-arrow-right text-lg"></i>
                 </button>
             </form>
@@ -128,8 +129,8 @@
             </div>
 
             <p class="text-center text-sm text-ink-soft">
-                ¿Es tu primera vez aquí?
-                <a href="/register" class="text-brand font-medium hover:underline">Crea una cuenta</a>
+                <span th:text="#{login.no_account}">¿Es tu primera vez aquí?</span>
+                <a href="/register" class="text-brand font-medium hover:underline" th:text="#{login.create}">Crea una cuenta</a>
             </p>
         </div>
     </section>

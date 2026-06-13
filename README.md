@@ -7,7 +7,7 @@
 [![Spring Boot](https://img.shields.io/badge/Spring%20Boot-3.3-6DB33F?logo=spring)](https://spring.io/projects/spring-boot)
 [![License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 
-**Estado:** v2 Fase 4 desplegada. Auth + movimientos + categorías + objetivos + tareas + **dashboard con gráficas Chart.js + export CSV + informe imprimible**.
+**Estado:** v2 Fase 5 desplegada. Auth + movimientos + categorías + objetivos + tareas + dashboard con gráficas Chart.js + export CSV + informe imprimible + **tips de economía + i18n ES/EN + dark mode**.
 
 ## 🚀 Demo en vivo
 
@@ -92,6 +92,10 @@ En CI, GitHub Actions levanta el mismo Postgres como service container.
 | GET/POST | `/tareas` | Lista + crear inline |
 | POST | `/tareas/{id}/completar` | Marcar completada |
 | POST | `/tareas/{id}/descompletar` | Desmarcar |
+| GET | `/tips` | Listado de tips de economía con filtro por categoría (modal de detalle) |
+
+Cualquier ruta acepta `?lang=es` o `?lang=en` para cambiar el idioma (persiste en cookie).
+Toggle dark/light arriba a la derecha (persiste en localStorage).
 
 ### API REST (JWT)
 
@@ -143,7 +147,7 @@ La versión original desarrollada durante 1ºDAM se conserva en:
 - [x] **Fase 2** — CRUD de movimientos (gastos/ingresos) + categorías con seed por defecto
 - [x] **Fase 3** — Objetivos de ahorro (con aportes + autocompletado) + tareas financieras (con vencimientos)
 - [x] **Fase 4** — Dashboard con gráficas Chart.js (donut por categoría + line evolución 6 meses) + export CSV (formato Excel) + informe imprimible (HTML → PDF desde navegador)
-- [ ] **Fase 5** — Tips de economía + i18n ES/EN + dark mode
+- [x] **Fase 5** — Tips de economía (30 consejos, modal de detalle) + i18n ES/EN (cookie + selector en nav) + dark mode (toggle sol/luna persistente, sin FOUC)
 
 ## Licencia
 

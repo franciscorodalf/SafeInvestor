@@ -8,9 +8,9 @@
 
     <header class="flex items-end justify-between mb-8 flex-wrap gap-4 fade-up">
         <div>
-            <p class="text-xs tracking-[0.18em] uppercase text-ink-soft mb-1">Aprende mientras gestionas</p>
-            <h1 class="font-display text-5xl leading-tight">Tips de economía</h1>
-            <p class="text-ink-soft mt-2" th:text="${total + ' consejos prácticos para tomar mejores decisiones con tu dinero.'}">
+            <p class="text-xs tracking-[0.18em] uppercase text-ink-soft mb-1" th:text="#{tips.eyebrow}">Aprende mientras gestionas</p>
+            <h1 class="font-display text-5xl leading-tight" th:text="#{tips.title}">Tips de economía</h1>
+            <p class="text-ink-soft mt-2" th:text="#{tips.subtitle(${total})}">
                 30 consejos prácticos.
             </p>
         </div>
@@ -21,14 +21,14 @@
         <a href="/tips"
            class="px-4 py-2 rounded-full border text-sm flex items-center gap-2 transition"
            th:classappend="${currentCategoria == null} ? 'bg-ink text-bg border-ink' : 'border-line text-ink-soft hover:border-ink hover:text-ink'">
-            <i class="ph ph-grid-four"></i> Todos
+            <i class="ph ph-grid-four"></i> <span th:text="#{tips.all}">Todos</span>
         </a>
         <a th:each="cat : ${categorias}"
            th:href="@{/tips(categoria=${cat})}"
            class="px-4 py-2 rounded-full border text-sm flex items-center gap-2 transition"
            th:classappend="${currentCategoria == cat} ? 'bg-ink text-bg border-ink' : 'border-line text-ink-soft hover:border-ink hover:text-ink'">
             <i class="ph" th:classappend="${tipsService.iconoDe(cat)}"></i>
-            <span th:text="${tipsService.etiquetaDe(cat)}">Categoría</span>
+            <span th:text="${#messages.msg('tips.cat.' + cat)}">Categoría</span>
         </a>
     </div>
 
@@ -39,14 +39,14 @@
                  class="tip-card group bg-surface border border-line rounded-2xl p-6 shadow-sm hover:shadow-md transition cursor-pointer relative overflow-hidden"
                  th:data-detalle="${t.detalle()}"
                  th:data-titulo="${t.titulo()}"
-                 th:data-categoria="${tipsService.etiquetaDe(t.categoria())}"
+                 th:data-categoria="${#messages.msg('tips.cat.' + t.categoria())}"
                  th:data-icono="${tipsService.iconoDe(t.categoria())}">
 
             <!-- Pill categoría + número -->
             <div class="flex items-center justify-between mb-4">
                 <span class="inline-flex items-center gap-1.5 text-xs uppercase tracking-wider text-ink-soft">
                     <i class="ph text-base" th:classappend="${tipsService.iconoDe(t.categoria())}"></i>
-                    <span th:text="${tipsService.etiquetaDe(t.categoria())}">Categoría</span>
+                    <span th:text="${#messages.msg('tips.cat.' + t.categoria())}">Categoría</span>
                 </span>
                 <span class="font-mono text-xs text-ink-soft/60" th:text="${'#' + (iter.index + 1)}">#1</span>
             </div>
@@ -55,7 +55,7 @@
             <p class="text-ink-soft text-sm leading-relaxed" th:text="${t.resumen()}">Resumen.</p>
 
             <p class="text-brand text-xs uppercase tracking-wider mt-4 flex items-center gap-1 opacity-70 group-hover:opacity-100 transition">
-                Leer más <i class="ph ph-arrow-right text-sm"></i>
+                <span th:text="#{tips.read_more}">Leer más</span> <i class="ph ph-arrow-right text-sm"></i>
             </p>
 
             <!-- decoración esquina -->
@@ -69,8 +69,8 @@
     <!-- Empty state cuando se filtra y no hay nada -->
     <div th:if="${#lists.isEmpty(tips)}" class="text-center py-20">
         <i class="ph ph-lightbulb-filament text-6xl text-ink-soft/40"></i>
-        <p class="font-display text-2xl mt-4">Nada por aquí.</p>
-        <a href="/tips" class="text-brand text-sm hover:underline">Ver todos los tips</a>
+        <p class="font-display text-2xl mt-4" th:text="#{tips.empty}">Nada por aquí.</p>
+        <a href="/tips" class="text-brand text-sm hover:underline" th:text="#{tips.see_all}">Ver todos los tips</a>
     </div>
 
 </main>

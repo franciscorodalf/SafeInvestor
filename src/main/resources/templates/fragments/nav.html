@@ -17,33 +17,40 @@
             <a href="/movimientos"
                th:classappend="${active == 'movimientos'} ? 'bg-bg-soft text-ink font-medium' : 'text-ink-soft hover:text-ink hover:bg-bg-soft'"
                class="px-3 py-2 rounded-lg flex items-center gap-1.5">
-                <i class="ph ph-arrows-down-up text-base"></i> Movimientos
+                <i class="ph ph-arrows-down-up text-base"></i> <span th:text="#{nav.movimientos}">Movimientos</span>
             </a>
             <a href="/categorias"
                th:classappend="${active == 'categorias'} ? 'bg-bg-soft text-ink font-medium' : 'text-ink-soft hover:text-ink hover:bg-bg-soft'"
                class="px-3 py-2 rounded-lg flex items-center gap-1.5">
-                <i class="ph ph-tag text-base"></i> Categorías
+                <i class="ph ph-tag text-base"></i> <span th:text="#{nav.categorias}">Categorías</span>
             </a>
             <a href="/objetivos"
                th:classappend="${active == 'objetivos'} ? 'bg-bg-soft text-ink font-medium' : 'text-ink-soft hover:text-ink hover:bg-bg-soft'"
                class="px-3 py-2 rounded-lg flex items-center gap-1.5">
-                <i class="ph ph-target text-base"></i> Objetivos
+                <i class="ph ph-target text-base"></i> <span th:text="#{nav.objetivos}">Objetivos</span>
             </a>
             <a href="/tareas"
                th:classappend="${active == 'tareas'} ? 'bg-bg-soft text-ink font-medium' : 'text-ink-soft hover:text-ink hover:bg-bg-soft'"
                class="px-3 py-2 rounded-lg flex items-center gap-1.5">
-                <i class="ph ph-list-checks text-base"></i> Tareas
+                <i class="ph ph-list-checks text-base"></i> <span th:text="#{nav.tareas}">Tareas</span>
             </a>
             <a href="/tips"
                th:classappend="${active == 'tips'} ? 'bg-bg-soft text-ink font-medium' : 'text-ink-soft hover:text-ink hover:bg-bg-soft'"
                class="px-3 py-2 rounded-lg flex items-center gap-1.5">
-                <i class="ph ph-lightbulb text-base"></i> Tips
+                <i class="ph ph-lightbulb text-base"></i> <span th:text="#{nav.tips}">Tips</span>
             </a>
         </div>
         <div sec:authorize="isAuthenticated()" class="flex items-center gap-3">
+            <!-- Selector de idioma -->
+            <div class="hidden sm:flex items-center gap-1 text-xs font-mono text-ink-soft border border-line rounded-md overflow-hidden" th:title="#{nav.lang}">
+                <a th:href="@{(lang='es')}" class="px-2 py-1"
+                   th:classappend="${#locale.language == 'es'} ? 'bg-ink text-bg' : 'hover:bg-bg-soft'">ES</a>
+                <a th:href="@{(lang='en')}" class="px-2 py-1"
+                   th:classappend="${#locale.language == 'en'} ? 'bg-ink text-bg' : 'hover:bg-bg-soft'">EN</a>
+            </div>
             <button type="button" onclick="toggleTheme()" id="theme-toggle"
                     class="w-9 h-9 rounded-lg text-ink-soft hover:text-ink hover:bg-bg-soft flex items-center justify-center"
-                    title="Cambiar tema" aria-label="Cambiar tema">
+                    th:title="#{nav.theme}" th:aria-label="#{nav.theme}">
                 <i class="ph ph-moon text-lg show-in-light"></i>
                 <i class="ph ph-sun text-lg show-in-dark"></i>
             </button>
@@ -53,20 +60,26 @@
                 <span sec:authentication="name"></span>
             </span>
             <form th:action="@{/logout}" method="post" class="inline">
-                <button class="text-ink-soft hover:text-negative text-sm flex items-center gap-1.5" title="Cerrar sesión">
+                <button class="text-ink-soft hover:text-negative text-sm flex items-center gap-1.5" th:title="#{nav.logout}">
                     <i class="ph ph-sign-out text-base"></i>
                 </button>
             </form>
         </div>
         <div sec:authorize="!isAuthenticated()" class="flex items-center gap-3 text-sm">
+            <div class="hidden sm:flex items-center gap-1 text-xs font-mono text-ink-soft border border-line rounded-md overflow-hidden" th:title="#{nav.lang}">
+                <a th:href="@{(lang='es')}" class="px-2 py-1"
+                   th:classappend="${#locale.language == 'es'} ? 'bg-ink text-bg' : 'hover:bg-bg-soft'">ES</a>
+                <a th:href="@{(lang='en')}" class="px-2 py-1"
+                   th:classappend="${#locale.language == 'en'} ? 'bg-ink text-bg' : 'hover:bg-bg-soft'">EN</a>
+            </div>
             <button type="button" onclick="toggleTheme()" id="theme-toggle-guest"
                     class="w-9 h-9 rounded-lg text-ink-soft hover:text-ink hover:bg-bg-soft flex items-center justify-center"
-                    title="Cambiar tema" aria-label="Cambiar tema">
+                    th:title="#{nav.theme}" th:aria-label="#{nav.theme}">
                 <i class="ph ph-moon text-lg show-in-light"></i>
                 <i class="ph ph-sun text-lg show-in-dark"></i>
             </button>
-            <a href="/login" class="text-ink-soft hover:text-ink">Entrar</a>
-            <a href="/register" class="btn btn-primary">Crear cuenta</a>
+            <a href="/login" class="text-ink-soft hover:text-ink" th:text="#{nav.login}">Entrar</a>
+            <a href="/register" class="btn btn-primary" th:text="#{nav.register}">Crear cuenta</a>
         </div>
     </div>
 
@@ -76,27 +89,27 @@
             <a href="/movimientos" class="px-3 py-1 rounded flex flex-col items-center gap-0.5"
                th:classappend="${active == 'movimientos'} ? 'text-brand' : 'text-ink-soft'">
                 <i class="ph ph-arrows-down-up text-lg"></i>
-                Movimientos
+                <span th:text="#{nav.movimientos}">Movimientos</span>
             </a>
             <a href="/categorias" class="px-3 py-1 rounded flex flex-col items-center gap-0.5"
                th:classappend="${active == 'categorias'} ? 'text-brand' : 'text-ink-soft'">
                 <i class="ph ph-tag text-lg"></i>
-                Categorías
+                <span th:text="#{nav.categorias}">Categorías</span>
             </a>
             <a href="/objetivos" class="px-3 py-1 rounded flex flex-col items-center gap-0.5"
                th:classappend="${active == 'objetivos'} ? 'text-brand' : 'text-ink-soft'">
                 <i class="ph ph-target text-lg"></i>
-                Objetivos
+                <span th:text="#{nav.objetivos}">Objetivos</span>
             </a>
             <a href="/tareas" class="px-3 py-1 rounded flex flex-col items-center gap-0.5"
                th:classappend="${active == 'tareas'} ? 'text-brand' : 'text-ink-soft'">
                 <i class="ph ph-list-checks text-lg"></i>
-                Tareas
+                <span th:text="#{nav.tareas}">Tareas</span>
             </a>
             <a href="/tips" class="px-3 py-1 rounded flex flex-col items-center gap-0.5"
                th:classappend="${active == 'tips'} ? 'text-brand' : 'text-ink-soft'">
                 <i class="ph ph-lightbulb text-lg"></i>
-                Tips
+                <span th:text="#{nav.tips}">Tips</span>
             </a>
         </div>
     </div>

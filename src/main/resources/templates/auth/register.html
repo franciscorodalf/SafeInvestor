@@ -26,19 +26,20 @@
         </a>
 
         <div class="relative fade-up">
-            <p class="text-accent text-xs tracking-[0.2em] uppercase mb-4">Empieza hoy</p>
+            <p class="text-accent text-xs tracking-[0.2em] uppercase mb-4" th:text="#{register.brand_eyebrow}">Empieza hoy</p>
             <h1 class="font-display text-5xl xl:text-6xl leading-[1.05] mb-8">
-                Un par de minutos y tienes <em class="italic text-accent">visión completa</em>.
+                <span th:text="#{register.brand_headline}">Un par de minutos y tienes</span>
+                <em class="italic text-accent" th:text="#{register.brand_headline_em}">visión completa</em>.
             </h1>
             <ul class="space-y-3 text-bg/80 text-base">
-                <li class="flex items-center gap-3"><i class="ph ph-check-circle-fill text-accent text-xl"></i> 11 categorías por defecto</li>
-                <li class="flex items-center gap-3"><i class="ph ph-check-circle-fill text-accent text-xl"></i> Objetivos con barra de progreso</li>
-                <li class="flex items-center gap-3"><i class="ph ph-check-circle-fill text-accent text-xl"></i> Tareas con vencimientos</li>
-                <li class="flex items-center gap-3"><i class="ph ph-check-circle-fill text-accent text-xl"></i> API REST completa</li>
+                <li class="flex items-center gap-3"><i class="ph ph-check-circle-fill text-accent text-xl"></i> <span th:text="#{register.brand_f1}">11 categorías por defecto</span></li>
+                <li class="flex items-center gap-3"><i class="ph ph-check-circle-fill text-accent text-xl"></i> <span th:text="#{register.brand_f2}">Objetivos con barra de progreso</span></li>
+                <li class="flex items-center gap-3"><i class="ph ph-check-circle-fill text-accent text-xl"></i> <span th:text="#{register.brand_f3}">Tareas con vencimientos</span></li>
+                <li class="flex items-center gap-3"><i class="ph ph-check-circle-fill text-accent text-xl"></i> <span th:text="#{register.brand_f4}">API REST completa</span></li>
             </ul>
         </div>
 
-        <p class="relative text-xs text-bg/50">100% gratis · sin tarjeta · sin tracking</p>
+        <p class="relative text-xs text-bg/50" th:text="#{register.brand_foot}">100% gratis · sin tarjeta · sin tracking</p>
     </aside>
 
     <!-- Lado derecho: form -->
@@ -49,8 +50,8 @@
         </a>
 
         <div class="w-full max-w-sm fade-up">
-            <p class="text-xs tracking-[0.18em] uppercase text-ink-soft mb-2">Bienvenido</p>
-            <h2 class="font-display text-4xl mb-8 leading-tight">Crea tu cuenta.</h2>
+            <p class="text-xs tracking-[0.18em] uppercase text-ink-soft mb-2" th:text="#{register.eyebrow}">Bienvenido</p>
+            <h2 class="font-display text-4xl mb-8 leading-tight" th:text="#{register.title}">Crea tu cuenta.</h2>
 
             <div th:if="${error != null}" class="mb-4 p-3 rounded-lg bg-negative-soft text-negative text-sm flex items-start gap-2">
                 <i class="ph ph-warning-circle text-lg shrink-0 mt-0.5"></i>
@@ -59,7 +60,7 @@
 
             <form th:action="@{/register}" th:object="${form}" method="post" class="space-y-4">
                 <label class="block">
-                    <span class="text-sm text-ink-soft mb-1.5 block">Tu nombre</span>
+                    <span class="text-sm text-ink-soft mb-1.5 block" th:text="#{register.name}">Tu nombre</span>
                     <div class="relative">
                         <i class="ph ph-user absolute left-3.5 top-1/2 -translate-y-1/2 text-ink-soft"></i>
                         <input th:field="*{nombre}" type="text" required maxlength="100"
@@ -68,7 +69,7 @@
                     <span class="text-negative text-xs mt-1 block" th:if="${#fields.hasErrors('nombre')}" th:errors="*{nombre}"></span>
                 </label>
                 <label class="block">
-                    <span class="text-sm text-ink-soft mb-1.5 block">Email</span>
+                    <span class="text-sm text-ink-soft mb-1.5 block" th:text="#{login.email}">Email</span>
                     <div class="relative">
                         <i class="ph ph-envelope absolute left-3.5 top-1/2 -translate-y-1/2 text-ink-soft"></i>
                         <input th:field="*{email}" type="email" required
@@ -77,7 +78,10 @@
                     <span class="text-negative text-xs mt-1 block" th:if="${#fields.hasErrors('email')}" th:errors="*{email}"></span>
                 </label>
                 <label class="block">
-                    <span class="text-sm text-ink-soft mb-1.5 block">Contraseña <span class="text-ink-soft/60 font-normal">(mín. 8 caracteres)</span></span>
+                    <span class="text-sm text-ink-soft mb-1.5 block">
+                        <span th:text="#{login.password}">Contraseña</span>
+                        <span class="text-ink-soft/60 font-normal" th:text="#{register.password_hint}">(mín. 8 caracteres)</span>
+                    </span>
                     <div class="relative">
                         <i class="ph ph-lock absolute left-3.5 top-1/2 -translate-y-1/2 text-ink-soft"></i>
                         <input th:field="*{password}" type="password" required minlength="8"
@@ -87,14 +91,14 @@
                 </label>
 
                 <button class="btn btn-primary w-full mt-2">
-                    <span>Crear cuenta</span>
+                    <span th:text="#{register.submit}">Crear cuenta</span>
                     <i class="ph ph-arrow-right text-lg"></i>
                 </button>
             </form>
 
             <p class="text-center text-sm text-ink-soft mt-8">
-                ¿Ya tienes cuenta?
-                <a href="/login" class="text-brand font-medium hover:underline">Entra aquí</a>
+                <span th:text="#{register.have_account}">¿Ya tienes cuenta?</span>
+                <a href="/login" class="text-brand font-medium hover:underline" th:text="#{register.login_here}">Entra aquí</a>
             </p>
         </div>
     </section>
