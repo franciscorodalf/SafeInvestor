@@ -12,6 +12,9 @@
             <h1 class="font-display text-5xl leading-tight" th:text="#{mov.list.title}">Movimientos</h1>
         </div>
         <div class="flex items-center gap-2 flex-wrap">
+            <a href="/movimientos/import" class="btn btn-ghost" th:title="#{mov.list.import}">
+                <i class="ph ph-upload-simple text-lg"></i> <span th:text="#{mov.list.import}">Importar</span>
+            </a>
             <a href="/movimientos/informe" target="_blank" class="btn btn-ghost" th:title="#{mov.list.informe}">
                 <i class="ph ph-printer text-lg"></i> <span th:text="#{mov.list.informe}">Informe</span>
             </a>

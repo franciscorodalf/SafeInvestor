@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/head :: head(#{import.preview.title})}"></head>
+<body>
+<nav th:replace="~{fragments/nav :: nav('movimientos')}"></nav>
+
+<main class="max-w-6xl mx-auto px-5 py-10">
+
+    <a href="/movimientos/import" class="text-sm text-ink-soft hover:text-brand inline-flex items-center gap-1.5 mb-6">
+        <i class="ph ph-arrow-left"></i> <span th:text="#{common.back}">Volver</span>
+    </a>
+
+    <header class="mb-6 fade-up">
+        <p class="text-xs tracking-[0.18em] uppercase text-ink-soft mb-1" th:text="#{import.preview.eyebrow}">Revisión previa</p>
+        <h1 class="font-display text-4xl" th:text="#{import.preview.title}">Revisa antes de guardar</h1>
+        <p class="text-ink-soft mt-2"
+           th:text="${#messages.msg('import.preview.summary', rows.size(), skipped)}">
+            10 movimientos parseados, 2 líneas ignoradas.
+        </p>
+    </header>
+
+    <form method="post" action="/movimientos/import/confirm"
+          class="bg-surface border border-line rounded-lg shadow-sm overflow-hidden fade-up">
+
+        <div class="px-5 py-3 bg-bg-soft border-b border-line flex items-center justify-between text-sm">
+            <div class="flex items-center gap-2">
+                <input type="checkbox" id="toggleAll" checked
+                       onchange="document.querySelectorAll('.keep-box').forEach(c=>c.checked=this.checked); updateCount();">
+                <label for="toggleAll" class="text-ink-soft" th:text="#{import.preview.toggle_all}">Seleccionar todas</label>
+            </div>
+            <span id="countLabel" class="font-mono text-xs text-ink-soft"></span>
+        </div>
+
+        <div class="overflow-x-auto">
+            <table class="w-full text-sm">
+                <thead class="bg-bg-soft text-xs uppercase tracking-wider text-ink-soft">
+                    <tr>
+                        <th class="px-3 py-2 text-left w-10"></th>
+                        <th class="px-3 py-2 text-left" th:text="#{mov.form.fecha}">Fecha</th>
+                        <th class="px-3 py-2 text-left" th:text="#{mov.form.tipo}">Tipo</th>
+                        <th class="px-3 py-2 text-right" th:text="#{mov.form.importe}">Importe</th>
+                        <th class="px-3 py-2 text-left" th:text="#{mov.form.categoria}">Categoría</th>
+                        <th class="px-3 py-2 text-left" th:text="#{mov.form.descripcion}">Descripción</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr th:each="r, iter : ${rows}" class="border-t border-line hover:bg-bg-soft/40">
+                        <td class="px-3 py-2">
+                            <input type="checkbox" class="keep-box" name="keep"
+                                   th:value="${iter.index}" checked
+                                   onchange="updateCount()">
+                        </td>
+                        <td class="px-3 py-2">
+                            <input type="date" name="fecha"
+                                   th:value="${r.fecha}"
+                                   class="input py-1 text-sm" style="width:140px;">
+                        </td>
+                        <td class="px-3 py-2">
+                            <select name="tipo" class="input py-1 text-sm" style="width:110px;">
+                                <option value="GASTO"   th:selected="${r.tipo.name() == 'GASTO'}"   th:text="#{mov.form.tipo_gasto}">Gasto</option>
+                                <option value="INGRESO" th:selected="${r.tipo.name() == 'INGRESO'}" th:text="#{mov.form.tipo_ingreso}">Ingreso</option>
+                            </select>
+                        </td>
+                        <td class="px-3 py-2 text-right">
+                            <input type="text" name="importe"
+                                   th:value="${#numbers.formatDecimal(r.importe, 1, 2)}"
+                                   class="input py-1 text-sm text-right font-mono" style="width:110px;">
+                        </td>
+                        <td class="px-3 py-2">
+                            <select name="categoriaId" class="input py-1 text-sm">
+                                <option value="" th:text="#{mov.form.sin_categoria}">— Sin categoría —</option>
+                                <option th:each="c : ${categorias}"
+                                        th:value="${c.id}"
+                                        th:text="${c.nombre}"
+                                        th:selected="${r.categoriaIdSugerida != null and r.categoriaIdSugerida == c.id}"></option>
+                            </select>
+                        </td>
+                        <td class="px-3 py-2">
+                            <input type="text" name="descripcion"
+                                   th:value="${r.descripcion}"
+                                   maxlength="200"
+                                   class="input py-1 text-sm">
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div class="px-5 py-4 border-t border-line flex justify-between items-center gap-3 bg-bg-soft/40">
+            <a href="/movimientos/import" class="btn btn-ghost" th:text="#{common.cancel}">Cancelar</a>
+            <button class="btn btn-primary">
+                <i class="ph ph-check-circle"></i>
+                <span th:text="#{import.preview.confirm}">Guardar seleccionadas</span>
+            </button>
+        </div>
+    </form>
+</main>
+
+<script>
+    function updateCount() {
+        const total = document.querySelectorAll('.keep-box').length;
+        const selected = document.querySelectorAll('.keep-box:checked').length;
+        document.getElementById('countLabel').textContent = selected + ' / ' + total;
+    }
+    updateCount();
+</script>
+
+</body>
+</html>

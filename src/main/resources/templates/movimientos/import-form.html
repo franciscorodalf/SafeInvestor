@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/head :: head(#{import.title})}"></head>
+<body>
+<nav th:replace="~{fragments/nav :: nav('movimientos')}"></nav>
+
+<main class="max-w-2xl mx-auto px-5 py-10">
+
+    <a href="/movimientos" class="text-sm text-ink-soft hover:text-brand inline-flex items-center gap-1.5 mb-6">
+        <i class="ph ph-arrow-left"></i> <span th:text="#{common.back}">Volver</span>
+    </a>
+
+    <header class="mb-8 fade-up">
+        <p class="text-xs tracking-[0.18em] uppercase text-ink-soft mb-1" th:text="#{import.eyebrow}">Importación masiva</p>
+        <h1 class="font-display text-4xl" th:text="#{import.title}">Importar CSV bancario</h1>
+        <p class="text-ink-soft mt-3 leading-relaxed" th:text="#{import.subtitle}">
+            Sube un CSV de tu banco. Detectamos automáticamente fecha, importe y descripción,
+            y sugerimos una categoría. Revisa antes de guardar.
+        </p>
+    </header>
+
+    <div th:if="${error}" class="mb-5 p-4 rounded-lg bg-negative-soft text-negative text-sm flex items-start gap-2.5 fade-up">
+        <i class="ph ph-warning-circle text-lg shrink-0 mt-0.5"></i>
+        <span th:text="${error}">Error</span>
+    </div>
+
+    <form method="post" enctype="multipart/form-data"
+          class="bg-surface border border-line rounded-lg p-6 sm:p-8 shadow-sm space-y-5 fade-up">
+
+        <label class="block">
+            <span class="text-sm text-ink-soft mb-1.5 block" th:text="#{import.file}">Archivo CSV</span>
+            <div class="border-2 border-dashed border-line rounded-xl p-8 text-center hover:border-brand transition cursor-pointer relative">
+                <input name="file" type="file" accept=".csv,text/csv" required
+                       class="absolute inset-0 opacity-0 cursor-pointer">
+                <i class="ph ph-upload-simple text-4xl text-ink-soft mb-2 block"></i>
+                <p class="text-sm" th:text="#{import.drop}">Arrastra o haz clic para seleccionar</p>
+                <p class="text-xs text-ink-soft mt-1" th:text="#{import.size_hint}">Máximo 5 MB</p>
+            </div>
+        </label>
+
+        <div class="bg-bg-soft rounded-lg p-4 text-xs text-ink-soft">
+            <p class="font-medium text-ink mb-2" th:text="#{import.detect_title}">Lo detectamos automáticamente:</p>
+            <ul class="space-y-1 list-disc list-inside">
+                <li th:text="#{import.detect_1}">Separador: coma, punto y coma o tabulador</li>
+                <li th:text="#{import.detect_2}">Decimales: coma (Europa) o punto (US)</li>
+                <li th:text="#{import.detect_3}">Fechas: dd/MM/yyyy, yyyy-MM-dd, dd-MM-yyyy, dd.MM.yyyy</li>
+                <li th:text="#{import.detect_4}">Tipo: importes negativos = gasto, positivos = ingreso</li>
+                <li th:text="#{import.detect_5}">Categoría sugerida por palabras clave de la descripción</li>
+            </ul>
+        </div>
+
+        <div class="flex justify-end gap-3 pt-3 border-t border-line">
+            <a href="/movimientos" class="btn btn-ghost" th:text="#{common.cancel}">Cancelar</a>
+            <button class="btn btn-primary">
+                <i class="ph ph-eye"></i> <span th:text="#{import.submit}">Previsualizar</span>
+            </button>
+        </div>
+    </form>
+</main>
+</body>
+</html>

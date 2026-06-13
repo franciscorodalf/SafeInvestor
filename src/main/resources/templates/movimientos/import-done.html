@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/head :: head(#{import.done.title})}"></head>
+<body>
+<nav th:replace="~{fragments/nav :: nav('movimientos')}"></nav>
+
+<main class="max-w-2xl mx-auto px-5 py-12">
+
+    <div class="bg-surface border border-line rounded-lg shadow-sm p-8 sm:p-10 text-center fade-up">
+        <div class="inline-flex items-center justify-center w-20 h-20 rounded-full bg-positive-soft text-positive mb-6">
+            <i class="ph ph-check-circle text-5xl"></i>
+        </div>
+        <h1 class="font-display text-4xl mb-3" th:text="#{import.done.title}">Importación completada</h1>
+        <p class="text-ink-soft text-lg"
+           th:text="${#messages.msg('import.done.summary', created)}">
+            Se han creado 10 movimientos.
+        </p>
+
+        <div th:if="${!errors.isEmpty()}" class="mt-6 p-4 rounded-lg bg-negative-soft text-negative text-left text-sm">
+            <p class="font-medium mb-2" th:text="${#messages.msg('import.done.errors', errors.size())}">
+                Hubo 2 filas con error:
+            </p>
+            <ul class="list-disc list-inside space-y-1">
+                <li th:each="e : ${errors}" th:text="${e}"></li>
+            </ul>
+        </div>
+
+        <div class="mt-8 flex flex-col sm:flex-row gap-3 justify-center">
+            <a href="/movimientos" class="btn btn-primary">
+                <i class="ph ph-list"></i> <span th:text="#{import.done.view}">Ver movimientos</span>
+            </a>
+            <a href="/movimientos/import" class="btn btn-ghost">
+                <i class="ph ph-upload-simple"></i> <span th:text="#{import.done.again}">Importar otro</span>
+            </a>
+        </div>
+    </div>
+
+</main>
+</body>
+</html>

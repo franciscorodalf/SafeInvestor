@@ -7,7 +7,7 @@
 [![Spring Boot](https://img.shields.io/badge/Spring%20Boot-3.3-6DB33F?logo=spring)](https://spring.io/projects/spring-boot)
 [![License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 
-**Estado:** v2 Fase 5 desplegada. Auth + movimientos + categorías + objetivos + tareas + dashboard con gráficas Chart.js + export CSV + informe imprimible + **tips de economía + i18n ES/EN + dark mode**.
+**Estado:** v2 Fase 8 desplegada. Auth + movimientos + categorías + objetivos + tareas + dashboard con gráficas Chart.js + export CSV + informe imprimible + tips de economía + i18n ES/EN + dark mode + **emails (reset, objetivo cumplido, recordatorios diarios) + importación CSV bancario con auto-detección**.
 
 ## 🚀 Demo en vivo
 
@@ -83,6 +83,8 @@ En CI, GitHub Actions levanta el mismo Postgres como service container.
 | GET/POST | `/categorias` | Gestión de categorías |
 | GET | `/movimientos/export.csv` | Descarga CSV de movimientos |
 | GET | `/movimientos/informe` | Informe imprimible → PDF desde navegador |
+| GET/POST | `/movimientos/import` | Subir CSV bancario → preview editable → confirmar |
+| POST | `/movimientos/import/confirm` | Guardar las filas seleccionadas tras revisar |
 | GET | `/estadisticas/gastos-por-categoria` | JSON gastos del mes por categoría |
 | GET | `/estadisticas/evolucion-mensual` | JSON ingresos vs gastos últimos 6 meses |
 | GET | `/objetivos` | Lista con barra de progreso |
@@ -148,6 +150,8 @@ La versión original desarrollada durante 1ºDAM se conserva en:
 - [x] **Fase 3** — Objetivos de ahorro (con aportes + autocompletado) + tareas financieras (con vencimientos)
 - [x] **Fase 4** — Dashboard con gráficas Chart.js (donut por categoría + line evolución 6 meses) + export CSV (formato Excel) + informe imprimible (HTML → PDF desde navegador)
 - [x] **Fase 5** — Tips de economía (30 consejos, modal de detalle) + i18n ES/EN (cookie + selector en nav) + dark mode (toggle sol/luna persistente, sin FOUC)
+- [x] **Fase 7** — Notificaciones por email (Spring Mail + plantillas Thymeleaf): reset de contraseña real, objetivo cumplido y job @Scheduled diario de tareas vencidas. Fallback a log si no hay SMTP configurado.
+- [x] **Fase 8** — Importar CSV bancario con auto-detección (separador, decimal, fecha), preview editable y auto-sugerencia de categoría por keywords.
 
 ## Licencia
 
