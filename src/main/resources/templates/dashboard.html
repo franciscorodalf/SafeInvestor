@@ -45,6 +45,29 @@
         </div>
     </section>
 
+    <!-- Gráficas con Chart.js -->
+    <section class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-10 stagger">
+        <div class="bg-surface border border-line rounded-lg p-6 shadow-sm">
+            <div class="flex items-center justify-between mb-4">
+                <h2 class="font-display text-2xl">Gastos por categoría</h2>
+                <span class="text-xs text-ink-soft uppercase tracking-wider">Mes actual</span>
+            </div>
+            <div class="relative" style="height:260px;">
+                <canvas id="chartCategoria"></canvas>
+                <p id="chartCategoriaEmpty" class="hidden absolute inset-0 flex items-center justify-center text-sm text-ink-soft">Sin gastos en este mes todavía.</p>
+            </div>
+        </div>
+        <div class="bg-surface border border-line rounded-lg p-6 shadow-sm">
+            <div class="flex items-center justify-between mb-4">
+                <h2 class="font-display text-2xl">Evolución</h2>
+                <span class="text-xs text-ink-soft uppercase tracking-wider">6 meses</span>
+            </div>
+            <div class="relative" style="height:260px;">
+                <canvas id="chartEvolucion"></canvas>
+            </div>
+        </div>
+    </section>
+
     <!-- Dos columnas: últimos movimientos + tareas/objetivos -->
     <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
 
@@ -166,12 +189,136 @@
 
     <!-- Quick actions floating -->
     <a href="/movimientos/nuevo"
-       class="fixed bottom-6 right-6 w-14 h-14 rounded-full bg-brand text-bg shadow-lg flex items-center justify-center hover:bg-brand-deep z-30"
+       class="fab"
        title="Nuevo movimiento">
         <i class="ph ph-plus text-2xl"></i>
     </a>
 
 </main>
+
+<!-- Chart.js + carga de datos -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.4/dist/chart.umd.min.js"></script>
+<script>
+(function() {
+    const fmtMoney = (n) => n.toLocaleString('es-ES', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + ' €';
+    const ink = '#1A1410';
+    const inkSoft = '#6B6358';
+    const line = '#E8DFD2';
+    const baseFontFamily = 'Sora, system-ui, sans-serif';
+
+    Chart.defaults.font.family = baseFontFamily;
+    Chart.defaults.color = inkSoft;
+    Chart.defaults.borderColor = line;
+
+    // 1) Donut por categoría
+    fetch('/api/estadisticas/gastos-por-categoria')
+        .then(r => r.json())
+        .then(rows => {
+            const canvas = document.getElementById('chartCategoria');
+            const empty = document.getElementById('chartCategoriaEmpty');
+            if (!rows.length) {
+                canvas.style.display = 'none';
+                empty.classList.remove('hidden');
+                return;
+            }
+            new Chart(canvas, {
+                type: 'doughnut',
+                data: {
+                    labels: rows.map(r => r.nombre),
+                    datasets: [{
+                        data: rows.map(r => r.total),
+                        backgroundColor: rows.map(r => r.color),
+                        borderColor: '#FAF7F2',
+                        borderWidth: 3
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    cutout: '65%',
+                    plugins: {
+                        legend: {
+                            position: 'right',
+                            labels: { boxWidth: 12, padding: 12, font: { size: 12 } }
+                        },
+                        tooltip: {
+                            backgroundColor: ink,
+                            titleColor: '#FAF7F2',
+                            bodyColor: '#FAF7F2',
+                            padding: 12,
+                            cornerRadius: 8,
+                            callbacks: { label: (c) => c.label + ': ' + fmtMoney(c.parsed) }
+                        }
+                    },
+                    animation: { animateRotate: true, duration: 900, easing: 'easeOutCubic' }
+                }
+            });
+        }).catch(err => console.error('chartCategoria', err));
+
+    // 2) Line evolución mensual
+    fetch('/api/estadisticas/evolucion-mensual')
+        .then(r => r.json())
+        .then(rows => {
+            const monthNames = ['ene','feb','mar','abr','may','jun','jul','ago','sep','oct','nov','dic'];
+            const labels = rows.map(r => {
+                const [y, m] = r.mes.split('-');
+                return monthNames[parseInt(m, 10) - 1] + ' ' + y.slice(2);
+            });
+            new Chart(document.getElementById('chartEvolucion'), {
+                type: 'line',
+                data: {
+                    labels,
+                    datasets: [
+                        {
+                            label: 'Ingresos',
+                            data: rows.map(r => r.ingresos),
+                            borderColor: '#2D6A4F',
+                            backgroundColor: 'rgba(45,106,79,0.10)',
+                            tension: 0.35,
+                            fill: true,
+                            pointRadius: 4,
+                            pointBackgroundColor: '#2D6A4F'
+                        },
+                        {
+                            label: 'Gastos',
+                            data: rows.map(r => r.gastos),
+                            borderColor: '#9B2D2D',
+                            backgroundColor: 'rgba(155,45,45,0.10)',
+                            tension: 0.35,
+                            fill: true,
+                            pointRadius: 4,
+                            pointBackgroundColor: '#9B2D2D'
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    interaction: { mode: 'index', intersect: false },
+                    plugins: {
+                        legend: { position: 'top', labels: { boxWidth: 12, padding: 12 } },
+                        tooltip: {
+                            backgroundColor: ink,
+                            titleColor: '#FAF7F2',
+                            bodyColor: '#FAF7F2',
+                            padding: 12,
+                            cornerRadius: 8,
+                            callbacks: { label: (c) => c.dataset.label + ': ' + fmtMoney(c.parsed.y) }
+                        }
+                    },
+                    scales: {
+                        x: { grid: { display: false } },
+                        y: {
+                            grid: { color: 'rgba(232,223,210,0.5)' },
+                            ticks: { callback: (v) => v.toLocaleString('es-ES') + ' €' }
+                        }
+                    },
+                    animation: { duration: 1000, easing: 'easeOutQuart' }
+                }
+            });
+        }).catch(err => console.error('chartEvolucion', err));
+})();
+</script>
 
 </body>
 </html>
