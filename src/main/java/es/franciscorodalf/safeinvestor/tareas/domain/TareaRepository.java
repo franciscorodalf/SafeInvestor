@@ -21,4 +21,14 @@ public interface TareaRepository extends JpaRepository<Tarea, Long> {
           t.id DESC
         """)
     List<Tarea> findAllOrdered(@Param("usuario") Usuario usuario);
+
+    /** Devuelve todas las tareas no completadas con fecha de vencimiento anterior a hoy. */
+    @Query("""
+        SELECT t FROM Tarea t
+        WHERE t.completadaAt IS NULL
+          AND t.fechaVencimiento IS NOT NULL
+          AND t.fechaVencimiento < :hoy
+        ORDER BY t.usuario.id, t.fechaVencimiento ASC
+        """)
+    List<Tarea> findAllVencidas(@Param("hoy") java.time.LocalDate hoy);
 }

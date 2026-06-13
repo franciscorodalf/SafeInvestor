@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title th:text="#{email.objetivo.subject}">¡Lo conseguiste!</title>
+</head>
+<body>
+<div th:replace="~{email/_layout :: shell(#{email.objetivo.eyebrow}, ~{:: #content})}">
+
+    <div id="content">
+        <div style="text-align:center; margin-bottom:20px;">
+            <div style="display:inline-block; width:64px; height:64px; border-radius:32px; background:#E3F0E8; line-height:64px; text-align:center; font-size:32px;">🎉</div>
+        </div>
+
+        <h1 style="font-family:Georgia,'Times New Roman',serif; font-weight:400; font-size:32px; line-height:1.2; margin:0 0 8px 0; text-align:center; color:#1A1410;"
+            th:text="#{email.objetivo.headline}">¡Lo conseguiste!</h1>
+
+        <p style="text-align:center; color:#6B6358; margin:0 0 22px 0;"
+           th:text="#{email.objetivo.subhead(${nombre})}">
+            Has alcanzado tu objetivo Vacaciones.
+        </p>
+
+        <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%"
+               style="background:#FAF7F2; border-radius:12px; padding:18px; margin:14px 0;">
+            <tr>
+                <td style="text-align:center;">
+                    <p style="margin:0; font-size:11px; letter-spacing:0.18em; text-transform:uppercase; color:#6B6358;"
+                       th:text="${objetivoNombre}">Objetivo</p>
+                    <p style="margin:6px 0 0 0; font-family:'Courier New',monospace; font-size:32px; font-weight:600; color:#2D6A4F;"
+                       th:text="${importe + ' €'}">2.000,00 €</p>
+                </td>
+            </tr>
+        </table>
+
+        <p th:text="#{email.objetivo.body}">
+            Tomar el hábito de aportar poco a poco compensa. ¿Qué será lo siguiente?
+        </p>
+
+        <p style="margin-top:18px; text-align:center;">
+            <a th:href="${baseUrl + '/objetivos'}"
+               style="display:inline-block; background:#0E5C5F; color:#FAF7F2; text-decoration:none; padding:13px 24px; border-radius:10px; font-weight:500; font-size:15px;"
+               th:text="#{email.objetivo.cta}">Ver mis objetivos</a>
+        </p>
+    </div>
+
+</div>
+</body>
+</html>

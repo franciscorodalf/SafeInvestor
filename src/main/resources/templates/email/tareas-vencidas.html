@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title th:text="#{email.tareas.subject(${tareas.size()})}">Tienes tareas vencidas</title>
+</head>
+<body>
+<div th:replace="~{email/_layout :: shell(#{email.tareas.eyebrow}, ~{:: #content})}">
+
+    <div id="content">
+        <h1 style="font-family:Georgia,'Times New Roman',serif; font-weight:400; font-size:28px; line-height:1.2; margin:0 0 10px 0; color:#1A1410;"
+            th:text="#{email.tareas.headline(${nombre})}">Hola Francisco,</h1>
+
+        <p style="color:#6B6358; margin:0 0 18px 0;"
+           th:text="${tareas.size() == 1 ? #messages.msg('email.tareas.body_one') : #messages.msg('email.tareas.body_many', tareas.size())}">
+            Tienes 3 tareas vencidas en tu lista.
+        </p>
+
+        <ul style="list-style:none; padding:0; margin:0;">
+            <li th:each="t : ${tareas}"
+                style="background:#F5E3E3; border-left:4px solid #9B2D2D; padding:12px 14px; border-radius:8px; margin-bottom:10px;">
+                <p style="margin:0; font-weight:500; color:#1A1410;" th:text="${t.titulo}">Pagar alquiler</p>
+                <p th:if="${t.fechaVencimiento != null}"
+                   style="margin:4px 0 0 0; font-size:12px; color:#9B2D2D;"
+                   th:text="${#messages.msg('email.tareas.vencio') + ' ' + #temporals.format(t.fechaVencimiento, #messages.msg('dashboard.month_short_format') + ' yyyy')}">
+                    Venció 31 may 2026
+                </p>
+            </li>
+        </ul>
+
+        <p style="margin-top:20px; text-align:center;">
+            <a th:href="${baseUrl + '/tareas'}"
+               style="display:inline-block; background:#0E5C5F; color:#FAF7F2; text-decoration:none; padding:13px 24px; border-radius:10px; font-weight:500; font-size:15px;"
+               th:text="#{email.tareas.cta}">Ver tareas</a>
+        </p>
+
+        <hr style="border:none; border-top:1px solid #E8DFD2; margin:24px 0;">
+
+        <p style="font-size:12px; color:#6B6358;" th:text="#{email.tareas.footer}">
+            Recibes este email porque tienes tareas con fecha de vencimiento pasada.
+        </p>
+    </div>
+
+</div>
+</body>
+</html>

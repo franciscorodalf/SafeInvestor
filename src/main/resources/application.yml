@@ -31,6 +31,21 @@ spring:
     encoding: UTF-8
     fallback-to-system-locale: false
 
+  mail:
+    host: ${MAIL_HOST:}
+    port: ${MAIL_PORT:587}
+    username: ${MAIL_USERNAME:}
+    password: ${MAIL_PASSWORD:}
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
+          connectiontimeout: 5000
+          timeout: 5000
+          writetimeout: 5000
+
 server:
   port: ${PORT:8080}
   error:
@@ -56,3 +71,10 @@ jwt:
 
 app:
   base-url: ${APP_BASE_URL:http://localhost:8080}
+  email:
+    # Si MAIL_HOST está vacío o enabled=false → solo se loguean los emails (modo dev)
+    enabled: ${MAIL_ENABLED:false}
+    from: ${MAIL_FROM:SafeInvestor <no-reply@safeinvestor.app>}
+    reminders:
+      # Cron diario para enviar recordatorios de tareas vencidas. Formato: sec min hora dia mes diaSem
+      cron: ${TAREAS_REMINDER_CRON:0 0 9 * * *}
