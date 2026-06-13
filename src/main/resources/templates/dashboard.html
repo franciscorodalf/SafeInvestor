@@ -211,7 +211,7 @@
     Chart.defaults.borderColor = line;
 
     // 1) Donut por categoría
-    fetch('/api/estadisticas/gastos-por-categoria')
+    fetch('/estadisticas/gastos-por-categoria')
         .then(r => r.json())
         .then(rows => {
             const canvas = document.getElementById('chartCategoria');
@@ -256,7 +256,7 @@
         }).catch(err => console.error('chartCategoria', err));
 
     // 2) Line evolución mensual
-    fetch('/api/estadisticas/evolucion-mensual')
+    fetch('/estadisticas/evolucion-mensual')
         .then(r => r.json())
         .then(rows => {
             const monthNames = ['ene','feb','mar','abr','may','jun','jul','ago','sep','oct','nov','dic'];
