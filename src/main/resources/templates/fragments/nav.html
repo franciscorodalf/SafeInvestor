@@ -41,6 +41,12 @@
             </a>
         </div>
         <div sec:authorize="isAuthenticated()" class="flex items-center gap-3">
+            <button type="button" onclick="toggleTheme()" id="theme-toggle"
+                    class="w-9 h-9 rounded-lg text-ink-soft hover:text-ink hover:bg-bg-soft flex items-center justify-center"
+                    title="Cambiar tema" aria-label="Cambiar tema">
+                <i class="ph ph-moon text-lg show-in-light"></i>
+                <i class="ph ph-sun text-lg show-in-dark"></i>
+            </button>
             <span class="hidden sm:flex items-center gap-2 text-sm text-ink-soft">
                 <span class="w-7 h-7 rounded-full bg-accent-soft text-accent flex items-center justify-center text-xs font-semibold uppercase"
                       sec:authentication="name" th:text="${#authentication.name.substring(0, 1)}"></span>
@@ -53,6 +59,12 @@
             </form>
         </div>
         <div sec:authorize="!isAuthenticated()" class="flex items-center gap-3 text-sm">
+            <button type="button" onclick="toggleTheme()" id="theme-toggle-guest"
+                    class="w-9 h-9 rounded-lg text-ink-soft hover:text-ink hover:bg-bg-soft flex items-center justify-center"
+                    title="Cambiar tema" aria-label="Cambiar tema">
+                <i class="ph ph-moon text-lg show-in-light"></i>
+                <i class="ph ph-sun text-lg show-in-dark"></i>
+            </button>
             <a href="/login" class="text-ink-soft hover:text-ink">Entrar</a>
             <a href="/register" class="btn btn-primary">Crear cuenta</a>
         </div>

@@ -3,6 +3,14 @@
 <head th:replace="~{fragments/head :: head('Crear cuenta')}"></head>
 <body class="min-h-screen flex flex-col">
 
+<!-- Toggle de tema flotante (auth no usa nav) -->
+<button type="button" onclick="toggleTheme()"
+        class="fixed top-4 right-4 z-30 w-10 h-10 rounded-full bg-surface/80 backdrop-blur border border-line text-ink-soft hover:text-ink shadow-sm flex items-center justify-center"
+        title="Cambiar tema" aria-label="Cambiar tema">
+    <i class="ph ph-moon text-lg show-in-light"></i>
+    <i class="ph ph-sun text-lg show-in-dark"></i>
+</button>
+
 <main class="flex-1 grid lg:grid-cols-5 min-h-screen">
 
     <!-- Lado izquierdo: marca + checklist -->

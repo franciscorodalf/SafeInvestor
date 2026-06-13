@@ -21,10 +21,23 @@
     <script src="https://cdn.jsdelivr.net/npm/@phosphor-icons/web@2.1.1"></script>
     <link rel="icon" type="image/png" href="/images/logo.png">
 
+    <!-- Pre-paint: aplica modo oscuro antes de pintar para evitar FOUC -->
+    <script>
+        (function() {
+            try {
+                var saved = localStorage.getItem('si-theme');
+                var prefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+                var dark = saved ? saved === 'dark' : prefersDark;
+                if (dark) document.documentElement.classList.add('dark');
+            } catch (e) { /* localStorage bloqueado: usar light */ }
+        })();
+    </script>
+
     <!-- Tailwind CDN con configuración custom -->
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
         tailwind.config = {
+            darkMode: 'class',
             theme: {
                 extend: {
                     colors: {
@@ -83,6 +96,7 @@
             --t-slow: 600ms;
         }
         html { color-scheme: light; scroll-behavior: smooth; }
+        html.dark { color-scheme: dark; }
         body {
             font-family: 'Sora', system-ui, sans-serif;
             font-weight: 400;
@@ -92,7 +106,73 @@
             background-attachment: fixed;
             -webkit-font-smoothing: antialiased;
             text-rendering: optimizeLegibility;
+            transition: background-color 380ms var(--ease-smooth), color 280ms var(--ease-smooth);
         }
+
+        /* === DARK MODE ===
+           Overrides de las clases Tailwind generadas por el CDN.
+           Cuando html.dark está activo, los tokens cromáticos cambian a paleta oscura.
+           Mantenemos el teal como marca; cambia el contraste de los neutros. */
+        html.dark body {
+            color: #F2EDE4;
+            background-color: #0F1614;
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 0.95 0 0 0 0 0.92 0 0 0 0 0.86 0 0 0 0.025 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+        }
+        /* Superficies */
+        html.dark .bg-bg        { background-color: #0F1614 !important; }
+        html.dark .bg-bg-soft   { background-color: #1A2421 !important; }
+        html.dark .bg-surface   { background-color: #18221F !important; }
+        html.dark .bg-surface\/80 { background-color: rgba(24,34,31,0.85) !important; }
+        html.dark .bg-surface\/60 { background-color: rgba(24,34,31,0.65) !important; }
+        html.dark .bg-bg-soft\/40 { background-color: rgba(26,36,33,0.50) !important; }
+        html.dark .hover\:bg-bg-soft\/40:hover { background-color: rgba(26,36,33,0.50) !important; }
+        html.dark .hover\:bg-bg-soft:hover { background-color: #1A2421 !important; }
+        /* Tinta */
+        html.dark .text-ink      { color: #F2EDE4 !important; }
+        html.dark .text-ink-soft { color: #9EA9A2 !important; }
+        /* Líneas y bordes */
+        html.dark .border-line   { border-color: #2A3530 !important; }
+        html.dark .divide-line > * + * { border-color: #2A3530 !important; }
+        /* Estados soft (mantener legibilidad sobre fondo oscuro) */
+        html.dark .bg-brand-soft     { background-color: rgba(91,182,185,0.12) !important; }
+        html.dark .text-brand        { color: #5BB6B9 !important; }
+        html.dark .bg-positive-soft  { background-color: rgba(118,196,141,0.14) !important; }
+        html.dark .text-positive     { color: #76C48D !important; }
+        html.dark .bg-negative-soft  { background-color: rgba(220,118,118,0.14) !important; }
+        html.dark .text-negative     { color: #E89595 !important; }
+        html.dark .bg-accent-soft    { background-color: rgba(232,148,90,0.14) !important; }
+        html.dark .text-accent       { color: #F0B281 !important; }
+        /* Inputs */
+        html.dark .input {
+            background: #18221F;
+            border-color: #2A3530;
+            color: #F2EDE4;
+        }
+        html.dark .input:focus { border-color: #5BB6B9; box-shadow: 0 0 0 4px rgba(91,182,185,0.15); }
+        html.dark .input:hover:not(:focus) { border-color: #3B4843; }
+        /* Botones ghost */
+        html.dark .btn-ghost { background: transparent; color: #F2EDE4; border-color: #2A3530; }
+        html.dark .btn-ghost:hover { background: #1A2421; border-color: #3B4843; }
+        /* Sombras más oscuras y suaves */
+        html.dark .shadow-sm { box-shadow: 0 1px 2px rgba(0,0,0,0.32), 0 1px 1px rgba(0,0,0,0.18) !important; }
+        html.dark .shadow    { box-shadow: 0 4px 14px rgba(0,0,0,0.34), 0 1px 3px rgba(0,0,0,0.20) !important; }
+        html.dark .shadow-md { box-shadow: 0 8px 22px rgba(0,0,0,0.40), 0 2px 6px rgba(0,0,0,0.22) !important; }
+        html.dark .shadow-lg { box-shadow: 0 14px 36px rgba(0,0,0,0.45), 0 4px 10px rgba(0,0,0,0.26) !important; }
+        /* Scrollbar */
+        html.dark ::-webkit-scrollbar-thumb { background: #2A3530; border-color: #0F1614; }
+        html.dark ::-webkit-scrollbar-thumb:hover { background: #3B4843; }
+        /* Selection */
+        html.dark ::selection { background: rgba(91,182,185,0.28); color: #F2EDE4; }
+        /* Pill genérica */
+        html.dark .pill { background: #1A2421; color: #9EA9A2; }
+        /* Card hover */
+        html.dark .card-hover:hover { border-color: #3B4843; box-shadow: 0 16px 38px rgba(0,0,0,0.42); }
+
+        /* Iconos del toggle: muestran el opuesto al tema actual */
+        .show-in-dark  { display: none; }
+        .show-in-light { display: inline; }
+        html.dark .show-in-dark  { display: inline; }
+        html.dark .show-in-light { display: none; }
 
         /* === TIPOGRAFÍAS === */
         .font-display { font-family: 'Instrument Serif', Georgia, serif; font-weight: 400; }
@@ -263,6 +343,15 @@
         .reveal { opacity: 0; transform: translateY(20px); transition: opacity 700ms var(--ease-gentle), transform 700ms var(--ease-gentle); }
         .reveal.in { opacity: 1; transform: translateY(0); }
     </style>
+
+    <!-- Toggle de tema (light/dark) — disponible globalmente, no espera a DOMContentLoaded -->
+    <script>
+        function toggleTheme() {
+            var root = document.documentElement;
+            var dark = root.classList.toggle('dark');
+            try { localStorage.setItem('si-theme', dark ? 'dark' : 'light'); } catch (e) {}
+        }
+    </script>
 
     <!-- Scroll-reveal observer + counter animation -->
     <script defer>
