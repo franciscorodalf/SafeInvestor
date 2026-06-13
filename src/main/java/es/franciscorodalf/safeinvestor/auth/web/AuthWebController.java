@@ -26,10 +26,11 @@ public class AuthWebController {
                             @RequestParam(required = false) String registered,
                             @RequestParam(required = false) String reset,
                             Model model) {
-        if (error != null) model.addAttribute("msgError", true);
-        if (logout != null) model.addAttribute("msgLogout", true);
-        if (registered != null) model.addAttribute("msgRegistered", true);
-        if (reset != null) model.addAttribute("msgReset", true);
+        // SIEMPRE añadir como Boolean (nunca null) para evitar el truncate de Thymeleaf
+        model.addAttribute("msgError", error != null);
+        model.addAttribute("msgLogout", logout != null);
+        model.addAttribute("msgRegistered", registered != null);
+        model.addAttribute("msgReset", reset != null);
         return "auth/login";
     }
 

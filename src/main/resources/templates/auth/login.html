@@ -58,19 +58,19 @@
             <h2 class="font-display text-4xl mb-8 leading-tight">Entra a tu cuenta.</h2>
 
             <!-- Mensajes -->
-            <div th:if="${msgError != null}" class="mb-4 p-3 rounded-lg bg-negative-soft text-negative text-sm flex items-start gap-2">
+            <div th:if="${msgError}" class="mb-4 p-3 rounded-lg bg-negative-soft text-negative text-sm flex items-start gap-2">
                 <i class="ph ph-warning-circle text-lg shrink-0 mt-0.5"></i>
                 <span>Email o contraseña incorrectos. Vuelve a intentarlo.</span>
             </div>
-            <div th:if="${msgLogout != null}" class="mb-4 p-3 rounded-lg bg-positive-soft text-positive text-sm flex items-start gap-2">
+            <div th:if="${msgLogout}" class="mb-4 p-3 rounded-lg bg-positive-soft text-positive text-sm flex items-start gap-2">
                 <i class="ph ph-check-circle text-lg shrink-0 mt-0.5"></i>
                 <span>Has cerrado sesión correctamente.</span>
             </div>
-            <div th:if="${msgRegistered != null}" class="mb-4 p-3 rounded-lg bg-positive-soft text-positive text-sm flex items-start gap-2">
+            <div th:if="${msgRegistered}" class="mb-4 p-3 rounded-lg bg-positive-soft text-positive text-sm flex items-start gap-2">
                 <i class="ph ph-confetti text-lg shrink-0 mt-0.5"></i>
                 <span>Cuenta creada. Inicia sesión con tus credenciales.</span>
             </div>
-            <div th:if="${msgReset != null}" class="mb-4 p-3 rounded-lg bg-positive-soft text-positive text-sm flex items-start gap-2">
+            <div th:if="${msgReset}" class="mb-4 p-3 rounded-lg bg-positive-soft text-positive text-sm flex items-start gap-2">
                 <i class="ph ph-key text-lg shrink-0 mt-0.5"></i>
                 <span>Contraseña restablecida. Entra con la nueva.</span>
             </div>
