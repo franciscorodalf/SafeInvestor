@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/head :: head('Tips de economía')}"></head>
+<body>
+<nav th:replace="~{fragments/nav :: nav('tips')}"></nav>
+
+<main class="max-w-6xl mx-auto px-5 py-8">
+
+    <header class="flex items-end justify-between mb-8 flex-wrap gap-4 fade-up">
+        <div>
+            <p class="text-xs tracking-[0.18em] uppercase text-ink-soft mb-1">Aprende mientras gestionas</p>
+            <h1 class="font-display text-5xl leading-tight">Tips de economía</h1>
+            <p class="text-ink-soft mt-2" th:text="${total + ' consejos prácticos para tomar mejores decisiones con tu dinero.'}">
+                30 consejos prácticos.
+            </p>
+        </div>
+    </header>
+
+    <!-- Chips de filtro por categoría -->
+    <div class="flex items-center gap-2 mb-8 flex-wrap fade-up">
+        <a href="/tips"
+           class="px-4 py-2 rounded-full border text-sm flex items-center gap-2 transition"
+           th:classappend="${currentCategoria == null} ? 'bg-ink text-bg border-ink' : 'border-line text-ink-soft hover:border-ink hover:text-ink'">
+            <i class="ph ph-grid-four"></i> Todos
+        </a>
+        <a th:each="cat : ${categorias}"
+           th:href="@{/tips(categoria=${cat})}"
+           class="px-4 py-2 rounded-full border text-sm flex items-center gap-2 transition"
+           th:classappend="${currentCategoria == cat} ? 'bg-ink text-bg border-ink' : 'border-line text-ink-soft hover:border-ink hover:text-ink'">
+            <i class="ph" th:classappend="${tipsService.iconoDe(cat)}"></i>
+            <span th:text="${tipsService.etiquetaDe(cat)}">Categoría</span>
+        </a>
+    </div>
+
+    <!-- Grid de tarjetas -->
+    <section class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 stagger">
+
+        <article th:each="t, iter : ${tips}"
+                 class="tip-card group bg-surface border border-line rounded-2xl p-6 shadow-sm hover:shadow-md transition cursor-pointer relative overflow-hidden"
+                 th:data-detalle="${t.detalle()}"
+                 th:data-titulo="${t.titulo()}"
+                 th:data-categoria="${tipsService.etiquetaDe(t.categoria())}"
+                 th:data-icono="${tipsService.iconoDe(t.categoria())}">
+
+            <!-- Pill categoría + número -->
+            <div class="flex items-center justify-between mb-4">
+                <span class="inline-flex items-center gap-1.5 text-xs uppercase tracking-wider text-ink-soft">
+                    <i class="ph text-base" th:classappend="${tipsService.iconoDe(t.categoria())}"></i>
+                    <span th:text="${tipsService.etiquetaDe(t.categoria())}">Categoría</span>
+                </span>
+                <span class="font-mono text-xs text-ink-soft/60" th:text="${'#' + (iter.index + 1)}">#1</span>
+            </div>
+
+            <h2 class="font-display text-2xl leading-tight mb-3" th:text="${t.titulo()}">Título</h2>
+            <p class="text-ink-soft text-sm leading-relaxed" th:text="${t.resumen()}">Resumen.</p>
+
+            <p class="text-brand text-xs uppercase tracking-wider mt-4 flex items-center gap-1 opacity-70 group-hover:opacity-100 transition">
+                Leer más <i class="ph ph-arrow-right text-sm"></i>
+            </p>
+
+            <!-- decoración esquina -->
+            <span class="absolute -right-6 -bottom-6 opacity-[0.04] text-7xl pointer-events-none">
+                <i class="ph" th:classappend="${tipsService.iconoDe(t.categoria())}"></i>
+            </span>
+        </article>
+
+    </section>
+
+    <!-- Empty state cuando se filtra y no hay nada -->
+    <div th:if="${#lists.isEmpty(tips)}" class="text-center py-20">
+        <i class="ph ph-lightbulb-filament text-6xl text-ink-soft/40"></i>
+        <p class="font-display text-2xl mt-4">Nada por aquí.</p>
+        <a href="/tips" class="text-brand text-sm hover:underline">Ver todos los tips</a>
+    </div>
+
+</main>
+
+<!-- Modal: detalle del tip -->
+<div id="tip-modal"
+     class="fixed inset-0 z-40 hidden items-center justify-center px-4"
+     onclick="if(event.target===this) closeTip()">
+    <div class="absolute inset-0 bg-ink/60 backdrop-blur-sm"></div>
+    <div class="relative bg-surface rounded-2xl shadow-xl max-w-lg w-full p-8 fade-up">
+        <button onclick="closeTip()"
+                class="absolute top-4 right-4 w-9 h-9 rounded-full hover:bg-bg-soft flex items-center justify-center text-ink-soft hover:text-ink"
+                aria-label="Cerrar">
+            <i class="ph ph-x text-lg"></i>
+        </button>
+        <div class="flex items-center gap-2 text-xs uppercase tracking-wider text-ink-soft mb-3">
+            <i id="tip-icono" class="ph text-base"></i>
+            <span id="tip-categoria">Categoría</span>
+        </div>
+        <h3 id="tip-titulo" class="font-display text-3xl leading-tight mb-4">Título</h3>
+        <p id="tip-detalle" class="text-ink-soft leading-relaxed">Detalle</p>
+    </div>
+</div>
+
+<script>
+    (function() {
+        const modal = document.getElementById('tip-modal');
+        const tIcono = document.getElementById('tip-icono');
+        const tCat = document.getElementById('tip-categoria');
+        const tTit = document.getElementById('tip-titulo');
+        const tDet = document.getElementById('tip-detalle');
+
+        document.querySelectorAll('.tip-card').forEach(card => {
+            card.addEventListener('click', () => {
+                tIcono.className = 'ph text-base ' + (card.dataset.icono || '');
+                tCat.textContent = card.dataset.categoria || '';
+                tTit.textContent = card.dataset.titulo || '';
+                tDet.textContent = card.dataset.detalle || '';
+                modal.classList.remove('hidden');
+                modal.classList.add('flex');
+                document.body.style.overflow = 'hidden';
+            });
+        });
+
+        window.closeTip = function() {
+            modal.classList.add('hidden');
+            modal.classList.remove('flex');
+            document.body.style.overflow = '';
+        };
+
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') closeTip();
+        });
+    })();
+</script>
+
+</body>
+</html>

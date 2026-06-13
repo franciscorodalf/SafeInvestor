@@ -34,6 +34,11 @@
                class="px-3 py-2 rounded-lg flex items-center gap-1.5">
                 <i class="ph ph-list-checks text-base"></i> Tareas
             </a>
+            <a href="/tips"
+               th:classappend="${active == 'tips'} ? 'bg-bg-soft text-ink font-medium' : 'text-ink-soft hover:text-ink hover:bg-bg-soft'"
+               class="px-3 py-2 rounded-lg flex items-center gap-1.5">
+                <i class="ph ph-lightbulb text-base"></i> Tips
+            </a>
         </div>
         <div sec:authorize="isAuthenticated()" class="flex items-center gap-3">
             <span class="hidden sm:flex items-center gap-2 text-sm text-ink-soft">
@@ -75,6 +80,11 @@
                th:classappend="${active == 'tareas'} ? 'text-brand' : 'text-ink-soft'">
                 <i class="ph ph-list-checks text-lg"></i>
                 Tareas
+            </a>
+            <a href="/tips" class="px-3 py-1 rounded flex flex-col items-center gap-0.5"
+               th:classappend="${active == 'tips'} ? 'text-brand' : 'text-ink-soft'">
+                <i class="ph ph-lightbulb text-lg"></i>
+                Tips
             </a>
         </div>
     </div>

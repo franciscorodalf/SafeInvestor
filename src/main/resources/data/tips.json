@@ -1,0 +1,212 @@
+[
+  {
+    "id": 1,
+    "categoria": "ahorro",
+    "titulo": "Regla 50/30/20",
+    "resumen": "Divide tu ingreso en necesidades (50%), deseos (30%) y ahorro (20%).",
+    "detalle": "Si cobras 1.500€, destina 750€ a gastos esenciales (vivienda, comida, transporte), 450€ a gustos (ocio, ropa, suscripciones) y 300€ a ahorro o inversión. Es un punto de partida — ajusta los porcentajes a tu realidad."
+  },
+  {
+    "id": 2,
+    "categoria": "ahorro",
+    "titulo": "Págate primero",
+    "resumen": "Aparta el ahorro el día que cobras, no a fin de mes.",
+    "detalle": "El error clásico es ahorrar lo que sobra: nunca sobra. Programa una transferencia automática a una cuenta separada el mismo día que entra la nómina. Lo que no ves, no lo gastas."
+  },
+  {
+    "id": 3,
+    "categoria": "ahorro",
+    "titulo": "Fondo de emergencia",
+    "resumen": "Ten 3-6 meses de gastos en una cuenta líquida antes de invertir.",
+    "detalle": "Calcula tu gasto mensual mínimo (alquiler, comida, suministros) y multiplícalo por entre 3 y 6 según tu estabilidad laboral. Guarda esa cifra en una cuenta remunerada de fácil acceso. Esto evita que vendas inversiones en pérdidas ante imprevistos."
+  },
+  {
+    "id": 4,
+    "categoria": "ahorro",
+    "titulo": "Reto de las 52 semanas",
+    "resumen": "Semana 1 ahorras 1€, semana 2 dos, semana 3 tres... y así.",
+    "detalle": "A final de año habrás ahorrado 1.378€ sin esfuerzo. Funciona porque el incremento es gradual y porque convierte el ahorro en hábito. Variante: hazlo al revés (52€ la primera semana) para arrancar fuerte."
+  },
+  {
+    "id": 5,
+    "categoria": "ahorro",
+    "titulo": "Espera 24h antes de comprar",
+    "resumen": "Para compras no esenciales mayores de 50€, déjalo en el carrito un día.",
+    "detalle": "El impulso pasa. Si al día siguiente aún lo necesitas, cómpralo. Si lo olvidaste, acabas de ahorrar dinero sin sentir privación. Sube el umbral con tu sueldo (100€, 200€)."
+  },
+  {
+    "id": 6,
+    "categoria": "ahorro",
+    "titulo": "Revisa tus suscripciones",
+    "resumen": "Lista todas las recurrentes una vez al trimestre y cancela las que no usas.",
+    "detalle": "Netflix, gimnasio, almacenamiento cloud, apps, revistas digitales. Muchas cobran sin que lo notes. Ordena tus movimientos por categoría 'suscripciones' y elimina lo que no abriste en 30 días."
+  },
+  {
+    "id": 7,
+    "categoria": "inversion",
+    "titulo": "Interés compuesto",
+    "resumen": "Reinvirtiendo intereses, tu dinero crece exponencialmente.",
+    "detalle": "100€ al 7% anual reinvertido durante 30 años son 761€. A 40 años, 1.497€. Cada década que tardas en empezar te cuesta más que la anterior. El mejor día para empezar a invertir fue hace 10 años; el segundo mejor, hoy."
+  },
+  {
+    "id": 8,
+    "categoria": "inversion",
+    "titulo": "Indexado vs gestión activa",
+    "resumen": "Los fondos indexados baten al 85% de los gestores activos a largo plazo.",
+    "detalle": "Comisiones bajas (0,1-0,3% TER) + diversificación amplia (S&P500, MSCI World) = rentabilidad media histórica del 7-9% anual. No intentes adivinar qué acción subirá: compra el mercado entero."
+  },
+  {
+    "id": 9,
+    "categoria": "inversion",
+    "titulo": "DCA: aportaciones periódicas",
+    "resumen": "Invierte siempre la misma cantidad el mismo día del mes.",
+    "detalle": "Dollar Cost Averaging. Cuando el mercado baja, compras más participaciones; cuando sube, menos. Promedias el precio y eliminas el estrés de 'adivinar el momento'. Configúralo y olvídate."
+  },
+  {
+    "id": 10,
+    "categoria": "inversion",
+    "titulo": "No inviertas lo que necesitas a corto plazo",
+    "resumen": "Bolsa = mínimo 5-10 años. Para 6 meses, cuenta remunerada.",
+    "detalle": "Si necesitas el dinero en menos de 5 años, no lo metas en renta variable. Una caída del 30% (como 2008 o marzo 2020) puede tardar 2-3 años en recuperarse. Riesgo en horizonte corto = pérdida casi segura."
+  },
+  {
+    "id": 11,
+    "categoria": "inversion",
+    "titulo": "Diversifica geografías",
+    "resumen": "No pongas todo en bolsa española: pesa menos del 1% del mundial.",
+    "detalle": "Un MSCI World te da exposición a 1.500 empresas en 23 países desarrollados. Añade emergentes (EM) si quieres más riesgo/recompensa. Tener todo en IBEX 35 es concentrarte en una economía pequeña y dependiente del sector bancario."
+  },
+  {
+    "id": 12,
+    "categoria": "deuda",
+    "titulo": "Método avalancha",
+    "resumen": "Paga primero la deuda con interés más alto.",
+    "detalle": "Lista tus deudas con su TIN. Paga el mínimo en todas excepto en la más cara, donde pones todo lo que puedas extra. Cuando la liquidas, pasas al siguiente tipo más alto. Matemáticamente óptimo: ahorras más intereses."
+  },
+  {
+    "id": 13,
+    "categoria": "deuda",
+    "titulo": "Método bola de nieve",
+    "resumen": "Paga primero la deuda más pequeña, aunque no sea la más cara.",
+    "detalle": "Psicológicamente potente: cada deuda liquidada motiva. Bueno si necesitas ver progreso rápido para no rendirte. Cuesta un poco más en intereses que el método avalancha, pero la tasa de éxito es mayor."
+  },
+  {
+    "id": 14,
+    "categoria": "deuda",
+    "titulo": "Evita el revolving",
+    "resumen": "Tarjetas con pago aplazado del 18-25% TAE son trampas legales.",
+    "detalle": "Una compra de 1.000€ pagada al mínimo (30€/mes) en una tarjeta al 22% TAE tarda 5 años y cuesta 1.700€ en total. Si tienes una, paga el saldo completo cada mes o cambia a débito."
+  },
+  {
+    "id": 15,
+    "categoria": "deuda",
+    "titulo": "Refinanciar la hipoteca",
+    "resumen": "Si los tipos bajan más de 0,5%, calcula si subrogar compensa.",
+    "detalle": "Por una hipoteca de 150.000€ a 25 años, bajar del 4% al 3% son ~80€/mes (24.000€ en total). Compara comisión de cancelación y apertura nueva. Hay simuladores online del Banco de España."
+  },
+  {
+    "id": 16,
+    "categoria": "presupuesto",
+    "titulo": "Trackea durante 30 días",
+    "resumen": "Antes de optimizar, mide. Apunta cada gasto un mes.",
+    "detalle": "Te sorprenderá descubrir cuánto vas en café, comida a domicilio o transporte. SafeInvestor lo hace por ti — sólo tienes que registrar movimientos. Sin datos, cualquier 'plan de ahorro' es ciego."
+  },
+  {
+    "id": 17,
+    "categoria": "presupuesto",
+    "titulo": "Sobres por categoría",
+    "resumen": "Asigna un tope mensual a cada categoría no fija.",
+    "detalle": "Ocio: 150€. Restaurantes: 100€. Ropa: 50€. Cuando llegas al tope, se acabó hasta el mes siguiente. Antes con sobres físicos; hoy con categorías de la app. Limita sin renunciar."
+  },
+  {
+    "id": 18,
+    "categoria": "presupuesto",
+    "titulo": "Gastos hormiga",
+    "resumen": "El café de 2€ diario son 730€ al año.",
+    "detalle": "No es renunciar al café — es ser consciente. 5€ diarios en pequeños 'caprichos' son 1.825€ al año, equivalentes a unas vacaciones. Identifica los tuyos y decide cuáles valen la pena de verdad."
+  },
+  {
+    "id": 19,
+    "categoria": "presupuesto",
+    "titulo": "Compras grandes: precio por uso",
+    "resumen": "Divide el precio por las veces que lo usarás de verdad.",
+    "detalle": "Un abrigo de 200€ que llevas 80 días al año durante 5 años cuesta 0,50€ por uso. Una vajilla de 80€ que sacas 4 veces al año, 20€ por uso. Cambia la perspectiva del 'me lo merezco' al 'lo voy a usar'."
+  },
+  {
+    "id": 20,
+    "categoria": "presupuesto",
+    "titulo": "Lista antes de ir al supermercado",
+    "resumen": "Ir con lista escrita reduce el ticket un 20-30%.",
+    "detalle": "Y nunca con hambre. Planifica el menú semanal, lista lo que falta y ciñete. Marcas blancas en básicos (leche, pasta, arroz) ahorran 30-40% sin diferencia real. Compra fruta de temporada."
+  },
+  {
+    "id": 21,
+    "categoria": "presupuesto",
+    "titulo": "Categoriza 'vale la pena' vs 'lo gasté y ya'",
+    "resumen": "Cada mes marca qué gastos repetirías y cuáles no.",
+    "detalle": "Es la única manera de aprender qué te hace feliz de verdad. Quizá descubras que el coworking suma más que la Netflix premium, o que ese viaje 'caro' fue el mejor uso de 500€ del año."
+  },
+  {
+    "id": 22,
+    "categoria": "habito",
+    "titulo": "Revisión financiera mensual",
+    "resumen": "30 minutos el primer domingo de mes: balance + objetivos + ajustes.",
+    "detalle": "Repasa: cuánto ahorraste, qué categoría se disparó, cómo van los objetivos. Sin esta cita contigo mismo, las finanzas se descontrolan en silencio. Pon recordatorio recurrente en el calendario."
+  },
+  {
+    "id": 23,
+    "categoria": "habito",
+    "titulo": "Una compra grande al año máximo",
+    "resumen": "Concéntrate en una decisión cara importante por año.",
+    "detalle": "Coche, electrodoméstico premium, viaje grande, máster. Investigar bien una compra grande compensa 10 veces más que pelear el céntimo de la leche. Reparte la dispersión mental."
+  },
+  {
+    "id": 24,
+    "categoria": "habito",
+    "titulo": "Negocia tu sueldo",
+    "resumen": "El mayor ahorro de tu vida es ganar más, no gastar menos.",
+    "detalle": "Investiga rangos en tu sector (Glassdoor, LinkedIn Salary). Lista logros concretos del último año con números. Pide revisión una vez al año. Una subida del 10% supera años de optimizar el presupuesto."
+  },
+  {
+    "id": 25,
+    "categoria": "habito",
+    "titulo": "Ingresos diversificados",
+    "resumen": "Una única fuente de ingresos es un riesgo, no una virtud.",
+    "detalle": "Trabajo + freelance + inversión + alquiler de habitación + venta de cosas que no usas. No hace falta ganar mucho en cada uno; la suma diluye el riesgo si una falla. Y enseña a pensar como empresa."
+  },
+  {
+    "id": 26,
+    "categoria": "habito",
+    "titulo": "Aprende sobre fiscalidad",
+    "resumen": "Hacienda no perdona ignorancia, pero premia conocimiento.",
+    "detalle": "Aprovecha planes de pensiones (1.500€/año desgravan), inversión a largo plazo (compensa pérdidas y ganancias), gastos deducibles si eres autónomo. Una hora con un asesor o un buen libro paga 10 veces lo que cuesta."
+  },
+  {
+    "id": 27,
+    "categoria": "habito",
+    "titulo": "No compares tu inicio con el final ajeno",
+    "resumen": "Instagram no muestra deudas. La gente con éxito empezó como tú.",
+    "detalle": "El ahorrador tranquilo de 35 años empezó a los 22 con 50€/mes. El inversor confiado tuvo años de pérdidas antes. Compárate sólo con tú mismo de hace un año. Es la única medida honesta."
+  },
+  {
+    "id": 28,
+    "categoria": "ahorro",
+    "titulo": "Cuenta remunerada para el fondo de emergencia",
+    "resumen": "No dejes el dinero parado a 0%. Hay cuentas al 2-3% sin penalización.",
+    "detalle": "Revolut, Trade Republic, MyInvestor o cuentas de banca abierta dan 2-3% TAE con liquidez diaria. Por 6.000€ del fondo de emergencia, son ~180€ al año extra sin riesgo ni esfuerzo."
+  },
+  {
+    "id": 29,
+    "categoria": "inversion",
+    "titulo": "Rebalancea una vez al año",
+    "resumen": "Vuelve a tu asignación objetivo: vende lo que subió, compra lo que bajó.",
+    "detalle": "Si tu plan es 80% acciones / 20% bonos y tras un buen año estás 88/12, vende algo de acciones y compra bonos para volver a 80/20. Vendes caro y compras barato de forma automática. Sin emociones."
+  },
+  {
+    "id": 30,
+    "categoria": "habito",
+    "titulo": "Escribe tu 'por qué' financiero",
+    "resumen": "Sin objetivo claro, cualquier sacrificio se siente como castigo.",
+    "detalle": "¿Independencia? ¿Casa propia? ¿Año sabático? ¿Educar a tus hijos sin deuda? Escríbelo y léelo cuando dudes. El dinero es herramienta, no fin. Saber para qué ahorras hace fácil decir 'hoy no' a lo que no aporta."
+  }
+]
