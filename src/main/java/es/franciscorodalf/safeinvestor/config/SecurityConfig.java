@@ -47,6 +47,8 @@ public class SecurityConfig {
     @Order(2)
     SecurityFilterChain webSecurity(HttpSecurity http) throws Exception {
         http
+            // CSRF deshabilitado: simplifica forms (proyecto educativo, sin pagos ni transferencias)
+            .csrf(csrf -> csrf.disable())
             .authorizeHttpRequests(auth -> auth
                 .requestMatchers("/", "/login", "/register", "/forgot", "/reset/**",
                                  "/css/**", "/js/**", "/images/**",

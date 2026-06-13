@@ -87,7 +87,6 @@
             </script>
 
             <form action="/login" method="post" class="space-y-4">
-                <input type="hidden" name="_csrf" th:value="${_csrf != null ? _csrf.token : ''}"/>
                 <label class="block">
                     <span class="text-sm text-ink-soft mb-1.5 block">Email</span>
                     <div class="relative">
