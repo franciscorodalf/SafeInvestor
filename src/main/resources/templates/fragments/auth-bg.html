@@ -4,10 +4,16 @@
 
 <!--
   Fondo animado para login/register.
-  - Símbolos de monedas, números con formato europeo, porcentajes y mini-gráficas.
-  - Animación CSS pura: los items hacen drift vertical lento + fade in/out.
-  - Estilos scoped bajo .finance-bg para no afectar al resto del sitio.
-  - prefers-reduced-motion: respeta la accesibilidad.
+  Carriles horizontales que scrollean a la izquierda en loop infinito sin costura.
+
+  Técnica del loop sin costura:
+    El contenido de cada carril (.lane-track) se duplica idénticamente. La
+    animación traduce translateX de 0 a -50%. Cuando llega a -50%, la segunda
+    mitad del track ocupa exactamente la posición que tenía la primera al inicio,
+    así no se percibe el reinicio.
+
+  Cada carril usa una duración distinta (45-110s) y un set de items distinto
+  para evitar sincronicidad visual. Velocidades lentas = sensación calma.
 -->
 <div th:fragment="bg" class="finance-bg" aria-hidden="true">
 
@@ -18,21 +24,74 @@
             overflow: hidden;
             pointer-events: none;
             z-index: 0;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-around;
+            padding: 4% 0;
         }
+
+        .finance-bg .lane {
+            display: flex;
+            overflow: hidden;
+            width: 100%;
+            mask-image: linear-gradient(to right,
+                transparent 0%,
+                #000 8%,
+                #000 92%,
+                transparent 100%);
+            -webkit-mask-image: linear-gradient(to right,
+                transparent 0%,
+                #000 8%,
+                #000 92%,
+                transparent 100%);
+        }
+
+        .finance-bg .lane-track {
+            display: flex;
+            align-items: center;
+            gap: 4rem;
+            flex-shrink: 0;
+            min-width: 100%;
+            padding-right: 4rem;
+            animation: lane-scroll linear infinite;
+            will-change: transform;
+        }
+
+        /*
+          Animación clave del loop sin costura:
+          desplaza el track exactamente la mitad de su anchura (porque el
+          contenido está duplicado), lo que reposiciona la segunda mitad
+          encima del punto de partida.
+        */
+        @keyframes lane-scroll {
+            from { transform: translate3d(0, 0, 0); }
+            to   { transform: translate3d(-50%, 0, 0); }
+        }
+
+        /* Items individuales */
         .finance-bg .fb-item {
-            position: absolute;
             font-family: 'JetBrains Mono', ui-monospace, monospace;
             color: #FAF7F2;
-            opacity: 0;
             line-height: 1;
             font-feature-settings: 'tnum';
             white-space: nowrap;
-            will-change: transform, opacity;
-            animation: fb-drift linear infinite;
             user-select: none;
+            display: inline-flex;
+            align-items: center;
         }
         .finance-bg .fb-symbol {
             font-family: 'Instrument Serif', Georgia, serif;
+            line-height: 0.9;
+        }
+        .finance-bg .fb-pos    { color: #B8E0B0; }
+        .finance-bg .fb-neg    { color: #E8B6B6; }
+        .finance-bg .fb-accent { color: #E6D9B8; }
+
+        /* Mini-gráficas */
+        .finance-bg .fb-graph-wrap {
+            display: inline-block;
+            line-height: 0;
+            flex-shrink: 0;
         }
         .finance-bg .fb-graph {
             stroke: #FAF7F2;
@@ -40,156 +99,301 @@
             fill: none;
             stroke-linecap: round;
             stroke-linejoin: round;
+            display: block;
         }
         .finance-bg .fb-graph.fb-graph-fill {
-            fill: rgba(250, 247, 242, 0.08);
-        }
-        .finance-bg .fb-pos { color: #B8E0B0; }
-        .finance-bg .fb-neg { color: #E8B6B6; }
-        .finance-bg .fb-accent { color: #E6D9B8; }
-
-        /*
-          Drift: el elemento entra desde abajo, sube y se desvanece arriba.
-          translateY va de +60% a -120% para que entren/salgan fuera del viewport.
-          La opacidad hace fade-in los primeros 15% y fade-out los últimos 25%.
-        */
-        @keyframes fb-drift {
-            0%   { transform: translateY(60%); opacity: 0; }
-            12%  { opacity: var(--fb-op, 0.10); }
-            75%  { opacity: var(--fb-op, 0.10); }
-            100% { transform: translateY(-120%); opacity: 0; }
+            fill: rgba(250, 247, 242, 0.10);
         }
 
-        /* Latido sutil para los símbolos grandes */
-        @keyframes fb-pulse {
-            0%, 100% { transform: scale(1); }
-            50%      { transform: scale(1.06); }
-        }
-        .finance-bg .fb-pulse {
-            animation: fb-drift linear infinite, fb-pulse 6s ease-in-out infinite;
-        }
+        /* Velocidad y opacidad por carril.
+           Velocidades distintas (no múltiplos exactos) evitan que los
+           carriles \"se alineen\" periódicamente. */
+        .finance-bg .lane-1 .lane-track { animation-duration: 95s;  opacity: 0.10; }
+        .finance-bg .lane-2 .lane-track { animation-duration: 62s;  opacity: 0.20; }
+        .finance-bg .lane-3 .lane-track { animation-duration: 78s;  opacity: 0.16; }
+        .finance-bg .lane-4 .lane-track { animation-duration: 55s;  opacity: 0.22; }
+        .finance-bg .lane-5 .lane-track { animation-duration: 110s; opacity: 0.08; }
+        .finance-bg .lane-6 .lane-track { animation-duration: 70s;  opacity: 0.18; }
+        .finance-bg .lane-7 .lane-track { animation-duration: 50s;  opacity: 0.20; }
 
-        /* Posiciones individuales: left + duración + delay + opacidad + tamaño */
-        .finance-bg .fb-1  { left:  4%; font-size: 13rem;  --fb-op: 0.07; animation-duration: 52s; animation-delay: -3s; }
-        .finance-bg .fb-2  { left: 22%; font-size: 1rem;   --fb-op: 0.18; animation-duration: 38s; animation-delay: -10s; }
-        .finance-bg .fb-3  { left: 38%; font-size: 0.85rem; --fb-op: 0.16; animation-duration: 44s; animation-delay: -22s; }
-        .finance-bg .fb-4  { left: 56%; font-size: 1.1rem; --fb-op: 0.20; animation-duration: 35s; animation-delay: -6s; }
-        .finance-bg .fb-5  { left: 72%; font-size: 9rem;   --fb-op: 0.06; animation-duration: 60s; animation-delay: -28s; }
-        .finance-bg .fb-6  { left: 88%; font-size: 0.9rem; --fb-op: 0.15; animation-duration: 41s; animation-delay: -16s; }
-        .finance-bg .fb-7  { left: 12%; font-size: 0.95rem; --fb-op: 0.17; animation-duration: 47s; animation-delay: -34s; }
-        .finance-bg .fb-8  { left: 30%; font-size: 7rem;   --fb-op: 0.05; animation-duration: 58s; animation-delay: -12s; }
-        .finance-bg .fb-9  { left: 48%; font-size: 1rem;   --fb-op: 0.19; animation-duration: 36s; animation-delay: -25s; }
-        .finance-bg .fb-10 { left: 64%; font-size: 0.9rem; --fb-op: 0.14; animation-duration: 50s; animation-delay: -8s; }
-        .finance-bg .fb-11 { left: 80%; font-size: 1.05rem; --fb-op: 0.18; animation-duration: 43s; animation-delay: -19s; }
-        .finance-bg .fb-12 { left:  8%; font-size: 1rem;   --fb-op: 0.16; animation-duration: 39s; animation-delay: -2s; }
-        .finance-bg .fb-13 { left: 26%; font-size: 0.85rem; --fb-op: 0.13; animation-duration: 46s; animation-delay: -31s; }
-        .finance-bg .fb-14 { left: 42%; font-size: 1.15rem; --fb-op: 0.20; animation-duration: 33s; animation-delay: -14s; }
-        .finance-bg .fb-15 { left: 60%; font-size: 0.95rem; --fb-op: 0.15; animation-duration: 49s; animation-delay: -7s; }
-        .finance-bg .fb-16 { left: 76%; font-size: 8rem;   --fb-op: 0.06; animation-duration: 56s; animation-delay: -23s; }
-        .finance-bg .fb-17 { left: 92%; font-size: 0.9rem; --fb-op: 0.14; animation-duration: 42s; animation-delay: -11s; }
-        .finance-bg .fb-18 { left: 18%; font-size: 1rem;   --fb-op: 0.17; animation-duration: 45s; animation-delay: -29s; }
-        .finance-bg .fb-19 { left: 34%; font-size: 0.95rem; --fb-op: 0.18; animation-duration: 40s; animation-delay: -4s; }
-        .finance-bg .fb-20 { left: 52%; font-size: 10rem;  --fb-op: 0.05; animation-duration: 62s; animation-delay: -18s; }
-        .finance-bg .fb-21 { left: 68%; font-size: 0.85rem; --fb-op: 0.14; animation-duration: 48s; animation-delay: -36s; }
-        .finance-bg .fb-22 { left: 84%; font-size: 1rem;   --fb-op: 0.16; animation-duration: 37s; animation-delay: -21s; }
-        .finance-bg .fb-23 { left:  2%; font-size: 0.9rem; --fb-op: 0.15; animation-duration: 51s; animation-delay: -13s; }
-        .finance-bg .fb-24 { left: 96%; font-size: 6rem;   --fb-op: 0.05; animation-duration: 54s; animation-delay: -27s; }
+        /* Tamaños tipográficos por carril */
+        .finance-bg .lane-1 .fb-item { font-size: 9rem; }
+        .finance-bg .lane-2 .fb-item { font-size: 1.05rem; }
+        .finance-bg .lane-3 .fb-item { font-size: 0.95rem; }
+        .finance-bg .lane-4 .fb-item { font-size: 1.1rem; }
+        .finance-bg .lane-5 .fb-item { font-size: 7rem; }
+        .finance-bg .lane-6 .fb-item { font-size: 1rem; }
+        .finance-bg .lane-7 .fb-item { font-size: 0.9rem; }
 
-        /* Mini-gráficas: tamaño fijo en px y opacidad un poco más alta */
-        .finance-bg .fb-graph-wrap { width: 120px; height: 60px; }
-        .finance-bg .fb-graph-wrap.fb-sm { width: 90px; height: 45px; }
-        .finance-bg .fb-graph-wrap.fb-lg { width: 160px; height: 80px; }
+        /* Pausa al hover (opcional, queda más amigable si el usuario se queda quieto) */
+        .finance-bg:hover .lane-track { animation-play-state: paused; }
 
-        /* Si el usuario prefiere menos movimiento, congelar la animación */
         @media (prefers-reduced-motion: reduce) {
-            .finance-bg .fb-item,
-            .finance-bg .fb-pulse {
-                animation: none;
-                opacity: var(--fb-op, 0.08);
-                transform: none;
-            }
+            .finance-bg .lane-track { animation: none; transform: none; }
         }
     </style>
 
-    <!-- Símbolos de moneda grandes (decoración) -->
-    <span class="fb-item fb-symbol fb-pulse fb-1">€</span>
-    <span class="fb-item fb-symbol fb-5">$</span>
-    <span class="fb-item fb-symbol fb-pulse fb-8">£</span>
-    <span class="fb-item fb-symbol fb-16">¥</span>
-    <span class="fb-item fb-symbol fb-pulse fb-20">₿</span>
-    <span class="fb-item fb-symbol fb-24">₽</span>
+    <!-- ================== LANE 1 — símbolos enormes, muy lento ================== -->
+    <div class="lane lane-1">
+        <div class="lane-track">
+            <!-- set A -->
+            <span class="fb-item fb-symbol">€</span>
+            <span class="fb-item fb-symbol">$</span>
+            <span class="fb-item fb-symbol">£</span>
+            <span class="fb-item fb-symbol">¥</span>
+            <span class="fb-item fb-symbol">₿</span>
+            <span class="fb-item fb-symbol">₽</span>
+            <span class="fb-item fb-symbol">₩</span>
+            <span class="fb-item fb-symbol">₹</span>
+            <!-- set A duplicado (para loop sin costura) -->
+            <span class="fb-item fb-symbol" aria-hidden="true">€</span>
+            <span class="fb-item fb-symbol" aria-hidden="true">$</span>
+            <span class="fb-item fb-symbol" aria-hidden="true">£</span>
+            <span class="fb-item fb-symbol" aria-hidden="true">¥</span>
+            <span class="fb-item fb-symbol" aria-hidden="true">₿</span>
+            <span class="fb-item fb-symbol" aria-hidden="true">₽</span>
+            <span class="fb-item fb-symbol" aria-hidden="true">₩</span>
+            <span class="fb-item fb-symbol" aria-hidden="true">₹</span>
+        </div>
+    </div>
 
-    <!-- Números con formato europeo y porcentajes -->
-    <span class="fb-item fb-2">2.847,50 €</span>
-    <span class="fb-item fb-3 fb-pos">+12,4 %</span>
-    <span class="fb-item fb-4">8.420,15 $</span>
-    <span class="fb-item fb-6 fb-neg">−3,82 %</span>
-    <span class="fb-item fb-7">1.250,00 €</span>
-    <span class="fb-item fb-9 fb-pos">+0,75 %</span>
-    <span class="fb-item fb-10">425,30 €</span>
-    <span class="fb-item fb-11 fb-accent">SP500 5.832,1</span>
-    <span class="fb-item fb-12 fb-neg">−1,15 %</span>
-    <span class="fb-item fb-13">15.480,00 ¥</span>
-    <span class="fb-item fb-14 fb-pos">+2,08 %</span>
-    <span class="fb-item fb-15">680,42 £</span>
-    <span class="fb-item fb-17 fb-accent">IBEX 11.247</span>
-    <span class="fb-item fb-18">€/$ 1,0876</span>
-    <span class="fb-item fb-19 fb-pos">+0,42 %</span>
-    <span class="fb-item fb-21 fb-neg">−0,27 %</span>
-    <span class="fb-item fb-22">3.140,00 €</span>
-    <span class="fb-item fb-23 fb-pos">+5,93 %</span>
+    <!-- ================== LANE 2 — cifras con formato europeo + porcentajes ================== -->
+    <div class="lane lane-2">
+        <div class="lane-track">
+            <span class="fb-item">2.847,50 €</span>
+            <span class="fb-item fb-pos">+12,4 %</span>
+            <span class="fb-item">8.420,15 $</span>
+            <span class="fb-item fb-neg">−3,82 %</span>
+            <span class="fb-item">1.250,00 €</span>
+            <span class="fb-item fb-pos">+0,75 %</span>
+            <span class="fb-item fb-accent">SP500 5.832,1</span>
+            <span class="fb-item">425,30 €</span>
+            <span class="fb-item fb-neg">−1,15 %</span>
+            <span class="fb-item">15.480 ¥</span>
+            <span class="fb-item fb-pos">+2,08 %</span>
+            <!-- duplicado -->
+            <span class="fb-item" aria-hidden="true">2.847,50 €</span>
+            <span class="fb-item fb-pos" aria-hidden="true">+12,4 %</span>
+            <span class="fb-item" aria-hidden="true">8.420,15 $</span>
+            <span class="fb-item fb-neg" aria-hidden="true">−3,82 %</span>
+            <span class="fb-item" aria-hidden="true">1.250,00 €</span>
+            <span class="fb-item fb-pos" aria-hidden="true">+0,75 %</span>
+            <span class="fb-item fb-accent" aria-hidden="true">SP500 5.832,1</span>
+            <span class="fb-item" aria-hidden="true">425,30 €</span>
+            <span class="fb-item fb-neg" aria-hidden="true">−1,15 %</span>
+            <span class="fb-item" aria-hidden="true">15.480 ¥</span>
+            <span class="fb-item fb-pos" aria-hidden="true">+2,08 %</span>
+        </div>
+    </div>
 
-    <!-- Mini-gráficas SVG: líneas y barras simples -->
-    <span class="fb-item fb-graph-wrap fb-sm" style="left: 14%; --fb-op: 0.16; animation-duration: 53s; animation-delay: -5s;">
-        <svg viewBox="0 0 120 60" class="fb-graph fb-graph-fill" width="100%" height="100%" preserveAspectRatio="none">
-            <path d="M0,45 L15,42 L30,38 L45,28 L60,32 L75,20 L90,18 L105,10 L120,12 L120,60 L0,60 Z"></path>
-            <path d="M0,45 L15,42 L30,38 L45,28 L60,32 L75,20 L90,18 L105,10 L120,12" fill="none"></path>
-        </svg>
-    </span>
+    <!-- ================== LANE 3 — mini-gráficas de línea con relleno ================== -->
+    <div class="lane lane-3">
+        <div class="lane-track">
+            <span class="fb-graph-wrap">
+                <svg width="140" height="56" viewBox="0 0 140 56" class="fb-graph fb-graph-fill">
+                    <path d="M0,40 L20,38 L40,30 L60,34 L80,22 L100,26 L120,14 L140,18 L140,56 L0,56 Z"></path>
+                    <path d="M0,40 L20,38 L40,30 L60,34 L80,22 L100,26 L120,14 L140,18" fill="none"></path>
+                </svg>
+            </span>
+            <span class="fb-graph-wrap">
+                <svg width="120" height="48" viewBox="0 0 120 48" class="fb-graph">
+                    <path d="M0,26 L15,28 L30,22 L45,26 L60,16 L75,20 L90,10 L105,14 L120,8"></path>
+                </svg>
+            </span>
+            <span class="fb-graph-wrap">
+                <svg width="100" height="50" viewBox="0 0 100 50" class="fb-graph">
+                    <rect x="4"  y="30" width="9" height="18"></rect>
+                    <rect x="17" y="22" width="9" height="26"></rect>
+                    <rect x="30" y="14" width="9" height="34"></rect>
+                    <rect x="43" y="26" width="9" height="22"></rect>
+                    <rect x="56" y="10" width="9" height="38"></rect>
+                    <rect x="69" y="20" width="9" height="28"></rect>
+                    <rect x="82" y="6"  width="9" height="42"></rect>
+                </svg>
+            </span>
+            <span class="fb-graph-wrap">
+                <svg width="160" height="56" viewBox="0 0 160 56" class="fb-graph fb-graph-fill">
+                    <path d="M0,38 L20,42 L40,32 L60,36 L80,24 L100,28 L120,18 L140,22 L160,12 L160,56 L0,56 Z"></path>
+                    <path d="M0,38 L20,42 L40,32 L60,36 L80,24 L100,28 L120,18 L140,22 L160,12" fill="none"></path>
+                </svg>
+            </span>
+            <span class="fb-graph-wrap">
+                <svg width="120" height="48" viewBox="0 0 120 48" class="fb-graph">
+                    <path d="M0,16 L20,22 L40,14 L60,24 L80,12 L100,20 L120,10"></path>
+                </svg>
+            </span>
+            <!-- duplicado -->
+            <span class="fb-graph-wrap" aria-hidden="true">
+                <svg width="140" height="56" viewBox="0 0 140 56" class="fb-graph fb-graph-fill">
+                    <path d="M0,40 L20,38 L40,30 L60,34 L80,22 L100,26 L120,14 L140,18 L140,56 L0,56 Z"></path>
+                    <path d="M0,40 L20,38 L40,30 L60,34 L80,22 L100,26 L120,14 L140,18" fill="none"></path>
+                </svg>
+            </span>
+            <span class="fb-graph-wrap" aria-hidden="true">
+                <svg width="120" height="48" viewBox="0 0 120 48" class="fb-graph">
+                    <path d="M0,26 L15,28 L30,22 L45,26 L60,16 L75,20 L90,10 L105,14 L120,8"></path>
+                </svg>
+            </span>
+            <span class="fb-graph-wrap" aria-hidden="true">
+                <svg width="100" height="50" viewBox="0 0 100 50" class="fb-graph">
+                    <rect x="4"  y="30" width="9" height="18"></rect>
+                    <rect x="17" y="22" width="9" height="26"></rect>
+                    <rect x="30" y="14" width="9" height="34"></rect>
+                    <rect x="43" y="26" width="9" height="22"></rect>
+                    <rect x="56" y="10" width="9" height="38"></rect>
+                    <rect x="69" y="20" width="9" height="28"></rect>
+                    <rect x="82" y="6"  width="9" height="42"></rect>
+                </svg>
+            </span>
+            <span class="fb-graph-wrap" aria-hidden="true">
+                <svg width="160" height="56" viewBox="0 0 160 56" class="fb-graph fb-graph-fill">
+                    <path d="M0,38 L20,42 L40,32 L60,36 L80,24 L100,28 L120,18 L140,22 L160,12 L160,56 L0,56 Z"></path>
+                    <path d="M0,38 L20,42 L40,32 L60,36 L80,24 L100,28 L120,18 L140,22 L160,12" fill="none"></path>
+                </svg>
+            </span>
+            <span class="fb-graph-wrap" aria-hidden="true">
+                <svg width="120" height="48" viewBox="0 0 120 48" class="fb-graph">
+                    <path d="M0,16 L20,22 L40,14 L60,24 L80,12 L100,20 L120,10"></path>
+                </svg>
+            </span>
+        </div>
+    </div>
 
-    <span class="fb-item fb-graph-wrap" style="left: 46%; --fb-op: 0.14; animation-duration: 47s; animation-delay: -17s;">
-        <svg viewBox="0 0 120 60" class="fb-graph" width="100%" height="100%" preserveAspectRatio="none">
-            <path d="M0,30 L15,32 L30,25 L45,28 L60,18 L75,22 L90,12 L105,16 L120,8"></path>
-        </svg>
-    </span>
+    <!-- ================== LANE 4 — índices y cambios ================== -->
+    <div class="lane lane-4">
+        <div class="lane-track">
+            <span class="fb-item fb-accent">IBEX 11.247</span>
+            <span class="fb-item">€/$ 1,0876</span>
+            <span class="fb-item fb-pos">+0,42 %</span>
+            <span class="fb-item fb-accent">DAX 18.642</span>
+            <span class="fb-item">680,42 £</span>
+            <span class="fb-item fb-neg">−0,27 %</span>
+            <span class="fb-item fb-accent">NASDAQ 19.281</span>
+            <span class="fb-item">3.140,00 €</span>
+            <span class="fb-item fb-pos">+5,93 %</span>
+            <span class="fb-item fb-accent">BTC 87.420 $</span>
+            <span class="fb-item fb-neg">−2,11 %</span>
+            <!-- duplicado -->
+            <span class="fb-item fb-accent" aria-hidden="true">IBEX 11.247</span>
+            <span class="fb-item" aria-hidden="true">€/$ 1,0876</span>
+            <span class="fb-item fb-pos" aria-hidden="true">+0,42 %</span>
+            <span class="fb-item fb-accent" aria-hidden="true">DAX 18.642</span>
+            <span class="fb-item" aria-hidden="true">680,42 £</span>
+            <span class="fb-item fb-neg" aria-hidden="true">−0,27 %</span>
+            <span class="fb-item fb-accent" aria-hidden="true">NASDAQ 19.281</span>
+            <span class="fb-item" aria-hidden="true">3.140,00 €</span>
+            <span class="fb-item fb-pos" aria-hidden="true">+5,93 %</span>
+            <span class="fb-item fb-accent" aria-hidden="true">BTC 87.420 $</span>
+            <span class="fb-item fb-neg" aria-hidden="true">−2,11 %</span>
+        </div>
+    </div>
 
-    <span class="fb-item fb-graph-wrap fb-lg" style="left: 70%; --fb-op: 0.12; animation-duration: 58s; animation-delay: -32s;">
-        <svg viewBox="0 0 160 80" class="fb-graph fb-graph-fill" width="100%" height="100%" preserveAspectRatio="none">
-            <path d="M0,55 L20,50 L40,58 L60,42 L80,46 L100,30 L120,38 L140,22 L160,28 L160,80 L0,80 Z"></path>
-            <path d="M0,55 L20,50 L40,58 L60,42 L80,46 L100,30 L120,38 L140,22 L160,28" fill="none"></path>
-        </svg>
-    </span>
+    <!-- ================== LANE 5 — símbolos grandes (segunda fila decorativa) ================== -->
+    <div class="lane lane-5">
+        <div class="lane-track">
+            <span class="fb-item fb-symbol">$</span>
+            <span class="fb-item fb-symbol">€</span>
+            <span class="fb-item fb-symbol">₿</span>
+            <span class="fb-item fb-symbol">¥</span>
+            <span class="fb-item fb-symbol">£</span>
+            <span class="fb-item fb-symbol">₣</span>
+            <span class="fb-item fb-symbol">+</span>
+            <span class="fb-item fb-symbol">%</span>
+            <!-- duplicado -->
+            <span class="fb-item fb-symbol" aria-hidden="true">$</span>
+            <span class="fb-item fb-symbol" aria-hidden="true">€</span>
+            <span class="fb-item fb-symbol" aria-hidden="true">₿</span>
+            <span class="fb-item fb-symbol" aria-hidden="true">¥</span>
+            <span class="fb-item fb-symbol" aria-hidden="true">£</span>
+            <span class="fb-item fb-symbol" aria-hidden="true">₣</span>
+            <span class="fb-item fb-symbol" aria-hidden="true">+</span>
+            <span class="fb-item fb-symbol" aria-hidden="true">%</span>
+        </div>
+    </div>
 
-    <span class="fb-item fb-graph-wrap fb-sm" style="left: 6%; --fb-op: 0.15; animation-duration: 44s; animation-delay: -24s;">
-        <!-- mini-bars -->
-        <svg viewBox="0 0 90 45" class="fb-graph" width="100%" height="100%" preserveAspectRatio="none">
-            <rect x="2"  y="28" width="8" height="15"></rect>
-            <rect x="14" y="22" width="8" height="21"></rect>
-            <rect x="26" y="18" width="8" height="25"></rect>
-            <rect x="38" y="25" width="8" height="18"></rect>
-            <rect x="50" y="12" width="8" height="31"></rect>
-            <rect x="62" y="20" width="8" height="23"></rect>
-            <rect x="74" y="8"  width="8" height="35"></rect>
-        </svg>
-    </span>
+    <!-- ================== LANE 6 — mini-gráficas + cifras intercaladas ================== -->
+    <div class="lane lane-6">
+        <div class="lane-track">
+            <span class="fb-item fb-pos">+8,15 %</span>
+            <span class="fb-graph-wrap">
+                <svg width="80" height="36" viewBox="0 0 80 36" class="fb-graph">
+                    <path d="M0,20 L13,16 L26,22 L40,12 L53,18 L66,8 L80,14"></path>
+                </svg>
+            </span>
+            <span class="fb-item">7.215,90 €</span>
+            <span class="fb-graph-wrap">
+                <svg width="90" height="36" viewBox="0 0 90 36" class="fb-graph">
+                    <rect x="2"  y="20" width="7" height="14"></rect>
+                    <rect x="13" y="14" width="7" height="20"></rect>
+                    <rect x="24" y="22" width="7" height="12"></rect>
+                    <rect x="35" y="10" width="7" height="24"></rect>
+                    <rect x="46" y="6"  width="7" height="28"></rect>
+                    <rect x="57" y="16" width="7" height="18"></rect>
+                    <rect x="68" y="12" width="7" height="22"></rect>
+                    <rect x="79" y="4"  width="7" height="30"></rect>
+                </svg>
+            </span>
+            <span class="fb-item fb-neg">−4,02 %</span>
+            <span class="fb-item">920,40 $</span>
+            <span class="fb-graph-wrap">
+                <svg width="100" height="36" viewBox="0 0 100 36" class="fb-graph fb-graph-fill">
+                    <path d="M0,24 L20,20 L40,26 L60,14 L80,18 L100,8 L100,36 L0,36 Z"></path>
+                    <path d="M0,24 L20,20 L40,26 L60,14 L80,18 L100,8" fill="none"></path>
+                </svg>
+            </span>
+            <!-- duplicado -->
+            <span class="fb-item fb-pos" aria-hidden="true">+8,15 %</span>
+            <span class="fb-graph-wrap" aria-hidden="true">
+                <svg width="80" height="36" viewBox="0 0 80 36" class="fb-graph">
+                    <path d="M0,20 L13,16 L26,22 L40,12 L53,18 L66,8 L80,14"></path>
+                </svg>
+            </span>
+            <span class="fb-item" aria-hidden="true">7.215,90 €</span>
+            <span class="fb-graph-wrap" aria-hidden="true">
+                <svg width="90" height="36" viewBox="0 0 90 36" class="fb-graph">
+                    <rect x="2"  y="20" width="7" height="14"></rect>
+                    <rect x="13" y="14" width="7" height="20"></rect>
+                    <rect x="24" y="22" width="7" height="12"></rect>
+                    <rect x="35" y="10" width="7" height="24"></rect>
+                    <rect x="46" y="6"  width="7" height="28"></rect>
+                    <rect x="57" y="16" width="7" height="18"></rect>
+                    <rect x="68" y="12" width="7" height="22"></rect>
+                    <rect x="79" y="4"  width="7" height="30"></rect>
+                </svg>
+            </span>
+            <span class="fb-item fb-neg" aria-hidden="true">−4,02 %</span>
+            <span class="fb-item" aria-hidden="true">920,40 $</span>
+            <span class="fb-graph-wrap" aria-hidden="true">
+                <svg width="100" height="36" viewBox="0 0 100 36" class="fb-graph fb-graph-fill">
+                    <path d="M0,24 L20,20 L40,26 L60,14 L80,18 L100,8 L100,36 L0,36 Z"></path>
+                    <path d="M0,24 L20,20 L40,26 L60,14 L80,18 L100,8" fill="none"></path>
+                </svg>
+            </span>
+        </div>
+    </div>
 
-    <span class="fb-item fb-graph-wrap" style="left: 32%; --fb-op: 0.13; animation-duration: 50s; animation-delay: -38s;">
-        <svg viewBox="0 0 120 60" class="fb-graph" width="100%" height="100%" preserveAspectRatio="none">
-            <path d="M0,20 L20,28 L40,18 L60,30 L80,15 L100,25 L120,10"></path>
-        </svg>
-    </span>
-
-    <span class="fb-item fb-graph-wrap fb-sm" style="left: 88%; --fb-op: 0.14; animation-duration: 41s; animation-delay: -9s;">
-        <svg viewBox="0 0 90 45" class="fb-graph" width="100%" height="100%" preserveAspectRatio="none">
-            <rect x="2"  y="20" width="8" height="23"></rect>
-            <rect x="14" y="14" width="8" height="29"></rect>
-            <rect x="26" y="24" width="8" height="19"></rect>
-            <rect x="38" y="10" width="8" height="33"></rect>
-            <rect x="50" y="6"  width="8" height="37"></rect>
-            <rect x="62" y="16" width="8" height="27"></rect>
-            <rect x="74" y="4"  width="8" height="39"></rect>
-        </svg>
-    </span>
+    <!-- ================== LANE 7 — texto pequeño tipo ticker ================== -->
+    <div class="lane lane-7">
+        <div class="lane-track">
+            <span class="fb-item fb-pos">AAPL +1,2 %</span>
+            <span class="fb-item fb-neg">TSLA −2,4 %</span>
+            <span class="fb-item fb-pos">MSFT +0,8 %</span>
+            <span class="fb-item fb-accent">SAN 4,52 €</span>
+            <span class="fb-item fb-pos">GOOG +3,1 %</span>
+            <span class="fb-item fb-neg">META −0,5 %</span>
+            <span class="fb-item fb-accent">ITX 51,28 €</span>
+            <span class="fb-item fb-pos">NVDA +2,7 %</span>
+            <!-- duplicado -->
+            <span class="fb-item fb-pos" aria-hidden="true">AAPL +1,2 %</span>
+            <span class="fb-item fb-neg" aria-hidden="true">TSLA −2,4 %</span>
+            <span class="fb-item fb-pos" aria-hidden="true">MSFT +0,8 %</span>
+            <span class="fb-item fb-accent" aria-hidden="true">SAN 4,52 €</span>
+            <span class="fb-item fb-pos" aria-hidden="true">GOOG +3,1 %</span>
+            <span class="fb-item fb-neg" aria-hidden="true">META −0,5 %</span>
+            <span class="fb-item fb-accent" aria-hidden="true">ITX 51,28 €</span>
+            <span class="fb-item fb-pos" aria-hidden="true">NVDA +2,7 %</span>
+        </div>
+    </div>
 
 </div>
 
