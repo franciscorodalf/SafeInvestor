@@ -16,22 +16,22 @@
             <div class="inline-flex items-center justify-center w-14 h-14 rounded-full bg-accent-soft text-accent mb-5">
                 <i class="ph ph-key text-2xl"></i>
             </div>
-            <p class="text-xs tracking-[0.18em] uppercase text-ink-soft mb-2">Sin pánico</p>
-            <h1 class="font-display text-4xl mb-3 leading-tight">Recuperar contraseña</h1>
-            <p class="text-ink-soft">Te enviamos un enlace para que la restablezcas.</p>
+            <p class="text-xs tracking-[0.18em] uppercase text-ink-soft mb-2" th:text="#{forgot.eyebrow}">Sin pánico</p>
+            <h1 class="font-display text-4xl mb-3 leading-tight" th:text="#{forgot.title}">Recuperar contraseña</h1>
+            <p class="text-ink-soft" th:text="#{forgot.subtitle}">Te enviamos un enlace para que la restablezcas.</p>
         </div>
 
         <div th:if="${sent}" class="mb-5 p-4 rounded-lg bg-positive-soft text-positive text-sm flex items-start gap-2.5">
             <i class="ph ph-check-circle text-lg shrink-0 mt-0.5"></i>
             <div>
-                <p class="font-medium">Listo.</p>
-                <p>Si el email existe, recibirás un enlace para restablecer tu contraseña. En dev, mira los logs.</p>
+                <p class="font-medium" th:text="#{forgot.sent_title}">Listo.</p>
+                <p th:text="#{forgot.sent_msg}">Si el email existe, recibirás un enlace para restablecer tu contraseña. En dev, mira los logs.</p>
             </div>
         </div>
 
         <form th:action="@{/forgot}" method="post" class="bg-surface border border-line rounded-lg p-6 shadow-sm space-y-4">
             <label class="block">
-                <span class="text-sm text-ink-soft mb-1.5 block">Tu email</span>
+                <span class="text-sm text-ink-soft mb-1.5 block" th:text="#{forgot.email}">Tu email</span>
                 <div class="relative">
                     <i class="ph ph-envelope absolute left-3.5 top-1/2 -translate-y-1/2 text-ink-soft"></i>
                     <input name="email" type="email" required autofocus
@@ -40,12 +40,12 @@
             </label>
             <button class="btn btn-primary w-full">
                 <i class="ph ph-paper-plane-tilt text-lg"></i>
-                <span>Enviar enlace</span>
+                <span th:text="#{forgot.submit}">Enviar enlace</span>
             </button>
         </form>
 
         <p class="text-center text-sm text-ink-soft mt-6">
-            <a href="/login" class="text-brand font-medium hover:underline">← Volver a entrar</a>
+            <a href="/login" class="text-brand font-medium hover:underline" th:text="#{forgot.back}">← Volver a entrar</a>
         </p>
     </div>
 </main>

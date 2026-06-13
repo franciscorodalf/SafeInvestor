@@ -7,28 +7,28 @@
 <main class="max-w-3xl mx-auto px-5 py-8">
 
     <header class="mb-8 fade-up">
-        <p class="text-xs tracking-[0.18em] uppercase text-ink-soft mb-1">Cómo clasificas</p>
-        <h1 class="font-display text-5xl leading-tight">Categorías</h1>
+        <p class="text-xs tracking-[0.18em] uppercase text-ink-soft mb-1" th:text="#{cat.eyebrow}">Cómo clasificas</p>
+        <h1 class="font-display text-5xl leading-tight" th:text="#{cat.title}">Categorías</h1>
     </header>
 
     <!-- Form crear nueva -->
     <form method="post" action="/categorias" class="bg-surface border border-line rounded-lg p-5 mb-6 shadow-sm flex flex-col sm:flex-row gap-3 items-end">
         <label class="flex-1 block w-full">
-            <span class="text-xs text-ink-soft mb-1 block uppercase tracking-wider">Nueva categoría</span>
+            <span class="text-xs text-ink-soft mb-1 block uppercase tracking-wider" th:text="#{cat.new}">Nueva categoría</span>
             <input name="nombre" type="text" required maxlength="50"
-                   placeholder="Mascotas, Viajes, Café..." class="input">
+                   th:placeholder="#{cat.new_placeholder}" class="input">
         </label>
         <label class="block">
-            <span class="text-xs text-ink-soft mb-1 block uppercase tracking-wider">Color</span>
+            <span class="text-xs text-ink-soft mb-1 block uppercase tracking-wider" th:text="#{cat.color}">Color</span>
             <input name="color" type="color" value="#6B7280" class="w-14 h-11 rounded-lg border border-line cursor-pointer">
         </label>
-        <button class="btn btn-primary"><i class="ph ph-plus"></i> Añadir</button>
+        <button class="btn btn-primary"><i class="ph ph-plus"></i> <span th:text="#{cat.add}">Añadir</span></button>
     </form>
 
     <!-- Lista categorías -->
     <section class="bg-surface border border-line rounded-lg shadow-sm overflow-hidden">
         <div th:if="${#lists.isEmpty(categorias)}" class="px-6 py-12 text-center">
-            <p class="text-ink-soft">No tienes categorías.</p>
+            <p class="text-ink-soft" th:text="#{cat.empty}">No tienes categorías.</p>
         </div>
         <ul class="divide-y divide-line">
             <li th:each="c : ${categorias}" class="px-5 py-3.5 flex items-center justify-between gap-4 hover:bg-bg-soft/40 group">
@@ -42,7 +42,7 @@
                 </div>
                 <form th:action="@{/categorias/{id}/borrar(id=${c.id})}" method="post" class="opacity-0 group-hover:opacity-100 transition-opacity">
                     <button class="w-9 h-9 rounded-lg hover:bg-negative-soft flex items-center justify-center text-ink-soft hover:text-negative"
-                            onclick="return confirm('¿Borrar esta categoría?')" title="Borrar">
+                            th:onclick="'return confirm(\\'' + #{cat.confirm_delete} + '\\')'" th:title="#{common.delete}">
                         <i class="ph ph-trash"></i>
                     </button>
                 </form>
@@ -52,7 +52,7 @@
 
     <p class="text-xs text-ink-soft mt-4 text-center">
         <i class="ph ph-info"></i>
-        Al borrar una categoría, los movimientos asociados quedan sin categoría (no se borran).
+        <span th:text="#{cat.info}">Al borrar una categoría, los movimientos asociados quedan sin categoría (no se borran).</span>
     </p>
 
 </main>

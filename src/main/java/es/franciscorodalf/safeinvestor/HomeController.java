@@ -80,16 +80,16 @@ public class HomeController {
         long tareasVencidas = tareas.findAll(u).stream()
             .filter(Tarea::isVencida).count();
 
-        // Saludo por hora del día
+        // Saludo por hora del día (clave i18n; el template resuelve la traducción)
         int hora = java.time.LocalTime.now().getHour();
-        String saludo;
-        if (hora < 6) saludo = "Buenas noches";
-        else if (hora < 13) saludo = "Buenos días";
-        else if (hora < 21) saludo = "Buenas tardes";
-        else saludo = "Buenas noches";
+        String saludoKey;
+        if (hora < 6)        saludoKey = "dashboard.greeting.night";
+        else if (hora < 13)  saludoKey = "dashboard.greeting.morning";
+        else if (hora < 21)  saludoKey = "dashboard.greeting.afternoon";
+        else                 saludoKey = "dashboard.greeting.night";
 
         model.addAttribute("usuario", u);
-        model.addAttribute("saludo", saludo);
+        model.addAttribute("saludoKey", saludoKey);
         model.addAttribute("fecha", hoy);
         model.addAttribute("ingresosMes", ingresosMes);
         model.addAttribute("gastosMes", gastosMes);

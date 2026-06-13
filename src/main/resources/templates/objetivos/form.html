@@ -7,12 +7,14 @@
 <main class="max-w-2xl mx-auto px-5 py-10">
 
     <a href="/objetivos" class="text-sm text-ink-soft hover:text-brand inline-flex items-center gap-1.5 mb-6">
-        <i class="ph ph-arrow-left"></i> Volver
+        <i class="ph ph-arrow-left"></i> <span th:text="#{obj.form.back}">Volver</span>
     </a>
 
     <header class="mb-8 fade-up">
-        <p class="text-xs tracking-[0.18em] uppercase text-ink-soft mb-1" th:text="${form.id == null ? 'Nuevo' : 'Edición'}">Nuevo</p>
-        <h1 class="font-display text-4xl" th:text="${form.id == null ? 'Nuevo objetivo' : 'Editar objetivo'}">Nuevo objetivo</h1>
+        <p class="text-xs tracking-[0.18em] uppercase text-ink-soft mb-1"
+           th:text="${form.id == null} ? #{obj.form.eyebrow_new} : #{obj.form.eyebrow_edit}">Nuevo</p>
+        <h1 class="font-display text-4xl"
+            th:text="${form.id == null} ? #{obj.form.title_new} : #{obj.form.title_edit}">Nuevo objetivo</h1>
     </header>
 
     <form th:action="${form.id == null ? '/objetivos' : '/objetivos/' + form.id}"
@@ -20,14 +22,14 @@
           class="bg-surface border border-line rounded-lg p-6 sm:p-8 shadow-sm space-y-5">
 
         <label class="block">
-            <span class="text-sm text-ink-soft mb-1.5 block">¿Qué quieres conseguir?</span>
+            <span class="text-sm text-ink-soft mb-1.5 block" th:text="#{obj.form.nombre}">¿Qué quieres conseguir?</span>
             <input th:field="*{nombre}" type="text" required maxlength="100"
-                   placeholder="Vacaciones en Tailandia, MacBook nuevo..." class="input">
+                   th:placeholder="#{obj.form.nombre_placeholder}" class="input">
             <span class="text-negative text-xs mt-1 block" th:if="${#fields.hasErrors('nombre')}" th:errors="*{nombre}"></span>
         </label>
 
         <label class="block">
-            <span class="text-sm text-ink-soft mb-1.5 block">Cantidad a alcanzar</span>
+            <span class="text-sm text-ink-soft mb-1.5 block" th:text="#{obj.form.importe}">Cantidad a alcanzar</span>
             <div class="relative">
                 <input th:field="*{importeObjetivo}" type="number" step="0.01" min="0.01" required
                        placeholder="2000.00" class="input font-mono text-2xl py-3 pr-10 text-right">
@@ -36,22 +38,25 @@
         </label>
 
         <label class="block">
-            <span class="text-sm text-ink-soft mb-1.5 block">Fecha límite <span class="text-ink-soft/60 font-normal">(opcional)</span></span>
+            <span class="text-sm text-ink-soft mb-1.5 block">
+                <span th:text="#{obj.form.fecha}">Fecha límite</span>
+                <span class="text-ink-soft/60 font-normal" th:text="#{obj.form.fecha_opt}">(opcional)</span>
+            </span>
             <input th:field="*{fechaLimite}" type="date" class="input">
         </label>
 
         <label class="block">
-            <span class="text-sm text-ink-soft mb-1.5 block">Color</span>
+            <span class="text-sm text-ink-soft mb-1.5 block" th:text="#{obj.form.color}">Color</span>
             <div class="flex items-center gap-3">
                 <input th:field="*{color}" type="color" class="w-14 h-12 rounded-lg border border-line cursor-pointer">
-                <span class="text-sm text-ink-soft">Identifica visualmente tu objetivo</span>
+                <span class="text-sm text-ink-soft" th:text="#{obj.form.color_hint}">Identifica visualmente tu objetivo</span>
             </div>
         </label>
 
         <div class="flex justify-end gap-3 pt-3 border-t border-line">
-            <a href="/objetivos" class="btn btn-ghost">Cancelar</a>
+            <a href="/objetivos" class="btn btn-ghost" th:text="#{common.cancel}">Cancelar</a>
             <button class="btn btn-primary">
-                <i class="ph ph-check"></i> Guardar
+                <i class="ph ph-check"></i> <span th:text="#{common.save}">Guardar</span>
             </button>
         </div>
     </form>

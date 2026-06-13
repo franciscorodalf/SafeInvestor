@@ -8,18 +8,18 @@
 
     <header class="flex items-end justify-between mb-8 flex-wrap gap-4 fade-up">
         <div>
-            <p class="text-xs tracking-[0.18em] uppercase text-ink-soft mb-1">Tu actividad</p>
-            <h1 class="font-display text-5xl leading-tight">Movimientos</h1>
+            <p class="text-xs tracking-[0.18em] uppercase text-ink-soft mb-1" th:text="#{mov.list.eyebrow}">Tu actividad</p>
+            <h1 class="font-display text-5xl leading-tight" th:text="#{mov.list.title}">Movimientos</h1>
         </div>
         <div class="flex items-center gap-2 flex-wrap">
-            <a href="/movimientos/informe" target="_blank" class="btn btn-ghost" title="Informe imprimible">
-                <i class="ph ph-printer text-lg"></i> Informe
+            <a href="/movimientos/informe" target="_blank" class="btn btn-ghost" th:title="#{mov.list.informe}">
+                <i class="ph ph-printer text-lg"></i> <span th:text="#{mov.list.informe}">Informe</span>
             </a>
-            <a href="/movimientos/export.csv" class="btn btn-ghost" title="Exportar CSV">
-                <i class="ph ph-download-simple text-lg"></i> CSV
+            <a href="/movimientos/export.csv" class="btn btn-ghost" th:title="#{mov.list.csv}">
+                <i class="ph ph-download-simple text-lg"></i> <span th:text="#{mov.list.csv}">CSV</span>
             </a>
             <a href="/movimientos/nuevo" class="btn btn-primary">
-                <i class="ph ph-plus text-lg"></i> Nuevo movimiento
+                <i class="ph ph-plus text-lg"></i> <span th:text="#{mov.list.new}">Nuevo movimiento</span>
             </a>
         </div>
     </header>
@@ -28,26 +28,26 @@
     <form method="get" action="/movimientos"
           class="bg-surface border border-line rounded-lg p-4 mb-6 grid grid-cols-1 sm:grid-cols-4 gap-3 shadow-sm">
         <label class="block">
-            <span class="text-xs text-ink-soft mb-1 block uppercase tracking-wider">Categoría</span>
+            <span class="text-xs text-ink-soft mb-1 block uppercase tracking-wider" th:text="#{mov.list.filter_categoria}">Categoría</span>
             <select name="categoriaId" class="input">
-                <option value="">Todas</option>
+                <option value="" th:text="#{mov.list.filter_all}">Todas</option>
                 <option th:each="c : ${categorias}" th:value="${c.id}" th:text="${c.nombre}"
                         th:selected="${c.id == currentCategoriaId}"></option>
             </select>
         </label>
         <label class="block">
-            <span class="text-xs text-ink-soft mb-1 block uppercase tracking-wider">Desde</span>
+            <span class="text-xs text-ink-soft mb-1 block uppercase tracking-wider" th:text="#{mov.list.filter_from}">Desde</span>
             <input type="date" name="desde" th:value="${desde}" class="input">
         </label>
         <label class="block">
-            <span class="text-xs text-ink-soft mb-1 block uppercase tracking-wider">Hasta</span>
+            <span class="text-xs text-ink-soft mb-1 block uppercase tracking-wider" th:text="#{mov.list.filter_to}">Hasta</span>
             <input type="date" name="hasta" th:value="${hasta}" class="input">
         </label>
         <div class="flex items-end gap-2">
             <button class="btn btn-primary flex-1">
-                <i class="ph ph-funnel"></i> Filtrar
+                <i class="ph ph-funnel"></i> <span th:text="#{mov.list.filter_apply}">Filtrar</span>
             </button>
-            <a href="/movimientos" class="btn btn-ghost" title="Limpiar"><i class="ph ph-x"></i></a>
+            <a href="/movimientos" class="btn btn-ghost" th:title="#{mov.list.filter_clear}"><i class="ph ph-x"></i></a>
         </div>
     </form>
 
@@ -59,10 +59,10 @@
             <div class="inline-flex w-16 h-16 rounded-full bg-bg-soft items-center justify-center text-ink-soft mb-4">
                 <i class="ph ph-receipt text-3xl"></i>
             </div>
-            <p class="font-display text-2xl mb-2">Sin movimientos.</p>
-            <p class="text-ink-soft mb-5">Empieza registrando tu primer gasto o ingreso.</p>
+            <p class="font-display text-2xl mb-2" th:text="#{mov.list.empty_title}">Sin movimientos.</p>
+            <p class="text-ink-soft mb-5" th:text="#{mov.list.empty_subtitle}">Empieza registrando tu primer gasto o ingreso.</p>
             <a href="/movimientos/nuevo" class="btn btn-primary">
-                <i class="ph ph-plus"></i> Crear el primero
+                <i class="ph ph-plus"></i> <span th:text="#{mov.list.empty_cta}">Crear el primero</span>
             </a>
         </div>
 
@@ -86,7 +86,7 @@
                         </span>
                         <span class="text-ink-soft flex items-center gap-1">
                             <i class="ph ph-calendar text-sm"></i>
-                            <span th:text="${#temporals.format(m.fecha, 'dd MMM yyyy')}">06 jun 2026</span>
+                            <span th:text="${#temporals.format(m.fecha, #messages.msg('dashboard.month_short_format') + ' yyyy')}">06 jun 2026</span>
                         </span>
                     </div>
                 </div>
@@ -99,12 +99,12 @@
                 <!-- Actions -->
                 <div class="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
                     <a th:href="@{/movimientos/{id}/editar(id=${m.id})}"
-                       class="w-9 h-9 rounded-lg hover:bg-bg-soft flex items-center justify-center text-ink-soft hover:text-brand" title="Editar">
+                       class="w-9 h-9 rounded-lg hover:bg-bg-soft flex items-center justify-center text-ink-soft hover:text-brand" th:title="#{common.edit}">
                         <i class="ph ph-pencil-simple"></i>
                     </a>
                     <form th:action="@{/movimientos/{id}/borrar(id=${m.id})}" method="post" class="inline">
                         <button class="w-9 h-9 rounded-lg hover:bg-negative-soft flex items-center justify-center text-ink-soft hover:text-negative"
-                                onclick="return confirm('¿Borrar este movimiento?')" title="Borrar">
+                                th:onclick="'return confirm(\\'' + #{mov.list.confirm_delete} + '\\')'" th:title="#{common.delete}">
                             <i class="ph ph-trash"></i>
                         </button>
                     </form>
@@ -116,11 +116,11 @@
     <!-- Pagination -->
     <nav class="flex items-center justify-between mt-6 text-sm" th:if="${hasNext or hasPrev}">
         <a th:if="${hasPrev != null and hasPrev}" th:href="@{/movimientos(page=${page - 1}, categoriaId=${currentCategoriaId}, desde=${desde}, hasta=${hasta})}"
-           class="btn btn-ghost"><i class="ph ph-arrow-left"></i> Anterior</a>
+           class="btn btn-ghost"><i class="ph ph-arrow-left"></i> <span th:text="#{mov.list.prev}">Anterior</span></a>
         <span th:unless="${hasPrev}"></span>
-        <span class="text-ink-soft text-xs" th:text="'Página ' + (${page} + 1)">Página 1</span>
+        <span class="text-ink-soft text-xs" th:text="${#messages.msg('mov.list.page') + ' ' + (page + 1)}">Página 1</span>
         <a th:if="${hasNext != null and hasNext}" th:href="@{/movimientos(page=${page + 1}, categoriaId=${currentCategoriaId}, desde=${desde}, hasta=${hasta})}"
-           class="btn btn-ghost">Siguiente <i class="ph ph-arrow-right"></i></a>
+           class="btn btn-ghost"><span th:text="#{mov.list.next}">Siguiente</span> <i class="ph ph-arrow-right"></i></a>
     </nav>
 
 </main>

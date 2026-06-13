@@ -7,33 +7,33 @@
 <main class="max-w-3xl mx-auto px-5 py-8">
 
     <header class="mb-8 fade-up">
-        <p class="text-xs tracking-[0.18em] uppercase text-ink-soft mb-1">No se te olvida nada</p>
-        <h1 class="font-display text-5xl leading-tight">Tareas financieras</h1>
+        <p class="text-xs tracking-[0.18em] uppercase text-ink-soft mb-1" th:text="#{tareas.eyebrow}">No se te olvida nada</p>
+        <h1 class="font-display text-5xl leading-tight" th:text="#{tareas.title}">Tareas financieras</h1>
     </header>
 
     <!-- Form crear nueva -->
     <form th:action="@{/tareas}" th:object="${form}" method="post"
           class="bg-surface border border-line rounded-lg p-5 sm:p-6 mb-6 shadow-sm space-y-4">
         <p class="text-sm text-ink-soft flex items-center gap-1.5">
-            <i class="ph ph-plus-circle text-brand"></i> Añadir tarea
+            <i class="ph ph-plus-circle text-brand"></i> <span th:text="#{tareas.add}">Añadir tarea</span>
         </p>
         <label class="block">
             <input th:field="*{titulo}" type="text" required maxlength="150"
-                   placeholder="Pagar alquiler antes del día 5..." class="input">
+                   th:placeholder="#{tareas.placeholder_title}" class="input">
             <span class="text-negative text-xs mt-1 block" th:if="${#fields.hasErrors('titulo')}" th:errors="*{titulo}"></span>
         </label>
         <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
             <label class="block sm:col-span-2">
-                <span class="text-xs text-ink-soft mb-1 block uppercase tracking-wider">Detalle (opcional)</span>
+                <span class="text-xs text-ink-soft mb-1 block uppercase tracking-wider" th:text="#{tareas.detail}">Detalle (opcional)</span>
                 <input th:field="*{descripcion}" type="text" maxlength="500" class="input">
             </label>
             <label class="block">
-                <span class="text-xs text-ink-soft mb-1 block uppercase tracking-wider">Vence el</span>
+                <span class="text-xs text-ink-soft mb-1 block uppercase tracking-wider" th:text="#{tareas.due_label}">Vence el</span>
                 <input th:field="*{fechaVencimiento}" type="date" class="input">
             </label>
         </div>
         <div class="flex justify-end">
-            <button class="btn btn-primary"><i class="ph ph-plus"></i> Añadir</button>
+            <button class="btn btn-primary"><i class="ph ph-plus"></i> <span th:text="#{tareas.add_btn}">Añadir</span></button>
         </div>
     </form>
 
@@ -42,8 +42,8 @@
         <div class="inline-flex w-14 h-14 rounded-full bg-positive-soft items-center justify-center text-positive mb-3">
             <i class="ph ph-check-circle text-3xl"></i>
         </div>
-        <p class="font-display text-2xl mb-1">Todo bajo control.</p>
-        <p class="text-ink-soft">Cuando añadas tareas, aparecerán aquí.</p>
+        <p class="font-display text-2xl mb-1" th:text="#{tareas.empty_title}">Todo bajo control.</p>
+        <p class="text-ink-soft" th:text="#{tareas.empty_subtitle}">Cuando añadas tareas, aparecerán aquí.</p>
     </div>
 
     <!-- Lista -->
@@ -54,11 +54,11 @@
 
                 <!-- Checkbox -->
                 <form th:if="${!t.completada}" th:action="@{/tareas/{id}/completar(id=${t.id})}" method="post" class="mt-0.5 shrink-0">
-                    <button class="w-5 h-5 border-2 border-line rounded hover:border-brand hover:bg-brand-soft flex items-center justify-center" title="Marcar completada">
+                    <button class="w-5 h-5 border-2 border-line rounded hover:border-brand hover:bg-brand-soft flex items-center justify-center" th:title="#{tareas.complete_title}">
                     </button>
                 </form>
                 <form th:if="${t.completada}" th:action="@{/tareas/{id}/descompletar(id=${t.id})}" method="post" class="mt-0.5 shrink-0">
-                    <button class="w-5 h-5 bg-positive border-2 border-positive rounded text-bg flex items-center justify-center" title="Desmarcar">
+                    <button class="w-5 h-5 bg-positive border-2 border-positive rounded text-bg flex items-center justify-center" th:title="#{tareas.uncomplete_title}">
                         <i class="ph ph-check text-xs"></i>
                     </button>
                 </form>
@@ -69,21 +69,22 @@
                         <h3 class="font-medium" th:text="${t.titulo}"
                             th:classappend="${t.completada} ? 'line-through text-ink-soft'">Pagar alquiler</h3>
                         <span th:if="${t.vencida}" class="pill bg-negative text-bg">
-                            <i class="ph ph-warning-fill"></i> Vencida
+                            <i class="ph ph-warning-fill"></i> <span th:text="#{tareas.vencida}">Vencida</span>
                         </span>
                     </div>
                     <p th:if="${t.descripcion != null}" class="text-sm text-ink-soft mt-0.5" th:text="${t.descripcion}"></p>
                     <p th:if="${t.fechaVencimiento != null}" class="text-xs mt-1 flex items-center gap-1"
                        th:classappend="${t.vencida} ? 'text-negative' : 'text-ink-soft'">
                         <i class="ph ph-calendar"></i>
-                        <span th:text="(${t.vencida} ? 'Venció ' : 'Vence ') + #temporals.format(t.fechaVencimiento, 'dd MMM yyyy')">Vence 31 dic 2026</span>
+                        <span th:text="${(t.vencida ? #messages.msg('tareas.vencio') : #messages.msg('tareas.vence'))
+                                       + ' ' + #temporals.format(t.fechaVencimiento, #messages.msg('dashboard.month_short_format') + ' yyyy')}">Vence 31 dic 2026</span>
                     </p>
                 </div>
 
                 <!-- Delete -->
                 <form th:action="@{/tareas/{id}/borrar(id=${t.id})}" method="post" class="opacity-0 group-hover:opacity-100 transition-opacity">
                     <button class="w-8 h-8 rounded-lg hover:bg-negative-soft flex items-center justify-center text-ink-soft hover:text-negative"
-                            onclick="return confirm('¿Borrar esta tarea?')" title="Borrar">
+                            th:onclick="'return confirm(\\'' + #{tareas.confirm_delete} + '\\')'" th:title="#{common.delete}">
                         <i class="ph ph-trash text-sm"></i>
                     </button>
                 </form>

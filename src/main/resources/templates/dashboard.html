@@ -9,9 +9,9 @@
     <!-- Saludo -->
     <header class="mb-10 fade-up">
         <p class="text-xs tracking-[0.18em] uppercase text-ink-soft mb-2"
-           th:text="${#temporals.format(fecha, 'EEEE, dd ''de'' MMMM ''de'' yyyy')}">viernes, 6 de junio de 2026</p>
+           th:text="${#temporals.format(fecha, #messages.msg('dashboard.date_format'))}">viernes, 6 de junio de 2026</p>
         <h1 class="font-display text-5xl sm:text-6xl leading-tight">
-            <span th:text="${saludo}">Buenos días</span>,
+            <span th:text="#{__${saludoKey}__}">Buenos días</span>,
             <em class="italic" th:text="${usuario.nombre}">Francisco</em>.
         </h1>
     </header>
@@ -20,7 +20,7 @@
     <section class="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-10 stagger">
         <div class="bg-surface border border-line rounded-lg p-5 shadow-sm">
             <div class="flex items-center justify-between text-ink-soft text-xs uppercase tracking-wider mb-3">
-                <span>Balance del mes</span>
+                <span th:text="#{dashboard.kpi.balance}">Balance del mes</span>
                 <i class="ph ph-scales text-lg"></i>
             </div>
             <p class="font-mono text-3xl font-semibold leading-none"
@@ -29,7 +29,7 @@
         </div>
         <div class="bg-surface border border-line rounded-lg p-5 shadow-sm">
             <div class="flex items-center justify-between text-ink-soft text-xs uppercase tracking-wider mb-3">
-                <span>Ingresos</span>
+                <span th:text="#{dashboard.kpi.ingresos}">Ingresos</span>
                 <i class="ph ph-arrow-down-left text-lg text-positive"></i>
             </div>
             <p class="font-mono text-3xl font-semibold leading-none text-positive"
@@ -37,7 +37,7 @@
         </div>
         <div class="bg-surface border border-line rounded-lg p-5 shadow-sm">
             <div class="flex items-center justify-between text-ink-soft text-xs uppercase tracking-wider mb-3">
-                <span>Gastos</span>
+                <span th:text="#{dashboard.kpi.gastos}">Gastos</span>
                 <i class="ph ph-arrow-up-right text-lg text-negative"></i>
             </div>
             <p class="font-mono text-3xl font-semibold leading-none text-negative"
@@ -49,18 +49,18 @@
     <section class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-10 stagger">
         <div class="bg-surface border border-line rounded-lg p-6 shadow-sm">
             <div class="flex items-center justify-between mb-4">
-                <h2 class="font-display text-2xl">Gastos por categoría</h2>
-                <span class="text-xs text-ink-soft uppercase tracking-wider">Mes actual</span>
+                <h2 class="font-display text-2xl" th:text="#{dashboard.chart.categoria}">Gastos por categoría</h2>
+                <span class="text-xs text-ink-soft uppercase tracking-wider" th:text="#{dashboard.chart.mes_actual}">Mes actual</span>
             </div>
             <div class="relative" style="height:260px;">
                 <canvas id="chartCategoria"></canvas>
-                <p id="chartCategoriaEmpty" class="hidden absolute inset-0 flex items-center justify-center text-sm text-ink-soft">Sin gastos en este mes todavía.</p>
+                <p id="chartCategoriaEmpty" class="hidden absolute inset-0 flex items-center justify-center text-sm text-ink-soft" th:text="#{dashboard.chart.empty_categoria}">Sin gastos en este mes todavía.</p>
             </div>
         </div>
         <div class="bg-surface border border-line rounded-lg p-6 shadow-sm">
             <div class="flex items-center justify-between mb-4">
-                <h2 class="font-display text-2xl">Evolución</h2>
-                <span class="text-xs text-ink-soft uppercase tracking-wider">6 meses</span>
+                <h2 class="font-display text-2xl" th:text="#{dashboard.chart.evolucion}">Evolución</h2>
+                <span class="text-xs text-ink-soft uppercase tracking-wider" th:text="#{dashboard.chart.seis_meses}">6 meses</span>
             </div>
             <div class="relative" style="height:260px;">
                 <canvas id="chartEvolucion"></canvas>
@@ -74,9 +74,9 @@
         <!-- Movimientos recientes (col-span 2) -->
         <section class="lg:col-span-2 bg-surface border border-line rounded-lg shadow-sm">
             <div class="flex items-center justify-between px-6 py-4 border-b border-line">
-                <h2 class="font-display text-2xl">Últimos movimientos</h2>
+                <h2 class="font-display text-2xl" th:text="#{dashboard.recent.title}">Últimos movimientos</h2>
                 <a href="/movimientos" class="text-sm text-brand hover:underline flex items-center gap-1">
-                    Ver todos <i class="ph ph-arrow-right"></i>
+                    <span th:text="#{dashboard.recent.view_all}">Ver todos</span> <i class="ph ph-arrow-right"></i>
                 </a>
             </div>
 
@@ -84,9 +84,9 @@
                 <div class="inline-flex w-14 h-14 rounded-full bg-bg-soft items-center justify-center text-ink-soft mb-3">
                     <i class="ph ph-receipt text-2xl"></i>
                 </div>
-                <p class="text-ink-soft mb-4">Aún no has registrado ningún movimiento.</p>
+                <p class="text-ink-soft mb-4" th:text="#{dashboard.recent.empty}">Aún no has registrado ningún movimiento.</p>
                 <a href="/movimientos/nuevo" class="btn btn-primary">
-                    <i class="ph ph-plus"></i> Crear el primero
+                    <i class="ph ph-plus"></i> <span th:text="#{dashboard.recent.create_first}">Crear el primero</span>
                 </a>
             </div>
 
@@ -105,7 +105,7 @@
                                 <span class="w-1.5 h-1.5 rounded-full" th:style="'background-color:' + ${m.categoria.color}"></span>
                                 <span th:text="${m.categoria.nombre}"></span>
                             </span>
-                            <span th:text="${#temporals.format(m.fecha, 'dd MMM')}">06 jun</span>
+                            <span th:text="${#temporals.format(m.fecha, #messages.msg('dashboard.month_short_format'))}">06 jun</span>
                         </div>
                     </div>
                     <p class="font-mono font-semibold shrink-0"
@@ -121,18 +121,20 @@
             <!-- Objetivos -->
             <section class="bg-surface border border-line rounded-lg shadow-sm">
                 <div class="flex items-center justify-between px-5 py-4 border-b border-line">
-                    <h2 class="font-display text-xl">Objetivos</h2>
-                    <a href="/objetivos" class="text-xs text-brand hover:underline">Ver todos</a>
+                    <h2 class="font-display text-xl" th:text="#{dashboard.objetivos.title}">Objetivos</h2>
+                    <a href="/objetivos" class="text-xs text-brand hover:underline" th:text="#{dashboard.objetivos.view_all}">Ver todos</a>
                 </div>
 
                 <div th:if="${#lists.isEmpty(objetivosActivos)}" class="px-5 py-6 text-center text-sm text-ink-soft">
                     <i class="ph ph-target text-3xl text-ink-soft/50 block mb-2"></i>
-                    <p th:if="${objetivosCompletados == 0}" class="mb-3">Sin objetivos todavía</p>
+                    <p th:if="${objetivosCompletados == 0}" class="mb-3" th:text="#{dashboard.objetivos.empty}">Sin objetivos todavía</p>
                     <p th:if="${objetivosCompletados > 0}" class="mb-3 text-positive">
                         <i class="ph ph-trophy"></i>
-                        <span th:text="${objetivosCompletados} + ' completado' + (${objetivosCompletados} == 1 ? '' : 's')"></span>
+                        <span th:text="${objetivosCompletados == 1
+                                ? #messages.msg('dashboard.objetivos.completed_one', objetivosCompletados)
+                                : #messages.msg('dashboard.objetivos.completed_many', objetivosCompletados)}"></span>
                     </p>
-                    <a href="/objetivos/nuevo" class="text-brand text-sm hover:underline">+ Crear objetivo</a>
+                    <a href="/objetivos/nuevo" class="text-brand text-sm hover:underline" th:text="#{dashboard.objetivos.create}">+ Crear objetivo</a>
                 </div>
 
                 <ul th:unless="${#lists.isEmpty(objetivosActivos)}" class="divide-y divide-line">
@@ -157,18 +159,20 @@
             <!-- Tareas -->
             <section class="bg-surface border border-line rounded-lg shadow-sm">
                 <div class="flex items-center justify-between px-5 py-4 border-b border-line">
-                    <h2 class="font-display text-xl">Tareas pendientes</h2>
-                    <a href="/tareas" class="text-xs text-brand hover:underline">Ver todas</a>
+                    <h2 class="font-display text-xl" th:text="#{dashboard.tareas.title}">Tareas pendientes</h2>
+                    <a href="/tareas" class="text-xs text-brand hover:underline" th:text="#{dashboard.tareas.view_all}">Ver todas</a>
                 </div>
 
                 <div th:if="${tareasVencidas > 0}" class="px-5 py-2 bg-negative-soft text-negative text-xs flex items-center gap-2">
                     <i class="ph ph-warning-circle"></i>
-                    <span th:text="${tareasVencidas} + ' tarea' + (${tareasVencidas} == 1 ? '' : 's') + ' vencida' + (${tareasVencidas} == 1 ? '' : 's')"></span>
+                    <span th:text="${tareasVencidas == 1
+                            ? #messages.msg('dashboard.tareas.vencida_one', tareasVencidas)
+                            : #messages.msg('dashboard.tareas.vencida_many', tareasVencidas)}"></span>
                 </div>
 
                 <div th:if="${#lists.isEmpty(tareasPendientes)}" class="px-5 py-6 text-center text-sm text-ink-soft">
                     <i class="ph ph-check-square text-3xl text-positive/60 block mb-2"></i>
-                    <p>Sin pendientes. ¡Bien!</p>
+                    <p th:text="#{dashboard.tareas.empty}">Sin pendientes. ¡Bien!</p>
                 </div>
 
                 <ul th:unless="${#lists.isEmpty(tareasPendientes)}" class="divide-y divide-line">
@@ -178,7 +182,8 @@
                             <p class="text-sm font-medium truncate" th:text="${t.titulo}">Pagar alquiler</p>
                             <p th:if="${t.fechaVencimiento != null}" class="text-xs"
                                th:classappend="${t.vencida} ? 'text-negative' : 'text-ink-soft'"
-                               th:text="${t.vencida} ? 'Vencida · ' + #temporals.format(t.fechaVencimiento, 'dd MMM') : 'Vence ' + #temporals.format(t.fechaVencimiento, 'dd MMM')"></p>
+                               th:text="${(t.vencida ? #messages.msg('dashboard.tarea.vencida_label') : #messages.msg('dashboard.tarea.vence_label'))
+                                       + ' · ' + #temporals.format(t.fechaVencimiento, #messages.msg('dashboard.month_short_format'))}"></p>
                         </div>
                     </li>
                 </ul>
@@ -190,7 +195,7 @@
     <!-- Quick actions floating -->
     <a href="/movimientos/nuevo"
        class="fab"
-       title="Nuevo movimiento">
+       th:title="#{dashboard.fab}">
         <i class="ph ph-plus text-2xl"></i>
     </a>
 
@@ -198,9 +203,17 @@
 
 <!-- Chart.js + carga de datos -->
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.4/dist/chart.umd.min.js"></script>
+<script th:inline="javascript">
+window.__i18n = {
+    ingresos: /*[[#{dashboard.kpi.ingresos}]]*/ 'Ingresos',
+    gastos:   /*[[#{dashboard.kpi.gastos}]]*/   'Gastos',
+    locale:   /*[[${#locale.language}]]*/       'es'
+};
+</script>
 <script>
 (function() {
-    const fmtMoney = (n) => n.toLocaleString('es-ES', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + ' €';
+    const numLocale = window.__i18n.locale === 'en' ? 'en-US' : 'es-ES';
+    const fmtMoney = (n) => n.toLocaleString(numLocale, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + ' €';
     const ink = '#1A1410';
     const inkSoft = '#6B6358';
     const line = '#E8DFD2';
@@ -259,7 +272,9 @@
     fetch('/estadisticas/evolucion-mensual')
         .then(r => r.json())
         .then(rows => {
-            const monthNames = ['ene','feb','mar','abr','may','jun','jul','ago','sep','oct','nov','dic'];
+            const monthNamesEs = ['ene','feb','mar','abr','may','jun','jul','ago','sep','oct','nov','dic'];
+            const monthNamesEn = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+            const monthNames = window.__i18n.locale === 'en' ? monthNamesEn : monthNamesEs;
             const labels = rows.map(r => {
                 const [y, m] = r.mes.split('-');
                 return monthNames[parseInt(m, 10) - 1] + ' ' + y.slice(2);
@@ -270,7 +285,7 @@
                     labels,
                     datasets: [
                         {
-                            label: 'Ingresos',
+                            label: window.__i18n.ingresos,
                             data: rows.map(r => r.ingresos),
                             borderColor: '#2D6A4F',
                             backgroundColor: 'rgba(45,106,79,0.10)',
@@ -280,7 +295,7 @@
                             pointBackgroundColor: '#2D6A4F'
                         },
                         {
-                            label: 'Gastos',
+                            label: window.__i18n.gastos,
                             data: rows.map(r => r.gastos),
                             borderColor: '#9B2D2D',
                             backgroundColor: 'rgba(155,45,45,0.10)',
@@ -310,7 +325,7 @@
                         x: { grid: { display: false } },
                         y: {
                             grid: { color: 'rgba(232,223,210,0.5)' },
-                            ticks: { callback: (v) => v.toLocaleString('es-ES') + ' €' }
+                            ticks: { callback: (v) => v.toLocaleString(numLocale) + ' €' }
                         }
                     },
                     animation: { duration: 1000, easing: 'easeOutQuart' }

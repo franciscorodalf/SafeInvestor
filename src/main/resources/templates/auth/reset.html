@@ -16,8 +16,8 @@
             <div class="inline-flex items-center justify-center w-14 h-14 rounded-full bg-brand-soft text-brand mb-5">
                 <i class="ph ph-lock-key text-2xl"></i>
             </div>
-            <h1 class="font-display text-4xl mb-3 leading-tight">Nueva contraseña</h1>
-            <p class="text-ink-soft">Elige una nueva contraseña para tu cuenta.</p>
+            <h1 class="font-display text-4xl mb-3 leading-tight" th:text="#{reset.title}">Nueva contraseña</h1>
+            <p class="text-ink-soft" th:text="#{reset.subtitle}">Elige una nueva contraseña para tu cuenta.</p>
         </div>
 
         <div th:if="${error}" class="mb-5 p-4 rounded-lg bg-negative-soft text-negative text-sm flex items-start gap-2.5">
@@ -27,7 +27,10 @@
 
         <form th:action="@{'/reset/' + ${token}}" method="post" class="bg-surface border border-line rounded-lg p-6 shadow-sm space-y-4">
             <label class="block">
-                <span class="text-sm text-ink-soft mb-1.5 block">Nueva contraseña <span class="text-ink-soft/60 font-normal">(mín. 8)</span></span>
+                <span class="text-sm text-ink-soft mb-1.5 block">
+                    <span th:text="#{reset.new}">Nueva contraseña</span>
+                    <span class="text-ink-soft/60 font-normal" th:text="#{reset.new_hint}">(mín. 8)</span>
+                </span>
                 <div class="relative">
                     <i class="ph ph-lock absolute left-3.5 top-1/2 -translate-y-1/2 text-ink-soft"></i>
                     <input name="password" type="password" required minlength="8" autofocus
@@ -36,7 +39,7 @@
             </label>
             <button class="btn btn-primary w-full">
                 <i class="ph ph-check text-lg"></i>
-                <span>Cambiar contraseña</span>
+                <span th:text="#{reset.submit}">Cambiar contraseña</span>
             </button>
         </form>
     </div>

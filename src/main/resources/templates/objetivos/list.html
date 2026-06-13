@@ -8,11 +8,11 @@
 
     <header class="flex items-end justify-between mb-8 flex-wrap gap-4 fade-up">
         <div>
-            <p class="text-xs tracking-[0.18em] uppercase text-ink-soft mb-1">Hacia dónde</p>
-            <h1 class="font-display text-5xl leading-tight">Objetivos de ahorro</h1>
+            <p class="text-xs tracking-[0.18em] uppercase text-ink-soft mb-1" th:text="#{obj.list.eyebrow}">Hacia dónde</p>
+            <h1 class="font-display text-5xl leading-tight" th:text="#{obj.list.title}">Objetivos de ahorro</h1>
         </div>
         <a href="/objetivos/nuevo" class="btn btn-primary">
-            <i class="ph ph-plus text-lg"></i> Nuevo objetivo
+            <i class="ph ph-plus text-lg"></i> <span th:text="#{obj.list.new}">Nuevo objetivo</span>
         </a>
     </header>
 
@@ -21,12 +21,12 @@
         <div class="inline-flex w-16 h-16 rounded-full bg-brand-soft items-center justify-center text-brand mb-4">
             <i class="ph ph-target text-3xl"></i>
         </div>
-        <p class="font-display text-2xl mb-2">Sin objetivos todavía.</p>
-        <p class="text-ink-soft mb-6 max-w-md mx-auto">
+        <p class="font-display text-2xl mb-2" th:text="#{obj.list.empty_title}">Sin objetivos todavía.</p>
+        <p class="text-ink-soft mb-6 max-w-md mx-auto" th:text="#{obj.list.empty_subtitle}">
             ¿Quieres ahorrar para algo concreto? Define un objetivo con fecha límite y ve aportando poco a poco.
         </p>
         <a href="/objetivos/nuevo" class="btn btn-primary">
-            <i class="ph ph-plus"></i> Crear el primero
+            <i class="ph ph-plus"></i> <span th:text="#{obj.list.empty_cta}">Crear el primero</span>
         </a>
     </div>
 
@@ -46,13 +46,13 @@
                     <h2 class="font-display text-2xl truncate" th:text="${o.nombre}">Vacaciones</h2>
                 </div>
                 <span th:if="${o.completado}" class="pill bg-positive-soft text-positive whitespace-nowrap">
-                    <i class="ph ph-check-circle-fill"></i> Completado
+                    <i class="ph ph-check-circle-fill"></i> <span th:text="#{obj.list.completed}">Completado</span>
                 </span>
             </div>
 
             <div class="flex items-baseline gap-2 mb-4 relative">
                 <span class="font-mono font-semibold text-2xl" th:text="${#numbers.formatDecimal(o.importeAhorrado, 1, 2) + ' €'}">0,00 €</span>
-                <span class="text-ink-soft text-sm" th:text="'de ' + ${#numbers.formatDecimal(o.importeObjetivo, 1, 2)} + ' €'">de 0,00 €</span>
+                <span class="text-ink-soft text-sm" th:text="${#messages.msg('obj.list.of') + ' ' + #numbers.formatDecimal(o.importeObjetivo, 1, 2) + ' €'}">de 0,00 €</span>
             </div>
 
             <!-- Progress bar -->
@@ -63,9 +63,9 @@
             <div class="flex items-center justify-between text-xs text-ink-soft relative">
                 <span th:if="${o.fechaLimite != null}" class="flex items-center gap-1">
                     <i class="ph ph-calendar"></i>
-                    <span th:text="'Hasta ' + ${#temporals.format(o.fechaLimite, 'dd MMM yyyy')}">Hasta 31 dic 2026</span>
+                    <span th:text="${#messages.msg('obj.list.until', #temporals.format(o.fechaLimite, #messages.msg('dashboard.month_short_format') + ' yyyy'))}">Hasta 31 dic 2026</span>
                 </span>
-                <span th:unless="${o.fechaLimite}" class="text-ink-soft/60">Sin fecha límite</span>
+                <span th:unless="${o.fechaLimite}" class="text-ink-soft/60" th:text="#{obj.list.no_deadline}">Sin fecha límite</span>
                 <span class="font-mono font-semibold" th:text="${o.porcentaje} + '%'">0%</span>
             </div>
         </a>

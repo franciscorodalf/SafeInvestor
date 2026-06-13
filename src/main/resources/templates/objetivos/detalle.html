@@ -7,7 +7,7 @@
 <main class="max-w-3xl mx-auto px-5 py-10">
 
     <a href="/objetivos" class="text-sm text-ink-soft hover:text-brand inline-flex items-center gap-1.5 mb-6">
-        <i class="ph ph-arrow-left"></i> Volver a objetivos
+        <i class="ph ph-arrow-left"></i> <span th:text="#{obj.det.back}">Volver a objetivos</span>
     </a>
 
     <!-- Hero card -->
@@ -18,10 +18,10 @@
         <div class="flex items-start justify-between mb-2 relative">
             <div class="flex items-center gap-3">
                 <span class="inline-block w-5 h-5 rounded-full" th:style="'background-color:' + ${objetivo.color}"></span>
-                <p class="text-xs tracking-[0.18em] uppercase text-ink-soft">Objetivo</p>
+                <p class="text-xs tracking-[0.18em] uppercase text-ink-soft" th:text="#{obj.det.label}">Objetivo</p>
             </div>
             <span th:if="${objetivo.completado}" class="pill bg-positive-soft text-positive">
-                <i class="ph ph-trophy-fill"></i> Completado
+                <i class="ph ph-trophy-fill"></i> <span th:text="#{obj.det.completed}">Completado</span>
             </span>
         </div>
 
@@ -29,7 +29,7 @@
 
         <div class="flex items-baseline gap-3 mb-2 relative">
             <span class="font-mono font-semibold text-4xl" th:text="${#numbers.formatDecimal(objetivo.importeAhorrado, 1, 2) + ' €'}">0,00 €</span>
-            <span class="text-ink-soft" th:text="'de ' + ${#numbers.formatDecimal(objetivo.importeObjetivo, 1, 2)} + ' €'">de 0,00 €</span>
+            <span class="text-ink-soft" th:text="${#messages.msg('obj.list.of') + ' ' + #numbers.formatDecimal(objetivo.importeObjetivo, 1, 2) + ' €'}">de 0,00 €</span>
         </div>
 
         <div class="bg-bg-soft rounded-full h-3 overflow-hidden mb-2 relative">
@@ -39,7 +39,7 @@
         <div class="flex justify-between text-sm text-ink-soft relative">
             <span th:if="${objetivo.fechaLimite != null}" class="flex items-center gap-1.5">
                 <i class="ph ph-calendar"></i>
-                <span th:text="'Antes del ' + ${#temporals.format(objetivo.fechaLimite, 'dd MMM yyyy')}">Antes del 31 dic 2026</span>
+                <span th:text="${#messages.msg('obj.det.until', #temporals.format(objetivo.fechaLimite, #messages.msg('dashboard.month_short_format') + ' yyyy'))}">Antes del 31 dic 2026</span>
             </span>
             <span th:unless="${objetivo.fechaLimite}"></span>
             <span class="font-mono font-semibold" th:text="${objetivo.porcentaje} + '%'">0%</span>
@@ -49,7 +49,7 @@
     <!-- Aportar (solo si no completado) -->
     <section th:unless="${objetivo.completado}" class="bg-surface border border-line rounded-lg p-6 shadow-sm mb-6 fade-up">
         <h2 class="font-display text-2xl mb-4 flex items-center gap-2">
-            <i class="ph ph-piggy-bank text-positive"></i> Aportar dinero
+            <i class="ph ph-piggy-bank text-positive"></i> <span th:text="#{obj.det.aportar_title}">Aportar dinero</span>
         </h2>
         <form th:action="@{/objetivos/{id}/aportar(id=${objetivo.id})}" method="post" class="flex flex-col sm:flex-row gap-3">
             <div class="relative flex-1">
@@ -59,7 +59,7 @@
                 <span class="absolute right-4 top-1/2 -translate-y-1/2 font-mono text-xl text-ink-soft">€</span>
             </div>
             <button class="btn whitespace-nowrap text-bg" style="background:#2D6A4F;">
-                <i class="ph ph-plus-circle text-lg"></i> Aportar
+                <i class="ph ph-plus-circle text-lg"></i> <span th:text="#{obj.det.aportar_btn}">Aportar</span>
             </button>
         </form>
     </section>
@@ -67,22 +67,22 @@
     <!-- Completado celebración -->
     <section th:if="${objetivo.completado}" class="bg-positive-soft border border-positive/30 rounded-lg p-6 mb-6 text-center fade-up">
         <i class="ph ph-confetti text-4xl text-positive mb-2 block"></i>
-        <h2 class="font-display text-2xl text-positive mb-1">¡Lo conseguiste!</h2>
-        <p class="text-sm text-positive/80">
-            Has alcanzado tu meta de
-            <span class="font-mono font-semibold" th:text="${#numbers.formatDecimal(objetivo.importeObjetivo, 1, 2)} + ' €'"></span>.
+        <h2 class="font-display text-2xl text-positive mb-1" th:text="#{obj.det.celebracion_title}">¡Lo conseguiste!</h2>
+        <p class="text-sm text-positive/80"
+           th:text="${#messages.msg('obj.det.celebracion_msg', #numbers.formatDecimal(objetivo.importeObjetivo, 1, 2))}">
+            Has alcanzado tu meta de 0,00 €.
         </p>
     </section>
 
     <!-- Acciones -->
     <div class="flex justify-between text-sm">
         <a th:href="@{/objetivos/{id}/editar(id=${objetivo.id})}" class="text-brand hover:underline flex items-center gap-1">
-            <i class="ph ph-pencil-simple"></i> Editar objetivo
+            <i class="ph ph-pencil-simple"></i> <span th:text="#{obj.det.edit}">Editar objetivo</span>
         </a>
         <form th:action="@{/objetivos/{id}/borrar(id=${objetivo.id})}" method="post">
             <button class="text-negative hover:underline flex items-center gap-1"
-                    onclick="return confirm('¿Borrar este objetivo y todos sus datos?')">
-                <i class="ph ph-trash"></i> Borrar
+                    th:onclick="'return confirm(\\'' + #{obj.det.confirm_delete} + '\\')'">
+                <i class="ph ph-trash"></i> <span th:text="#{obj.det.delete}">Borrar</span>
             </button>
         </form>
     </div>
