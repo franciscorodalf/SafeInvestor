@@ -81,7 +81,7 @@
         <div class="meta">
             <p style="margin: 0;"><strong th:text="${usuario.nombre}">Usuario</strong></p>
             <p style="margin: 2px 0 0;" th:text="${usuario.email}">email@ejemplo.com</p>
-            <p style="margin: 12px 0 0;" th:text="'Generado ' + #temporals.format(generadoEn, 'dd MMM yyyy, HH:mm')">Generado 13 jun 2026, 18:20</p>
+            <p style="margin: 12px 0 0;" th:text="${'Generado ' + #temporals.format(generadoEn, 'dd MMM yyyy, HH:mm')}">Generado 13 jun 2026, 18:20</p>
         </div>
     </header>
 
