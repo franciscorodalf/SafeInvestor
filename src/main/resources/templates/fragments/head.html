@@ -258,6 +258,64 @@
         @media (prefers-reduced-motion: reduce) {
             *, *::before, *::after { animation-duration: 0.01ms !important; animation-iteration-count: 1 !important; transition-duration: 0.01ms !important; scroll-behavior: auto !important; }
         }
+
+        /* === Scroll reveal (clases que activan el JS de abajo) === */
+        .reveal { opacity: 0; transform: translateY(20px); transition: opacity 700ms var(--ease-gentle), transform 700ms var(--ease-gentle); }
+        .reveal.in { opacity: 1; transform: translateY(0); }
     </style>
+
+    <!-- Scroll-reveal observer + counter animation -->
+    <script defer>
+        document.addEventListener('DOMContentLoaded', () => {
+            // Scroll reveal con IntersectionObserver
+            const io = new IntersectionObserver((entries) => {
+                entries.forEach(e => {
+                    if (e.isIntersecting) {
+                        e.target.classList.add('in');
+                        io.unobserve(e.target);
+                    }
+                });
+            }, { threshold: 0.15, rootMargin: '0px 0px -50px 0px' });
+            document.querySelectorAll('.reveal').forEach(el => io.observe(el));
+
+            // Counter animation para elementos data-count
+            const animateCount = (el) => {
+                const target = parseFloat(el.dataset.count) || 0;
+                const decimals = parseInt(el.dataset.decimals || '2', 10);
+                const dur = parseInt(el.dataset.dur || '1000', 10);
+                const prefix = el.dataset.prefix || '';
+                const suffix = el.dataset.suffix || '';
+                const start = performance.now();
+                const step = (now) => {
+                    const t = Math.min(1, (now - start) / dur);
+                    const eased = 1 - Math.pow(1 - t, 3); // ease-out cubic
+                    const v = target * eased;
+                    el.textContent = prefix + v.toFixed(decimals).replace('.', ',') + suffix;
+                    if (t < 1) requestAnimationFrame(step);
+                };
+                requestAnimationFrame(step);
+            };
+            const counterIO = new IntersectionObserver((entries) => {
+                entries.forEach(e => {
+                    if (e.isIntersecting) {
+                        animateCount(e.target);
+                        counterIO.unobserve(e.target);
+                    }
+                });
+            }, { threshold: 0.6 });
+            document.querySelectorAll('[data-count]').forEach(el => counterIO.observe(el));
+
+            // Animate progress bars on first paint
+            document.querySelectorAll('.progress-fill').forEach(el => {
+                const target = el.dataset.target;
+                if (target) {
+                    el.style.width = '0%';
+                    requestAnimationFrame(() => {
+                        setTimeout(() => { el.style.width = target + '%'; }, 60);
+                    });
+                }
+            });
+        });
+    </script>
 </head>
 </html>
