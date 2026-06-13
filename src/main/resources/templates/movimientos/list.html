@@ -11,9 +11,17 @@
             <p class="text-xs tracking-[0.18em] uppercase text-ink-soft mb-1">Tu actividad</p>
             <h1 class="font-display text-5xl leading-tight">Movimientos</h1>
         </div>
-        <a href="/movimientos/nuevo" class="btn btn-primary">
-            <i class="ph ph-plus text-lg"></i> Nuevo movimiento
-        </a>
+        <div class="flex items-center gap-2 flex-wrap">
+            <a href="/movimientos/informe" target="_blank" class="btn btn-ghost" title="Informe imprimible">
+                <i class="ph ph-printer text-lg"></i> Informe
+            </a>
+            <a href="/movimientos/export.csv" class="btn btn-ghost" title="Exportar CSV">
+                <i class="ph ph-download-simple text-lg"></i> CSV
+            </a>
+            <a href="/movimientos/nuevo" class="btn btn-primary">
+                <i class="ph ph-plus text-lg"></i> Nuevo movimiento
+            </a>
+        </div>
     </header>
 
     <!-- Filtros -->
