@@ -9,6 +9,8 @@
 
 **Estado:** v2 Fase 8 desplegada. Auth + movimientos + categorías + objetivos + tareas + dashboard con gráficas Chart.js + export CSV + informe imprimible + tips de economía + i18n ES/EN + dark mode + **emails (reset, objetivo cumplido, recordatorios diarios) + importación CSV bancario con auto-detección**.
 
+📐 **Memoria técnica**: [ARQUITECTURA.md](ARQUITECTURA.md) — arquitectura por capas, modelo ER, decisiones técnicas, despliegue, seguridad.
+
 ## 🚀 Demo en vivo
 
 👉 **[https://safeinvestor.onrender.com](https://safeinvestor.onrender.com)**
