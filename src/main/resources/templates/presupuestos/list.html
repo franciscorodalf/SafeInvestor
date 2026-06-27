@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/head :: head(#{presupuestos.title})}"></head>
+<body>
+<nav th:replace="~{fragments/nav :: nav('presupuestos')}"></nav>
+
+<main class="max-w-4xl mx-auto px-5 py-8">
+
+    <header class="flex items-end justify-between mb-6 flex-wrap gap-4 fade-up">
+        <div>
+            <p class="text-xs tracking-[0.18em] uppercase text-ink-soft mb-1" th:text="#{presupuestos.eyebrow}">Tus topes</p>
+            <h1 class="font-display text-5xl leading-tight" th:text="#{presupuestos.title}">Presupuestos</h1>
+        </div>
+
+        <!-- Navegación mes anterior / actual / siguiente -->
+        <div class="flex items-center gap-2 text-sm">
+            <a th:href="@{/presupuestos(anio=${mesAnterior.year}, mes=${mesAnterior.monthValue})}"
+               class="btn btn-ghost" title="Mes anterior">
+                <i class="ph ph-arrow-left"></i>
+            </a>
+            <span class="font-mono px-3 py-2 bg-bg-soft rounded-lg text-sm"
+                  th:text="${#temporals.format(T(java.time.LocalDate).of(anio, mes, 1), #messages.msg('dashboard.date_format'))}">
+                Junio 2026
+            </span>
+            <a th:href="@{/presupuestos(anio=${mesSiguiente.year}, mes=${mesSiguiente.monthValue})}"
+               class="btn btn-ghost" title="Mes siguiente">
+                <i class="ph ph-arrow-right"></i>
+            </a>
+        </div>
+    </header>
+
+    <!-- Formulario crear/actualizar inline -->
+    <form method="post" action="/presupuestos"
+          class="bg-surface border border-line rounded-lg p-5 mb-6 shadow-sm grid grid-cols-1 sm:grid-cols-4 gap-3 fade-up">
+        <input type="hidden" name="anio" th:value="${anio}">
+        <input type="hidden" name="mes"  th:value="${mes}">
+
+        <label class="block sm:col-span-2">
+            <span class="text-xs text-ink-soft mb-1 block uppercase tracking-wider" th:text="#{presupuestos.cat}">Categoría</span>
+            <select name="categoriaId" required class="input">
+                <option value="" disabled selected th:text="#{presupuestos.cat_choose}">— Elige una —</option>
+                <option th:each="c : ${categorias}" th:value="${c.id}" th:text="${c.nombre}"></option>
+            </select>
+        </label>
+        <label class="block">
+            <span class="text-xs text-ink-soft mb-1 block uppercase tracking-wider" th:text="#{presupuestos.limite}">Límite (€)</span>
+            <input type="number" name="limite" step="0.01" min="0.01" required class="input font-mono text-right">
+        </label>
+        <div class="flex items-end">
+            <button class="btn btn-primary w-full">
+                <i class="ph ph-plus"></i> <span th:text="#{presupuestos.save}">Guardar</span>
+            </button>
+        </div>
+    </form>
+
+    <!-- Empty state -->
+    <div th:if="${#lists.isEmpty(presupuestos)}" class="bg-surface border border-line rounded-lg p-10 text-center fade-up">
+        <div class="inline-flex w-14 h-14 rounded-full bg-brand-soft text-brand items-center justify-center mb-3">
+            <i class="ph ph-piggy-bank text-3xl"></i>
+        </div>
+        <p class="font-display text-2xl mb-1" th:text="#{presupuestos.empty_title}">Sin presupuestos este mes.</p>
+        <p class="text-ink-soft" th:text="#{presupuestos.empty_subtitle}">Define un tope por categoría arriba para empezar.</p>
+    </div>
+
+    <!-- Lista con barras -->
+    <ul th:unless="${#lists.isEmpty(presupuestos)}" class="space-y-3 stagger">
+        <li th:each="p : ${presupuestos}"
+            class="bg-surface border rounded-lg p-5 shadow-sm"
+            th:classappend="${p.estado.name() == 'EXCEDIDO'} ? 'border-negative/40' : (${p.estado.name() == 'ALERTA'} ? 'border-warning/40' : 'border-line')">
+
+            <div class="flex items-center justify-between mb-3 gap-3 flex-wrap">
+                <div class="flex items-center gap-2 min-w-0">
+                    <span class="inline-block w-3 h-3 rounded-full shrink-0" th:style="'background-color:' + ${p.categoria.color}"></span>
+                    <span class="font-medium truncate" th:text="${p.categoria.nombre}">Comida</span>
+                    <!-- Pill de estado -->
+                    <span th:if="${p.estado.name() == 'EXCEDIDO'}" class="pill bg-negative-soft text-negative">
+                        <i class="ph ph-warning-fill"></i> <span th:text="#{presupuestos.excedido}">Excedido</span>
+                    </span>
+                    <span th:if="${p.estado.name() == 'ALERTA'}" class="pill" style="background:rgba(196,155,74,0.15); color:#C49B4A;">
+                        <i class="ph ph-warning"></i> <span th:text="#{presupuestos.alerta}">Casi al tope</span>
+                    </span>
+                </div>
+                <div class="font-mono text-sm flex items-baseline gap-1 shrink-0">
+                    <span class="font-semibold"
+                          th:classappend="${p.estado.name() == 'EXCEDIDO'} ? 'text-negative' : (${p.estado.name() == 'ALERTA'} ? 'text-warning' : 'text-ink')"
+                          th:text="${#numbers.formatDecimal(p.gastado, 1, 2) + ' €'}">120,00 €</span>
+                    <span class="text-ink-soft"
+                          th:text="${'/ ' + #numbers.formatDecimal(p.limite, 1, 2) + ' €'}">/ 200,00 €</span>
+                </div>
+            </div>
+
+            <!-- Barra -->
+            <div class="bg-bg-soft rounded-full h-2.5 overflow-hidden">
+                <div class="h-full rounded-full transition-all"
+                     th:style="'width:' + ${p.porcentaje} + '%; background-color:'
+                              + (${p.estado.name() == 'EXCEDIDO'} ? '#9B2D2D'
+                                 : (${p.estado.name() == 'ALERTA'} ? '#C49B4A' : ${p.categoria.color}))"></div>
+            </div>
+
+            <div class="flex justify-between items-center mt-2 text-xs text-ink-soft">
+                <span class="font-mono" th:text="${p.porcentaje + '%'}">60%</span>
+                <form th:action="@{|/presupuestos/${p.id}/borrar|}" method="post" class="inline">
+                    <input type="hidden" name="anio" th:value="${anio}">
+                    <input type="hidden" name="mes" th:value="${mes}">
+                    <button class="hover:text-negative flex items-center gap-1"
+                            th:onclick="'return confirm(\\'' + #{presupuestos.confirm_delete} + '\\')'">
+                        <i class="ph ph-trash"></i> <span th:text="#{common.delete}">Borrar</span>
+                    </button>
+                </form>
+            </div>
+        </li>
+    </ul>
+
+</main>
+</body>
+</html>

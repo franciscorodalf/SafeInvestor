@@ -34,6 +34,11 @@
                class="px-3 py-2 rounded-lg flex items-center gap-1.5">
                 <i class="ph ph-list-checks text-base"></i> <span th:text="#{nav.tareas}">Tareas</span>
             </a>
+            <a href="/presupuestos"
+               th:classappend="${active == 'presupuestos'} ? 'bg-bg-soft text-ink font-medium' : 'text-ink-soft hover:text-ink hover:bg-bg-soft'"
+               class="px-3 py-2 rounded-lg flex items-center gap-1.5">
+                <i class="ph ph-piggy-bank text-base"></i> <span th:text="#{nav.presupuestos}">Presupuestos</span>
+            </a>
             <a href="/tips"
                th:classappend="${active == 'tips'} ? 'bg-bg-soft text-ink font-medium' : 'text-ink-soft hover:text-ink hover:bg-bg-soft'"
                class="px-3 py-2 rounded-lg flex items-center gap-1.5">
