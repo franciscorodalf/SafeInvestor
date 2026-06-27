@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<body>
+
+<!--
+  Toasts flotantes en la esquina inferior derecha.
+  Lee del model los atributos flashSuccess / flashError / flashInfo que el
+  controller añade vía RedirectAttributes.addFlashAttribute().
+
+  Cada toast aparece con un slide-up, espera 4 s, se desvanece y se elimina
+  del DOM. Si el usuario hace click, se cierra al instante.
+
+  Uso: <div th:replace="~{fragments/toasts :: toasts}"></div>
+  Ya está incluido en fragments/nav.html, así que cualquier página con nav
+  tiene toasts automáticamente.
+-->
+<div th:fragment="toasts" id="toast-stack"
+     class="fixed bottom-4 right-4 z-50 flex flex-col gap-2 max-w-sm"
+     aria-live="polite" aria-atomic="true">
+
+    <div th:if="${flashSuccess}"
+         class="toast bg-positive-soft text-positive border border-positive/30 rounded-lg shadow-lg p-4 flex items-start gap-3 cursor-pointer"
+         onclick="this.remove()">
+        <i class="ph ph-check-circle text-xl shrink-0 mt-0.5"></i>
+        <span class="flex-1 text-sm" th:text="${flashSuccess}">OK</span>
+        <button type="button" class="text-positive/60 hover:text-positive" aria-label="cerrar">
+            <i class="ph ph-x text-sm"></i>
+        </button>
+    </div>
+
+    <div th:if="${flashError}"
+         class="toast bg-negative-soft text-negative border border-negative/30 rounded-lg shadow-lg p-4 flex items-start gap-3 cursor-pointer"
+         onclick="this.remove()">
+        <i class="ph ph-warning-circle text-xl shrink-0 mt-0.5"></i>
+        <span class="flex-1 text-sm" th:text="${flashError}">Error</span>
+        <button type="button" class="text-negative/60 hover:text-negative" aria-label="cerrar">
+            <i class="ph ph-x text-sm"></i>
+        </button>
+    </div>
+
+    <div th:if="${flashInfo}"
+         class="toast bg-brand-soft text-brand border border-brand/30 rounded-lg shadow-lg p-4 flex items-start gap-3 cursor-pointer"
+         onclick="this.remove()">
+        <i class="ph ph-info text-xl shrink-0 mt-0.5"></i>
+        <span class="flex-1 text-sm" th:text="${flashInfo}">Info</span>
+        <button type="button" class="text-brand/60 hover:text-brand" aria-label="cerrar">
+            <i class="ph ph-x text-sm"></i>
+        </button>
+    </div>
+
+    <style>
+        .toast {
+            animation: toast-in 320ms cubic-bezier(.34,1.56,.64,1) backwards;
+            transition: opacity 380ms ease, transform 380ms ease;
+        }
+        .toast.leaving {
+            opacity: 0;
+            transform: translateX(20px);
+        }
+        @keyframes toast-in {
+            from { opacity: 0; transform: translateY(20px); }
+            to   { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+
+    <script>
+        (function() {
+            // Auto-dismiss tras 4s: añade .leaving y borra del DOM al terminar la transición
+            document.querySelectorAll('#toast-stack .toast').forEach(function(el) {
+                setTimeout(function() {
+                    el.classList.add('leaving');
+                    el.addEventListener('transitionend', function() { el.remove(); }, { once: true });
+                }, 4000);
+            });
+        })();
+    </script>
+</div>
+
+</body>
+</html>
