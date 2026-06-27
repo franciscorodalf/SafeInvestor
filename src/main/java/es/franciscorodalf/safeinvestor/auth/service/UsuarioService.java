@@ -40,9 +40,45 @@ public class UsuarioService {
         usuarios.save(usuario);
     }
 
+    /** Cambia la contraseña validando la actual. Útil desde la pantalla de perfil. */
+    @Transactional
+    public void changePasswordVerifying(Usuario usuario, String currentRawPassword, String newRawPassword) {
+        if (!passwordEncoder.matches(currentRawPassword, usuario.getPasswordHash())) {
+            throw new InvalidCurrentPasswordException();
+        }
+        if (newRawPassword == null || newRawPassword.length() < 8) {
+            throw new IllegalArgumentException("La nueva contraseña debe tener al menos 8 caracteres");
+        }
+        changePassword(usuario, newRawPassword);
+    }
+
+    @Transactional
+    public Usuario updateNombre(Usuario usuario, String nombre) {
+        if (nombre == null || nombre.isBlank() || nombre.length() > 100) {
+            throw new IllegalArgumentException("Nombre inválido");
+        }
+        usuario.setNombre(nombre.trim());
+        return usuarios.save(usuario);
+    }
+
+    /** Borra la cuenta y todos sus datos (CASCADE en FKs). Requiere reescribir el email como confirmación. */
+    @Transactional
+    public void deleteAccount(Usuario usuario, String emailConfirmation) {
+        if (emailConfirmation == null || !emailConfirmation.equalsIgnoreCase(usuario.getEmail())) {
+            throw new IllegalArgumentException("La confirmación del email no coincide");
+        }
+        usuarios.delete(usuario);
+    }
+
     public static class EmailAlreadyRegisteredException extends RuntimeException {
         public EmailAlreadyRegisteredException(String email) {
             super("El email ya está registrado: " + email);
+        }
+    }
+
+    public static class InvalidCurrentPasswordException extends RuntimeException {
+        public InvalidCurrentPasswordException() {
+            super("La contraseña actual no es correcta");
         }
     }
 }

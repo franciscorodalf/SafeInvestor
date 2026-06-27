@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/head :: head(#{perfil.title})}"></head>
+<body>
+<nav th:replace="~{fragments/nav :: nav('perfil')}"></nav>
+
+<main class="max-w-2xl mx-auto px-5 py-10">
+
+    <header class="mb-8 fade-up">
+        <p class="text-xs tracking-[0.18em] uppercase text-ink-soft mb-1" th:text="#{perfil.eyebrow}">Tu cuenta</p>
+        <h1 class="font-display text-5xl leading-tight" th:text="#{perfil.title}">Perfil</h1>
+    </header>
+
+    <!-- Mensajes flash via query params (sin Thymeleaf truncation bug) -->
+    <div id="flash-area" class="space-y-3 mb-6"></div>
+    <script th:inline="javascript">
+        (function() {
+            const flash = {
+                'ok=nombre':  ['ok',  /*[[#{perfil.flash.nombre_ok}]]*/  'Nombre actualizado.'],
+                'ok=password':['ok',  /*[[#{perfil.flash.password_ok}]]*/'Contraseña actualizada.'],
+                'err=nombre': ['err', /*[[#{perfil.flash.nombre_err}]]*/ 'Nombre inválido.'],
+                'err=current':['err', /*[[#{perfil.flash.current_err}]]*/'La contraseña actual no es correcta.'],
+                'err=newshort':['err',/*[[#{perfil.flash.newshort_err}]]*/'Contraseña nueva muy corta (mín. 8).'],
+                'err=email':  ['err', /*[[#{perfil.flash.email_err}]]*/  'La confirmación del email no coincide.']
+            };
+            const search = window.location.search.slice(1);
+            const m = flash[search];
+            if (m) {
+                const div = document.createElement('div');
+                const cls = m[0] === 'ok' ? 'bg-positive-soft text-positive' : 'bg-negative-soft text-negative';
+                div.className = 'p-4 rounded-lg text-sm flex items-start gap-2 ' + cls;
+                div.innerHTML = '<i class="ph ph-' + (m[0]==='ok'?'check':'warning') + '-circle text-lg shrink-0 mt-0.5"></i><span>' + m[1] + '</span>';
+                document.getElementById('flash-area').appendChild(div);
+                // Limpia la URL para no repetir el mensaje al refrescar
+                history.replaceState({}, '', window.location.pathname);
+            }
+        })();
+    </script>
+
+    <!-- Sección 1: identidad -->
+    <section class="bg-surface border border-line rounded-lg p-6 sm:p-8 shadow-sm mb-6 fade-up">
+        <h2 class="font-display text-2xl mb-1" th:text="#{perfil.identity_title}">Identidad</h2>
+        <p class="text-ink-soft text-sm mb-5" th:text="#{perfil.identity_sub}">El email no se puede cambiar.</p>
+
+        <form th:action="@{/perfil/nombre}" method="post" class="space-y-4">
+            <label class="block">
+                <span class="text-sm text-ink-soft mb-1.5 block" th:text="#{perfil.name}">Nombre</span>
+                <input name="nombre" type="text" required maxlength="100"
+                       th:value="${usuario.nombre}" class="input">
+            </label>
+            <label class="block">
+                <span class="text-sm text-ink-soft mb-1.5 block" th:text="#{login.email}">Email</span>
+                <input type="email" th:value="${usuario.email}" disabled class="input opacity-60 cursor-not-allowed">
+            </label>
+            <div class="flex justify-end">
+                <button class="btn btn-primary"><i class="ph ph-check"></i> <span th:text="#{common.save}">Guardar</span></button>
+            </div>
+        </form>
+    </section>
+
+    <!-- Sección 2: contraseña -->
+    <section class="bg-surface border border-line rounded-lg p-6 sm:p-8 shadow-sm mb-6 fade-up">
+        <h2 class="font-display text-2xl mb-1" th:text="#{perfil.password_title}">Cambiar contraseña</h2>
+        <p class="text-ink-soft text-sm mb-5" th:text="#{perfil.password_sub}">Necesitas saber la actual.</p>
+
+        <form th:action="@{/perfil/password}" method="post" class="space-y-4">
+            <label class="block">
+                <span class="text-sm text-ink-soft mb-1.5 block" th:text="#{perfil.current_password}">Contraseña actual</span>
+                <input name="currentPassword" type="password" required class="input">
+            </label>
+            <label class="block">
+                <span class="text-sm text-ink-soft mb-1.5 block">
+                    <span th:text="#{perfil.new_password}">Nueva contraseña</span>
+                    <span class="text-ink-soft/60 font-normal" th:text="#{register.password_hint}">(mín. 8 caracteres)</span>
+                </span>
+                <input name="newPassword" type="password" required minlength="8" class="input">
+            </label>
+            <div class="flex justify-end">
+                <button class="btn btn-primary"><i class="ph ph-lock-key"></i> <span th:text="#{perfil.change}">Cambiar</span></button>
+            </div>
+        </form>
+    </section>
+
+    <!-- Sección 3: zona peligrosa -->
+    <section class="bg-surface border-2 border-negative/30 rounded-lg p-6 sm:p-8 shadow-sm fade-up">
+        <h2 class="font-display text-2xl text-negative mb-1" th:text="#{perfil.danger_title}">Zona peligrosa</h2>
+        <p class="text-ink-soft text-sm mb-5" th:text="#{perfil.danger_sub}">
+            Al borrar tu cuenta se eliminan todos tus movimientos, categorías, objetivos, tareas, presupuestos y plantillas recurrentes. No se puede deshacer.
+        </p>
+
+        <form th:action="@{/perfil/borrar}" method="post" class="space-y-4"
+              th:onsubmit="'return confirm(\\'' + #{perfil.confirm_delete} + '\\')'">
+            <label class="block">
+                <span class="text-sm text-ink-soft mb-1.5 block"
+                      th:text="${#messages.msg('perfil.email_confirm', usuario.email)}">
+                    Escribe tu email para confirmar: ejemplo@x.com
+                </span>
+                <input name="emailConfirm" type="email" required class="input">
+            </label>
+            <div class="flex justify-end">
+                <button class="btn" style="background:#9B2D2D; color:#FAF7F2;">
+                    <i class="ph ph-trash"></i> <span th:text="#{perfil.delete_btn}">Borrar mi cuenta</span>
+                </button>
+            </div>
+        </form>
+    </section>
+
+</main>
+</body>
+</html>

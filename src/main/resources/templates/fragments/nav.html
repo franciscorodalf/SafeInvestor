@@ -64,11 +64,12 @@
                 <i class="ph ph-moon text-lg show-in-light"></i>
                 <i class="ph ph-sun text-lg show-in-dark"></i>
             </button>
-            <span class="hidden sm:flex items-center gap-2 text-sm text-ink-soft">
+            <a href="/perfil" class="hidden sm:flex items-center gap-2 text-sm text-ink-soft hover:text-ink"
+               th:title="#{nav.perfil}">
                 <span class="w-7 h-7 rounded-full bg-accent-soft text-accent flex items-center justify-center text-xs font-semibold uppercase"
                       sec:authentication="name" th:text="${#authentication.name.substring(0, 1)}"></span>
                 <span sec:authentication="name"></span>
-            </span>
+            </a>
             <form th:action="@{/logout}" method="post" class="inline">
                 <button class="text-ink-soft hover:text-negative text-sm flex items-center gap-1.5" th:title="#{nav.logout}">
                     <i class="ph ph-sign-out text-base"></i>
