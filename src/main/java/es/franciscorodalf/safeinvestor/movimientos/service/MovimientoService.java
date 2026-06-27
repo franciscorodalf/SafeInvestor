@@ -34,6 +34,12 @@ public class MovimientoService {
 
     public Page<Movimiento> search(Usuario usuario, Long categoriaId,
                                    LocalDate desde, LocalDate hasta, int page) {
+        return search(usuario, categoriaId, desde, hasta, null, page);
+    }
+
+    public Page<Movimiento> search(Usuario usuario, Long categoriaId,
+                                   LocalDate desde, LocalDate hasta,
+                                   String q, int page) {
         Specification<Movimiento> spec = (root, query, cb) -> {
             List<Predicate> preds = new ArrayList<>();
             preds.add(cb.equal(root.get("usuario"), usuario));
@@ -45,6 +51,11 @@ public class MovimientoService {
             }
             if (hasta != null) {
                 preds.add(cb.lessThanOrEqualTo(root.get("fecha"), hasta));
+            }
+            if (q != null && !q.isBlank()) {
+                // ILIKE en Postgres → case-insensitive. Buscamos en descripción.
+                String needle = "%" + q.trim().toLowerCase() + "%";
+                preds.add(cb.like(cb.lower(root.get("descripcion")), needle));
             }
             return cb.and(preds.toArray(Predicate[]::new));
         };

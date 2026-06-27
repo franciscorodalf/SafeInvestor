@@ -7,7 +7,7 @@
 [![Spring Boot](https://img.shields.io/badge/Spring%20Boot-3.3-6DB33F?logo=spring)](https://spring.io/projects/spring-boot)
 [![License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 
-**Estado:** v2 Fase 8 desplegada. Auth + movimientos + categorías + objetivos + tareas + dashboard con gráficas Chart.js + export CSV + informe imprimible + tips de economía + i18n ES/EN + dark mode + **emails (reset, objetivo cumplido, recordatorios diarios) + importación CSV bancario con auto-detección**.
+**Estado:** v2 — todo desplegado. Auth, movimientos, categorías, objetivos, tareas, dashboard con gráficas, CSV/PDF, tips, i18n ES/EN, dark mode, emails, importación CSV, **presupuestos, recurrentes, perfil, PWA instalable y Swagger UI**.
 
 📐 **Memoria técnica**: [ARQUITECTURA.md](ARQUITECTURA.md) — arquitectura por capas, modelo ER, decisiones técnicas, despliegue, seguridad.
 
@@ -80,7 +80,10 @@ En CI, GitHub Actions levanta el mismo Postgres como service container.
 | GET/POST | `/forgot` | Solicitar reset de contraseña (link en logs en dev) |
 | GET/POST | `/reset/{token}` | Establecer nueva contraseña |
 | POST | `/logout` | Cerrar sesión |
-| GET | `/movimientos` | Lista paginada con filtros (categoría, fechas) |
+| GET | `/movimientos` | Lista paginada con filtros (categoría, fechas, búsqueda full-text por `q`) |
+| GET | `/perfil` + POST `/perfil/{nombre,password,borrar}` | Pantalla de perfil del usuario |
+| GET/POST | `/presupuestos` | Topes mensuales por categoría con alertas visuales |
+| GET/POST | `/recurrentes` | Plantillas de movimientos que se materializan vía job @Scheduled |
 | GET/POST | `/movimientos/nuevo` | Nuevo gasto/ingreso |
 | GET/POST | `/movimientos/{id}/editar` | Editar |
 | POST | `/movimientos/{id}/borrar` | Eliminar |
@@ -156,6 +159,7 @@ La versión original desarrollada durante 1ºDAM se conserva en:
 - [x] **Fase 5** — Tips de economía (30 consejos, modal de detalle) + i18n ES/EN (cookie + selector en nav) + dark mode (toggle sol/luna persistente, sin FOUC)
 - [x] **Fase 7** — Notificaciones por email (Spring Mail + plantillas Thymeleaf): reset de contraseña real, objetivo cumplido y job @Scheduled diario de tareas vencidas. Fallback a log si no hay SMTP configurado.
 - [x] **Fase 8** — Importar CSV bancario con auto-detección (separador, decimal, fecha), preview editable y auto-sugerencia de categoría por keywords.
+- [x] **Pulido final** — Tests Fase 7+8 · Memoria técnica [ARQUITECTURA.md](ARQUITECTURA.md) · [Swagger UI](https://safeinvestor.onrender.com/swagger-ui.html) · PWA instalable · Presupuestos por categoría con alertas · Movimientos recurrentes (job @Scheduled) · Pantalla de perfil (cambio de nombre/contraseña + borrado de cuenta) · Toasts globales · Búsqueda full-text en movimientos.
 
 ## Licencia
 

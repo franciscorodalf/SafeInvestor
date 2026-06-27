@@ -35,16 +35,18 @@ public class MovimientoWebController {
         @RequestParam(required = false) Long categoriaId,
         @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate desde,
         @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate hasta,
+        @RequestParam(required = false) String q,
         @RequestParam(defaultValue = "0") int page,
         Model model
     ) {
         var u = currentUser.get();
-        var pageResult = movimientos.search(u, categoriaId, desde, hasta, page);
+        var pageResult = movimientos.search(u, categoriaId, desde, hasta, q, page);
         model.addAttribute("movimientos", pageResult.getContent());
         model.addAttribute("categorias", categorias.findAll(u));
         model.addAttribute("currentCategoriaId", categoriaId);
         model.addAttribute("desde", desde);
         model.addAttribute("hasta", hasta);
+        model.addAttribute("q", q);
         model.addAttribute("page", page);
         model.addAttribute("hasNext", pageResult.hasNext());
         model.addAttribute("hasPrev", pageResult.hasPrevious());

@@ -29,28 +29,40 @@
 
     <!-- Filtros -->
     <form method="get" action="/movimientos"
-          class="bg-surface border border-line rounded-lg p-4 mb-6 grid grid-cols-1 sm:grid-cols-4 gap-3 shadow-sm">
+          class="bg-surface border border-line rounded-lg p-4 mb-6 shadow-sm space-y-3">
+        <!-- Búsqueda full-text -->
         <label class="block">
-            <span class="text-xs text-ink-soft mb-1 block uppercase tracking-wider" th:text="#{mov.list.filter_categoria}">Categoría</span>
-            <select name="categoriaId" class="input">
-                <option value="" th:text="#{mov.list.filter_all}">Todas</option>
-                <option th:each="c : ${categorias}" th:value="${c.id}" th:text="${c.nombre}"
-                        th:selected="${c.id == currentCategoriaId}"></option>
-            </select>
+            <span class="text-xs text-ink-soft mb-1 block uppercase tracking-wider" th:text="#{mov.list.filter_search}">Buscar</span>
+            <div class="relative">
+                <i class="ph ph-magnifying-glass absolute left-3.5 top-1/2 -translate-y-1/2 text-ink-soft"></i>
+                <input type="text" name="q" th:value="${q}"
+                       th:placeholder="#{mov.list.filter_search_placeholder}"
+                       class="input pl-10">
+            </div>
         </label>
-        <label class="block">
-            <span class="text-xs text-ink-soft mb-1 block uppercase tracking-wider" th:text="#{mov.list.filter_from}">Desde</span>
-            <input type="date" name="desde" th:value="${desde}" class="input">
-        </label>
-        <label class="block">
-            <span class="text-xs text-ink-soft mb-1 block uppercase tracking-wider" th:text="#{mov.list.filter_to}">Hasta</span>
-            <input type="date" name="hasta" th:value="${hasta}" class="input">
-        </label>
-        <div class="flex items-end gap-2">
-            <button class="btn btn-primary flex-1">
-                <i class="ph ph-funnel"></i> <span th:text="#{mov.list.filter_apply}">Filtrar</span>
-            </button>
-            <a href="/movimientos" class="btn btn-ghost" th:title="#{mov.list.filter_clear}"><i class="ph ph-x"></i></a>
+        <div class="grid grid-cols-1 sm:grid-cols-4 gap-3">
+            <label class="block">
+                <span class="text-xs text-ink-soft mb-1 block uppercase tracking-wider" th:text="#{mov.list.filter_categoria}">Categoría</span>
+                <select name="categoriaId" class="input">
+                    <option value="" th:text="#{mov.list.filter_all}">Todas</option>
+                    <option th:each="c : ${categorias}" th:value="${c.id}" th:text="${c.nombre}"
+                            th:selected="${c.id == currentCategoriaId}"></option>
+                </select>
+            </label>
+            <label class="block">
+                <span class="text-xs text-ink-soft mb-1 block uppercase tracking-wider" th:text="#{mov.list.filter_from}">Desde</span>
+                <input type="date" name="desde" th:value="${desde}" class="input">
+            </label>
+            <label class="block">
+                <span class="text-xs text-ink-soft mb-1 block uppercase tracking-wider" th:text="#{mov.list.filter_to}">Hasta</span>
+                <input type="date" name="hasta" th:value="${hasta}" class="input">
+            </label>
+            <div class="flex items-end gap-2">
+                <button class="btn btn-primary flex-1">
+                    <i class="ph ph-funnel"></i> <span th:text="#{mov.list.filter_apply}">Filtrar</span>
+                </button>
+                <a href="/movimientos" class="btn btn-ghost" th:title="#{mov.list.filter_clear}"><i class="ph ph-x"></i></a>
+            </div>
         </div>
     </form>
 
@@ -118,11 +130,11 @@
 
     <!-- Pagination -->
     <nav class="flex items-center justify-between mt-6 text-sm" th:if="${hasNext or hasPrev}">
-        <a th:if="${hasPrev != null and hasPrev}" th:href="@{/movimientos(page=${page - 1}, categoriaId=${currentCategoriaId}, desde=${desde}, hasta=${hasta})}"
+        <a th:if="${hasPrev != null and hasPrev}" th:href="@{/movimientos(page=${page - 1}, categoriaId=${currentCategoriaId}, desde=${desde}, hasta=${hasta}, q=${q})}"
            class="btn btn-ghost"><i class="ph ph-arrow-left"></i> <span th:text="#{mov.list.prev}">Anterior</span></a>
         <span th:unless="${hasPrev}"></span>
         <span class="text-ink-soft text-xs" th:text="${#messages.msg('mov.list.page') + ' ' + (page + 1)}">Página 1</span>
-        <a th:if="${hasNext != null and hasNext}" th:href="@{/movimientos(page=${page + 1}, categoriaId=${currentCategoriaId}, desde=${desde}, hasta=${hasta})}"
+        <a th:if="${hasNext != null and hasNext}" th:href="@{/movimientos(page=${page + 1}, categoriaId=${currentCategoriaId}, desde=${desde}, hasta=${hasta}, q=${q})}"
            class="btn btn-ghost"><span th:text="#{mov.list.next}">Siguiente</span> <i class="ph ph-arrow-right"></i></a>
     </nav>
 
