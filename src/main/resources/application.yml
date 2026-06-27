@@ -83,3 +83,6 @@ app:
     reminders:
       # Cron diario para enviar recordatorios de tareas vencidas. Formato: sec min hora dia mes diaSem
       cron: ${TAREAS_REMINDER_CRON:0 0 9 * * *}
+  recurrentes:
+    # Cron diario para materializar movimientos recurrentes (default: 03:00 servidor)
+    cron: ${RECURRENTES_CRON:0 0 3 * * *}

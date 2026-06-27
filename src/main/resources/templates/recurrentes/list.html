@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/head :: head(#{rec.title})}"></head>
+<body>
+<nav th:replace="~{fragments/nav :: nav('recurrentes')}"></nav>
+
+<main class="max-w-4xl mx-auto px-5 py-8">
+
+    <header class="mb-6 fade-up">
+        <p class="text-xs tracking-[0.18em] uppercase text-ink-soft mb-1" th:text="#{rec.eyebrow}">Lo que se repite</p>
+        <h1 class="font-display text-5xl leading-tight" th:text="#{rec.title}">Movimientos recurrentes</h1>
+        <p class="text-ink-soft mt-2" th:text="#{rec.subtitle}">
+            Define plantillas que se materializan automáticamente cada día/semana/mes/año.
+        </p>
+    </header>
+
+    <!-- Form crear -->
+    <form method="post" action="/recurrentes"
+          class="bg-surface border border-line rounded-lg p-5 sm:p-6 mb-6 shadow-sm fade-up space-y-4">
+        <p class="text-sm text-ink-soft flex items-center gap-1.5">
+            <i class="ph ph-plus-circle text-brand"></i> <span th:text="#{rec.add}">Añadir plantilla</span>
+        </p>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+            <label class="block">
+                <span class="text-xs text-ink-soft mb-1 block uppercase tracking-wider" th:text="#{mov.form.tipo}">Tipo</span>
+                <select name="tipo" required class="input">
+                    <option value="GASTO"   th:text="#{mov.form.tipo_gasto}">Gasto</option>
+                    <option value="INGRESO" th:text="#{mov.form.tipo_ingreso}">Ingreso</option>
+                </select>
+            </label>
+            <label class="block">
+                <span class="text-xs text-ink-soft mb-1 block uppercase tracking-wider" th:text="#{mov.form.importe}">Importe</span>
+                <input type="number" name="importe" step="0.01" min="0.01" required
+                       placeholder="800.00" class="input font-mono text-right">
+            </label>
+            <label class="block">
+                <span class="text-xs text-ink-soft mb-1 block uppercase tracking-wider" th:text="#{mov.form.categoria}">Categoría</span>
+                <select name="categoriaId" class="input">
+                    <option value="" th:text="#{mov.form.sin_categoria}">— Sin categoría —</option>
+                    <option th:each="c : ${categorias}" th:value="${c.id}" th:text="${c.nombre}"></option>
+                </select>
+            </label>
+            <label class="block">
+                <span class="text-xs text-ink-soft mb-1 block uppercase tracking-wider" th:text="#{rec.frecuencia}">Frecuencia</span>
+                <select name="frecuencia" required class="input">
+                    <option th:each="f : ${frecuencias}" th:value="${f.name()}"
+                            th:text="#{|rec.freq.${f.name()}|}">Mensual</option>
+                </select>
+            </label>
+            <label class="block sm:col-span-2">
+                <span class="text-xs text-ink-soft mb-1 block uppercase tracking-wider" th:text="#{mov.form.descripcion}">Descripción</span>
+                <input type="text" name="descripcion" maxlength="200"
+                       th:placeholder="#{rec.desc_placeholder}" class="input">
+            </label>
+            <label class="block sm:col-span-2">
+                <span class="text-xs text-ink-soft mb-1 block uppercase tracking-wider" th:text="#{rec.primera_vez}">Primera vez</span>
+                <input type="date" name="proximaEjecucion" required class="input">
+            </label>
+        </div>
+
+        <div class="flex justify-end">
+            <button class="btn btn-primary"><i class="ph ph-check"></i> <span th:text="#{rec.save}">Guardar plantilla</span></button>
+        </div>
+    </form>
+
+    <!-- Empty state -->
+    <div th:if="${#lists.isEmpty(recurrentes)}" class="bg-surface border border-line rounded-lg p-10 text-center fade-up">
+        <div class="inline-flex w-14 h-14 rounded-full bg-brand-soft text-brand items-center justify-center mb-3">
+            <i class="ph ph-repeat text-3xl"></i>
+        </div>
+        <p class="font-display text-2xl mb-1" th:text="#{rec.empty_title}">Sin plantillas.</p>
+        <p class="text-ink-soft" th:text="#{rec.empty_subtitle}">Útil para alquileres, suscripciones, recibos de luz...</p>
+    </div>
+
+    <!-- Lista -->
+    <ul th:unless="${#lists.isEmpty(recurrentes)}" class="space-y-3 stagger">
+        <li th:each="r : ${recurrentes}"
+            class="bg-surface border border-line rounded-lg p-5 shadow-sm flex items-center gap-4"
+            th:classappend="${!r.activo} ? 'opacity-50'">
+            <div class="w-11 h-11 rounded-full flex items-center justify-center shrink-0"
+                 th:classappend="${r.tipo.name() == 'GASTO'} ? 'bg-negative-soft text-negative' : 'bg-positive-soft text-positive'">
+                <i class="ph text-xl"
+                   th:classappend="${r.tipo.name() == 'GASTO'} ? 'ph-arrow-up-right' : 'ph-arrow-down-left'"></i>
+            </div>
+            <div class="flex-1 min-w-0">
+                <div class="flex items-center gap-2 flex-wrap">
+                    <p class="font-medium truncate" th:text="${r.descripcion} ?: '—'">Alquiler</p>
+                    <span class="pill bg-bg-soft text-ink-soft" th:text="#{|rec.freq.${r.frecuencia.name()}|}">Mensual</span>
+                    <span th:if="${r.categoria != null}" class="pill"
+                          th:style="'background-color:' + ${r.categoria.color} + '15; color:' + ${r.categoria.color}">
+                        <span class="w-1.5 h-1.5 rounded-full" th:style="'background-color:' + ${r.categoria.color}"></span>
+                        <span th:text="${r.categoria.nombre}"></span>
+                    </span>
+                </div>
+                <p class="text-xs text-ink-soft mt-1">
+                    <i class="ph ph-calendar text-sm"></i>
+                    <span th:text="${#messages.msg('rec.next_run', #temporals.format(r.proximaEjecucion, #messages.msg('dashboard.month_short_format') + ' yyyy'))}">
+                        Próxima: 01 jul 2026
+                    </span>
+                </p>
+            </div>
+            <p class="font-mono font-semibold shrink-0"
+               th:classappend="${r.tipo.name() == 'GASTO'} ? 'text-negative' : 'text-positive'"
+               th:text="${(r.tipo.name() == 'GASTO' ? '-' : '+') + #numbers.formatDecimal(r.importe, 1, 2) + ' €'}">800,00 €</p>
+
+            <!-- Toggle activo + borrar -->
+            <div class="flex items-center gap-1 shrink-0">
+                <form th:action="@{|/recurrentes/${r.id}/toggle|}" method="post" class="inline">
+                    <button class="w-9 h-9 rounded-lg hover:bg-bg-soft flex items-center justify-center text-ink-soft hover:text-ink"
+                            th:title="${r.activo} ? #{rec.pause} : #{rec.resume}">
+                        <i class="ph" th:classappend="${r.activo} ? 'ph-pause' : 'ph-play'"></i>
+                    </button>
+                </form>
+                <form th:action="@{|/recurrentes/${r.id}/borrar|}" method="post" class="inline">
+                    <button class="w-9 h-9 rounded-lg hover:bg-negative-soft flex items-center justify-center text-ink-soft hover:text-negative"
+                            th:onclick="'return confirm(\\'' + #{rec.confirm_delete} + '\\')'" th:title="#{common.delete}">
+                        <i class="ph ph-trash"></i>
+                    </button>
+                </form>
+            </div>
+        </li>
+    </ul>
+
+</main>
+</body>
+</html>
