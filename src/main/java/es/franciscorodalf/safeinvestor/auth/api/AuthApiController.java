@@ -7,12 +7,16 @@ import es.franciscorodalf.safeinvestor.auth.domain.Usuario;
 import es.franciscorodalf.safeinvestor.auth.domain.UsuarioRepository;
 import es.franciscorodalf.safeinvestor.auth.service.JwtService;
 import es.franciscorodalf.safeinvestor.auth.service.UsuarioService;
+import io.swagger.v3.oas.annotations.security.SecurityRequirements;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
+@Tag(name = "Auth", description = "Registro, login y emisión de JWT")
+@SecurityRequirements // endpoints públicos: no requieren bearer token
 @RestController
 @RequestMapping("/api/auth")
 public class AuthApiController {

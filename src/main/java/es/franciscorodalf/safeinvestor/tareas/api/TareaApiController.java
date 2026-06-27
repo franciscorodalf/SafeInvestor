@@ -4,6 +4,7 @@ import es.franciscorodalf.safeinvestor.movimientos.security.CurrentUser;
 import es.franciscorodalf.safeinvestor.tareas.api.dto.TareaRequest;
 import es.franciscorodalf.safeinvestor.tareas.api.dto.TareaResponse;
 import es.franciscorodalf.safeinvestor.tareas.service.TareaService;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -11,6 +12,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+@Tag(name = "Tareas", description = "Recordatorios financieros con fecha de vencimiento")
 @RestController
 @RequestMapping("/api/tareas")
 public class TareaApiController {

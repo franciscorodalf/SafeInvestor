@@ -4,6 +4,7 @@ import es.franciscorodalf.safeinvestor.movimientos.api.dto.MovimientoRequest;
 import es.franciscorodalf.safeinvestor.movimientos.api.dto.MovimientoResponse;
 import es.franciscorodalf.safeinvestor.movimientos.security.CurrentUser;
 import es.franciscorodalf.safeinvestor.movimientos.service.MovimientoService;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
@@ -13,6 +14,7 @@ import org.springframework.web.bind.annotation.*;
 import java.time.LocalDate;
 import java.util.List;
 
+@Tag(name = "Movimientos", description = "Gastos e ingresos del usuario autenticado")
 @RestController
 @RequestMapping("/api/movimientos")
 public class MovimientoApiController {

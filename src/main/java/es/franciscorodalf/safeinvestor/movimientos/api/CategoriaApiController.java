@@ -4,6 +4,7 @@ import es.franciscorodalf.safeinvestor.movimientos.api.dto.CategoriaRequest;
 import es.franciscorodalf.safeinvestor.movimientos.api.dto.CategoriaResponse;
 import es.franciscorodalf.safeinvestor.movimientos.security.CurrentUser;
 import es.franciscorodalf.safeinvestor.movimientos.service.CategoriaService;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -11,6 +12,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+@Tag(name = "Categorías", description = "Etiquetas para clasificar movimientos")
 @RestController
 @RequestMapping("/api/categorias")
 public class CategoriaApiController {

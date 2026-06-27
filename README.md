@@ -11,6 +11,8 @@
 
 📐 **Memoria técnica**: [ARQUITECTURA.md](ARQUITECTURA.md) — arquitectura por capas, modelo ER, decisiones técnicas, despliegue, seguridad.
 
+📚 **API docs**: [Swagger UI](https://safeinvestor.onrender.com/swagger-ui.html) — UI interactivo. Login en `/api/auth/login`, pega el `token` en **Authorize**, llama a cualquier endpoint.
+
 ## 🚀 Demo en vivo
 
 👉 **[https://safeinvestor.onrender.com](https://safeinvestor.onrender.com)**

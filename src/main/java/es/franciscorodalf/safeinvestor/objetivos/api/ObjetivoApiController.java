@@ -5,6 +5,7 @@ import es.franciscorodalf.safeinvestor.objetivos.api.dto.AportarRequest;
 import es.franciscorodalf.safeinvestor.objetivos.api.dto.ObjetivoRequest;
 import es.franciscorodalf.safeinvestor.objetivos.api.dto.ObjetivoResponse;
 import es.franciscorodalf.safeinvestor.objetivos.service.ObjetivoService;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -12,6 +13,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+@Tag(name = "Objetivos", description = "Metas de ahorro con barra de progreso y aportaciones")
 @RestController
 @RequestMapping("/api/objetivos")
 public class ObjetivoApiController {

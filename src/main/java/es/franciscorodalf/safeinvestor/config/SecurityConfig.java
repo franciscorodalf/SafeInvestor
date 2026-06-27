@@ -52,7 +52,11 @@ public class SecurityConfig {
             .authorizeHttpRequests(auth -> auth
                 .requestMatchers("/", "/login", "/register", "/forgot", "/reset/**",
                                  "/css/**", "/js/**", "/images/**",
-                                 "/actuator/health").permitAll()
+                                 "/actuator/health",
+                                 // OpenAPI / Swagger UI públicos
+                                 "/v3/api-docs/**", "/swagger-ui/**", "/swagger-ui.html",
+                                 // PWA assets
+                                 "/manifest.webmanifest", "/sw.js").permitAll()
                 .anyRequest().authenticated()
             )
             .formLogin(form -> form
