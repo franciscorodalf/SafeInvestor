@@ -21,6 +21,13 @@
     <script src="https://cdn.jsdelivr.net/npm/@phosphor-icons/web@2.1.1"></script>
     <link rel="icon" type="image/png" href="/images/logo.png">
 
+    <!-- PWA: manifest + iOS standalone -->
+    <link rel="manifest" href="/manifest.webmanifest">
+    <link rel="apple-touch-icon" href="/images/logo.png">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <meta name="apple-mobile-web-app-title" content="SafeInvestor">
+
     <!-- Pre-paint: aplica modo oscuro antes de pintar para evitar FOUC -->
     <script>
         (function() {
@@ -350,6 +357,17 @@
             var root = document.documentElement;
             var dark = root.classList.toggle('dark');
             try { localStorage.setItem('si-theme', dark ? 'dark' : 'light'); } catch (e) {}
+        }
+    </script>
+
+    <!-- PWA: registro del Service Worker (solo en producción / https / localhost) -->
+    <script>
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', function() {
+                navigator.serviceWorker.register('/sw.js').catch(function(err) {
+                    console.warn('SW registration failed:', err);
+                });
+            });
         }
     </script>
 

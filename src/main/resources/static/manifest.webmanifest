@@ -1,0 +1,41 @@
+{
+  "name": "SafeInvestor — Finanzas personales",
+  "short_name": "SafeInvestor",
+  "description": "Gestión de gastos, ahorros, objetivos y tareas financieras.",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "orientation": "portrait-primary",
+  "theme_color": "#0E5C5F",
+  "background_color": "#FAF7F2",
+  "lang": "es",
+  "categories": ["finance", "productivity"],
+  "icons": [
+    {
+      "src": "/images/logo.png",
+      "sizes": "500x500",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/images/logo.png",
+      "sizes": "500x500",
+      "type": "image/png",
+      "purpose": "maskable"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "Nuevo movimiento",
+      "short_name": "Nuevo",
+      "url": "/movimientos/nuevo",
+      "icons": [{ "src": "/images/logo.png", "sizes": "500x500" }]
+    },
+    {
+      "name": "Dashboard",
+      "short_name": "Inicio",
+      "url": "/",
+      "icons": [{ "src": "/images/logo.png", "sizes": "500x500" }]
+    }
+  ]
+}
