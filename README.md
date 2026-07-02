@@ -84,6 +84,11 @@ En CI, GitHub Actions levanta el mismo Postgres como service container.
 | GET | `/perfil` + POST `/perfil/{nombre,password,borrar}` | Pantalla de perfil del usuario |
 | GET/POST | `/presupuestos` | Topes mensuales por categoría con alertas visuales |
 | GET/POST | `/recurrentes` | Plantillas de movimientos que se materializan vía job @Scheduled |
+| GET | `/bancos` | Lista de conexiones bancarias del usuario |
+| GET/POST | `/bancos/conectar` | Selector de banco + inicio del flujo OAuth PSD2 |
+| GET | `/bancos/callback` | Vuelta desde el banco tras autorizar; guarda accounts + sync inicial |
+| POST | `/bancos/{id}/sync` | Sincronización manual de transacciones |
+| POST | `/bancos/{id}/borrar` | Desconectar banco (revoca requisition en GoCardless) |
 | GET/POST | `/movimientos/nuevo` | Nuevo gasto/ingreso |
 | GET/POST | `/movimientos/{id}/editar` | Editar |
 | POST | `/movimientos/{id}/borrar` | Eliminar |
@@ -142,6 +147,38 @@ Todos los endpoints de `/api/` (excepto `/api/auth/*`) requieren `Authorization:
 |--------|------|-------------|
 | GET | `/actuator/health` | Healthcheck (200 UP) |
 
+## Conexión con bancos (PSD2)
+
+SafeInvestor se conecta a bancos reales vía [GoCardless Bank Account Data](https://bankaccountdata.gocardless.com) (antes Nordigen), que agrega ~2400 bancos europeos y hace de intermediario regulado bajo PSD2. **No necesitas ser TPP** para usarlo — GoCardless tiene un free tier de 100 conexiones/mes.
+
+### Activarlo en Render
+
+1. Regístrate gratis en [bankaccountdata.gocardless.com](https://bankaccountdata.gocardless.com).
+2. Panel → **User Secrets** → **Create new**.
+3. Añade estas env vars al servicio de Render:
+   ```
+   GOCARDLESS_ENABLED=true
+   GOCARDLESS_SECRET_ID=<tuyo>
+   GOCARDLESS_SECRET_KEY=<tuyo>
+   ```
+4. Vuelve a la app → **Bancos** → **Conectar banco** → elige tu banco → autoriza en la web del banco → vuelves a SafeInvestor con las transacciones importadas.
+
+### Modo sandbox (sin banco real)
+
+Sin credenciales de tu banco puedes probar todo el flujo eligiendo **"Sandbox (datos de prueba)"** en el selector — te devuelve transacciones ficticias.
+
+### Cómo funciona
+
+El proceso PSD2 estándar tiene 5 pasos:
+
+1. La app llama a GoCardless para pedir un **requisition** con la URL del banco elegido.
+2. GoCardless devuelve un `link` — redirigimos al usuario ahí.
+3. El usuario autentica en la web de su banco y da consentimiento (válido 90 días por regulación).
+4. El banco redirige de vuelta a `/bancos/callback`.
+5. La app llama a GoCardless para listar las cuentas y descargar las transacciones. Un job `@Scheduled` diario a las 04:00 vuelve a sincronizar.
+
+Los movimientos importados se dedup por `transactionId` (columna `movimientos.external_id` con índice único por usuario).
+
 ## v1 (JavaFX desktop)
 
 La versión original desarrollada durante 1ºDAM se conserva en:
@@ -160,6 +197,7 @@ La versión original desarrollada durante 1ºDAM se conserva en:
 - [x] **Fase 7** — Notificaciones por email (Spring Mail + plantillas Thymeleaf): reset de contraseña real, objetivo cumplido y job @Scheduled diario de tareas vencidas. Fallback a log si no hay SMTP configurado.
 - [x] **Fase 8** — Importar CSV bancario con auto-detección (separador, decimal, fecha), preview editable y auto-sugerencia de categoría por keywords.
 - [x] **Pulido final** — Tests Fase 7+8 · Memoria técnica [ARQUITECTURA.md](ARQUITECTURA.md) · [Swagger UI](https://safeinvestor.onrender.com/swagger-ui.html) · PWA instalable · Presupuestos por categoría con alertas · Movimientos recurrentes (job @Scheduled) · Pantalla de perfil (cambio de nombre/contraseña + borrado de cuenta) · Toasts globales · Búsqueda full-text en movimientos.
+- [x] **Fase 9 — Conexión bancaria PSD2** vía [GoCardless Bank Account Data (Nordigen)](https://bankaccountdata.gocardless.com): elige tu banco → autorizas en la web del banco → las transacciones se importan solas cada día. Sandbox integrado para probar sin banco real. Requiere env vars `GOCARDLESS_ENABLED`, `GOCARDLESS_SECRET_ID`, `GOCARDLESS_SECRET_KEY`.
 
 ## Licencia
 

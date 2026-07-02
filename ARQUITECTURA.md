@@ -408,4 +408,6 @@ Cualquier ruta acepta `?lang=es|en` para cambiar idioma (persiste en cookie).
 - [x] **Fase 5**: tips + i18n ES/EN + dark mode
 - [x] **Fase 7**: emails (reset real + objetivo cumplido + recordatorios @Scheduled)
 - [x] **Fase 8**: importar CSV bancario con auto-detección
-- [ ] _Posibles extensiones_: presupuestos por categoría, movimientos recurrentes, PWA instalable, OpenAPI/Swagger UI, pantalla de perfil, búsqueda full-text, 2FA, grupos compartidos.
+- [x] **Fase 9**: **conexión bancaria PSD2 vía GoCardless (Nordigen)** — el usuario elige su banco, autoriza en la web del banco, y las transacciones se importan automáticamente cada día. Ver [README § Conexión con bancos](README.md#conexión-con-bancos-psd2).
+- [x] **Pulido**: OpenAPI/Swagger UI, PWA, presupuestos, recurrentes, perfil, toasts, búsqueda full-text.
+- [ ] _Posibles extensiones_: OCR de tickets (Claude/Gemini Vision), parsing de emails de compras, 2FA, grupos compartidos.

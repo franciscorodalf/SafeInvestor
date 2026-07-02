@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/head :: head(#{bancos.connect_title})}"></head>
+<body>
+<nav th:replace="~{fragments/nav :: nav('bancos')}"></nav>
+
+<main class="max-w-3xl mx-auto px-5 py-8">
+
+    <a href="/bancos" class="text-sm text-ink-soft hover:text-brand inline-flex items-center gap-1.5 mb-6">
+        <i class="ph ph-arrow-left"></i> <span th:text="#{common.back}">Volver</span>
+    </a>
+
+    <header class="mb-6 fade-up">
+        <p class="text-xs tracking-[0.18em] uppercase text-ink-soft mb-1" th:text="#{bancos.connect_eyebrow}">Nueva conexión</p>
+        <h1 class="font-display text-4xl leading-tight" th:text="#{bancos.connect_title}">Elige tu banco</h1>
+        <p class="text-ink-soft mt-2" th:text="#{bancos.connect_subtitle}">
+            Al pulsar, te redirigimos al banco para que confirmes el acceso durante 90 días. No guardamos tus credenciales.
+        </p>
+    </header>
+
+    <!-- Selector de país -->
+    <form method="get" action="/bancos/conectar" class="mb-6 fade-up">
+        <label class="block">
+            <span class="text-xs text-ink-soft mb-1 block uppercase tracking-wider" th:text="#{bancos.country}">País</span>
+            <select name="country" class="input" onchange="this.form.submit()">
+                <option value="ES" th:selected="${country == 'ES'}">🇪🇸 España</option>
+                <option value="DE" th:selected="${country == 'DE'}">🇩🇪 Alemania</option>
+                <option value="FR" th:selected="${country == 'FR'}">🇫🇷 Francia</option>
+                <option value="GB" th:selected="${country == 'GB'}">🇬🇧 Reino Unido</option>
+                <option value="IT" th:selected="${country == 'IT'}">🇮🇹 Italia</option>
+                <option value="PT" th:selected="${country == 'PT'}">🇵🇹 Portugal</option>
+                <option value="NL" th:selected="${country == 'NL'}">🇳🇱 Países Bajos</option>
+                <option value="BE" th:selected="${country == 'BE'}">🇧🇪 Bélgica</option>
+                <option value="AT" th:selected="${country == 'AT'}">🇦🇹 Austria</option>
+                <option value="IE" th:selected="${country == 'IE'}">🇮🇪 Irlanda</option>
+            </select>
+        </label>
+    </form>
+
+    <!-- Grid de bancos -->
+    <div th:if="${#lists.isEmpty(institutions)}" class="bg-surface border border-line rounded-lg p-10 text-center fade-up">
+        <p class="text-ink-soft" th:text="#{bancos.no_institutions}">No hay bancos disponibles en este país.</p>
+    </div>
+
+    <div th:unless="${#lists.isEmpty(institutions)}"
+         class="grid grid-cols-1 sm:grid-cols-2 gap-3 stagger">
+
+        <form th:each="i : ${institutions}" method="post" action="/bancos/conectar" class="contents">
+            <input type="hidden" name="institutionId"   th:value="${i.id}">
+            <input type="hidden" name="institutionName" th:value="${i.name}">
+            <input type="hidden" name="institutionLogo" th:value="${i.logo}">
+            <button type="submit"
+                    class="bg-surface border border-line rounded-lg p-4 shadow-sm hover:border-brand hover:shadow-md transition text-left flex items-center gap-3 group cursor-pointer">
+                <div class="w-12 h-12 rounded-lg bg-bg-soft flex items-center justify-center shrink-0 overflow-hidden">
+                    <img th:if="${i.logo != null and !i.logo.isEmpty()}"
+                         th:src="${i.logo}" th:alt="${i.name}"
+                         class="max-w-full max-h-full object-contain">
+                    <i th:unless="${i.logo != null and !i.logo.isEmpty()}" class="ph ph-bank text-2xl text-ink-soft"></i>
+                </div>
+                <div class="flex-1 min-w-0">
+                    <p class="font-medium truncate" th:text="${i.name}">Sandbox</p>
+                    <p th:if="${i.id == 'SANDBOXFINANCE_SFIN0000'}" class="text-xs text-accent mt-0.5"
+                       th:text="#{bancos.sandbox_hint}">🧪 Prueba con datos ficticios</p>
+                </div>
+                <i class="ph ph-arrow-right text-ink-soft group-hover:text-brand transition"></i>
+            </button>
+        </form>
+    </div>
+
+</main>
+</body>
+</html>

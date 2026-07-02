@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/head :: head(#{bancos.title})}"></head>
+<body>
+<nav th:replace="~{fragments/nav :: nav('bancos')}"></nav>
+
+<main class="max-w-4xl mx-auto px-5 py-8">
+
+    <header class="flex items-end justify-between mb-6 flex-wrap gap-4 fade-up">
+        <div>
+            <p class="text-xs tracking-[0.18em] uppercase text-ink-soft mb-1" th:text="#{bancos.eyebrow}">Conexiones bancarias</p>
+            <h1 class="font-display text-5xl leading-tight" th:text="#{bancos.title}">Bancos</h1>
+            <p class="text-ink-soft mt-2" th:text="#{bancos.subtitle}">
+                Conecta tu banco para que los movimientos se importen solos cada día.
+            </p>
+        </div>
+        <a th:if="${configured}" href="/bancos/conectar" class="btn btn-primary">
+            <i class="ph ph-plus text-lg"></i> <span th:text="#{bancos.connect_new}">Conectar banco</span>
+        </a>
+    </header>
+
+    <!-- Banner si no está configurado -->
+    <div th:unless="${configured}" class="bg-surface border border-warning/40 rounded-lg p-5 sm:p-6 mb-6 fade-up">
+        <div class="flex items-start gap-3">
+            <i class="ph ph-info text-2xl text-warning shrink-0"></i>
+            <div class="flex-1">
+                <p class="font-medium mb-1" th:text="#{bancos.not_configured_title}">Función no configurada</p>
+                <p class="text-sm text-ink-soft mb-3" th:text="#{bancos.not_configured_msg}">
+                    Añade las variables de entorno GOCARDLESS_ENABLED=true, GOCARDLESS_SECRET_ID y
+                    GOCARDLESS_SECRET_KEY para activar la conexión con bancos vía PSD2.
+                </p>
+                <p class="text-xs text-ink-soft">
+                    <i class="ph ph-book"></i>
+                    <a href="https://bankaccountdata.gocardless.com" target="_blank"
+                       class="text-brand hover:underline">gocardless.com</a> — free tier de 100 conexiones/mes.
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Empty state -->
+    <div th:if="${configured and #lists.isEmpty(conexiones)}" class="bg-surface border border-line rounded-lg p-10 text-center fade-up">
+        <div class="inline-flex w-14 h-14 rounded-full bg-brand-soft text-brand items-center justify-center mb-3">
+            <i class="ph ph-bank text-3xl"></i>
+        </div>
+        <p class="font-display text-2xl mb-1" th:text="#{bancos.empty_title}">Sin bancos conectados.</p>
+        <p class="text-ink-soft mb-5" th:text="#{bancos.empty_subtitle}">
+            Conecta el primero para que tus movimientos se actualicen solos.
+        </p>
+        <a href="/bancos/conectar" class="btn btn-primary">
+            <i class="ph ph-plus"></i> <span th:text="#{bancos.connect_first}">Conectar mi banco</span>
+        </a>
+    </div>
+
+    <!-- Lista de conexiones -->
+    <ul th:unless="${#lists.isEmpty(conexiones)}" class="space-y-3 stagger">
+        <li th:each="c : ${conexiones}"
+            class="bg-surface border border-line rounded-lg p-5 shadow-sm flex items-center gap-4">
+
+            <!-- Logo del banco -->
+            <div class="w-14 h-14 rounded-lg bg-bg-soft flex items-center justify-center shrink-0 overflow-hidden">
+                <img th:if="${c.institutionLogo != null and !c.institutionLogo.isEmpty()}"
+                     th:src="${c.institutionLogo}" th:alt="${c.institutionName}"
+                     class="max-w-full max-h-full object-contain">
+                <i th:unless="${c.institutionLogo != null and !c.institutionLogo.isEmpty()}" class="ph ph-bank text-2xl text-ink-soft"></i>
+            </div>
+
+            <!-- Info -->
+            <div class="flex-1 min-w-0">
+                <div class="flex items-center gap-2 flex-wrap">
+                    <p class="font-medium truncate" th:text="${c.institutionName}">Sandbox</p>
+                    <!-- Status pill -->
+                    <span th:switch="${c.status.name()}" class="pill">
+                        <span th:case="'LINKED'"  class="bg-positive-soft text-positive"><i class="ph ph-check-circle-fill"></i> <span th:text="#{bancos.status.linked}">Activa</span></span>
+                        <span th:case="'PENDING'" class="bg-bg-soft text-ink-soft"><i class="ph ph-clock"></i> <span th:text="#{bancos.status.pending}">Pendiente</span></span>
+                        <span th:case="'EXPIRED'" class="bg-negative-soft text-negative"><i class="ph ph-warning"></i> <span th:text="#{bancos.status.expired}">Caducada</span></span>
+                        <span th:case="'REVOKED'" class="bg-bg-soft text-ink-soft"><i class="ph ph-x"></i> <span th:text="#{bancos.status.revoked}">Revocada</span></span>
+                    </span>
+                </div>
+                <p class="text-xs text-ink-soft mt-1"
+                   th:if="${c.lastSyncAt != null}"
+                   th:text="${#messages.msg('bancos.last_sync', #temporals.format(c.lastSyncAt, #messages.msg('dashboard.month_short_format') + ' yyyy HH:mm'))}">
+                    Último sync: 14 jun 2026 04:00
+                </p>
+                <p class="text-xs text-ink-soft mt-1"
+                   th:if="${c.lastSyncAt == null and c.status.name() == 'LINKED'}"
+                   th:text="#{bancos.never_synced}">Sin sincronizar todavía</p>
+                <p class="text-xs text-ink-soft mt-1"
+                   th:if="${c.expiresAt != null and c.status.name() == 'LINKED'}"
+                   th:text="${#messages.msg('bancos.expires_at', #temporals.format(c.expiresAt, #messages.msg('dashboard.month_short_format') + ' yyyy'))}">
+                    Caduca: 14 sep 2026
+                </p>
+            </div>
+
+            <!-- Cuentas -->
+            <div class="hidden sm:block text-right shrink-0">
+                <p class="text-xs text-ink-soft uppercase tracking-wider" th:text="#{bancos.accounts}">Cuentas</p>
+                <p class="font-mono font-semibold" th:text="${c.accounts.size()}">2</p>
+            </div>
+
+            <!-- Actions -->
+            <div class="flex items-center gap-1 shrink-0">
+                <form th:if="${c.status.name() == 'LINKED'}"
+                      th:action="@{|/bancos/${c.id}/sync|}" method="post" class="inline">
+                    <button class="w-9 h-9 rounded-lg hover:bg-brand-soft flex items-center justify-center text-ink-soft hover:text-brand"
+                            th:title="#{bancos.sync_now}">
+                        <i class="ph ph-arrows-clockwise"></i>
+                    </button>
+                </form>
+                <form th:action="@{|/bancos/${c.id}/borrar|}" method="post" class="inline">
+                    <button class="w-9 h-9 rounded-lg hover:bg-negative-soft flex items-center justify-center text-ink-soft hover:text-negative"
+                            th:onclick="'return confirm(\\'' + #{bancos.confirm_delete} + '\\')'" th:title="#{common.delete}">
+                        <i class="ph ph-trash"></i>
+                    </button>
+                </form>
+            </div>
+        </li>
+    </ul>
+
+</main>
+</body>
+</html>

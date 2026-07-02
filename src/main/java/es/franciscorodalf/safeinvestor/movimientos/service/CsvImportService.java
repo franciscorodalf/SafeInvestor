@@ -256,6 +256,15 @@ public class CsvImportService {
         }
     }
 
+    /**
+     * Público para reutilización desde otros importadores (p.ej. sync bancario
+     * en {@code BancoService}). Devuelve el id de la categoría del usuario que
+     * mejor casa con la descripción, o null si ningún keyword matchea.
+     */
+    public Long suggestCategoryId(String descripcion, List<Categoria> userCats) {
+        return sugerirCategoria(descripcion, userCats);
+    }
+
     private Long sugerirCategoria(String descripcion, List<Categoria> userCats) {
         if (descripcion == null || userCats.isEmpty()) return null;
         String lower = descripcion.toLowerCase();

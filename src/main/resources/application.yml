@@ -76,6 +76,20 @@ jwt:
 
 app:
   base-url: ${APP_BASE_URL:http://localhost:8080}
+
+# === Conexión con bancos vía GoCardless (Nordigen) ===
+gocardless:
+  # enabled=false → los endpoints /bancos/* muestran \"no configurado\" en vez de crashear
+  enabled: ${GOCARDLESS_ENABLED:false}
+  secret-id: ${GOCARDLESS_SECRET_ID:}
+  secret-key: ${GOCARDLESS_SECRET_KEY:}
+  base-url: ${GOCARDLESS_BASE_URL:https://bankaccountdata.gocardless.com/api/v2}
+  # URL absoluta a la que el banco redirige al usuario tras autorizar
+  redirect-url: ${GOCARDLESS_REDIRECT_URL:${app.base-url}/bancos/callback}
+  # País por defecto para listar instituciones (ES, DE, FR, GB...)
+  default-country: ${GOCARDLESS_DEFAULT_COUNTRY:ES}
+  # Cron diario para sincronizar todas las conexiones activas (default 04:00)
+  sync-cron: ${GOCARDLESS_SYNC_CRON:0 0 4 * * *}
   email:
     # Si MAIL_HOST está vacío o enabled=false → solo se loguean los emails (modo dev)
     enabled: ${MAIL_ENABLED:false}

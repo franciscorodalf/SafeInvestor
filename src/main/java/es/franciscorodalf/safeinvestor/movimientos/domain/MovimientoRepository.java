@@ -10,4 +10,7 @@ public interface MovimientoRepository extends JpaRepository<Movimiento, Long>,
                                               JpaSpecificationExecutor<Movimiento> {
 
     Optional<Movimiento> findByIdAndUsuario(Long id, Usuario usuario);
+
+    /** Comprueba si ya se importó un movimiento con este external_id (dedup en sync bancario). */
+    boolean existsByUsuarioAndExternalId(Usuario usuario, String externalId);
 }
