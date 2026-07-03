@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/head :: head(#{foto.preview.title})}"></head>
+<body>
+<nav th:replace="~{fragments/nav :: nav('movimientos')}"></nav>
+
+<main class="max-w-2xl mx-auto px-5 py-10">
+
+    <a href="/movimientos/foto" class="text-sm text-ink-soft hover:text-brand inline-flex items-center gap-1.5 mb-6">
+        <i class="ph ph-arrow-left"></i> <span th:text="#{common.back}">Volver</span>
+    </a>
+
+    <header class="mb-6 fade-up">
+        <p class="text-xs tracking-[0.18em] uppercase text-ink-soft mb-1" th:text="#{foto.preview.eyebrow}">Datos extraídos</p>
+        <h1 class="font-display text-4xl" th:text="#{foto.preview.title}">Revisa antes de guardar</h1>
+    </header>
+
+    <!-- Barra de confianza -->
+    <div class="bg-surface border border-line rounded-lg p-4 mb-6 shadow-sm fade-up">
+        <div class="flex items-center justify-between text-sm mb-2">
+            <span class="text-ink-soft flex items-center gap-1.5">
+                <i class="ph ph-sparkle text-brand"></i>
+                <span th:text="#{foto.preview.confidence}">Confianza del modelo</span>
+            </span>
+            <span class="font-mono font-semibold"
+                  th:text="${extraction.confianza + '%'}">85%</span>
+        </div>
+        <div class="bg-bg-soft rounded-full h-2 overflow-hidden">
+            <div class="h-full rounded-full"
+                 th:style="'width:' + ${extraction.confianza} + '%; background-color:'
+                          + (${extraction.confianza} >= 80 ? '#2D6A4F'
+                             : (${extraction.confianza} >= 50 ? '#C49B4A' : '#9B2D2D'))"></div>
+        </div>
+        <p th:if="${extraction.confianza} &lt; 50" class="text-xs text-negative mt-2" th:text="#{foto.preview.low_confidence}">
+            Confianza baja — revisa los valores con cuidado.
+        </p>
+    </div>
+
+    <form th:action="@{/movimientos/foto/confirmar}" method="post"
+          class="bg-surface border border-line rounded-lg p-6 sm:p-8 shadow-sm space-y-5 fade-up">
+
+        <!-- Tipo -->
+        <fieldset>
+            <legend class="text-sm text-ink-soft mb-2 block" th:text="#{mov.form.tipo}">Tipo</legend>
+            <div class="grid grid-cols-2 gap-2 p-1 bg-bg-soft rounded-lg">
+                <label class="cursor-pointer">
+                    <input name="tipo" type="radio" value="GASTO" class="peer sr-only" checked>
+                    <div class="px-4 py-2.5 rounded-md text-center text-sm font-medium peer-checked:bg-negative peer-checked:text-bg peer-checked:shadow text-ink-soft flex items-center justify-center gap-2">
+                        <i class="ph ph-arrow-up-right"></i> <span th:text="#{mov.form.tipo_gasto}">Gasto</span>
+                    </div>
+                </label>
+                <label class="cursor-pointer">
+                    <input name="tipo" type="radio" value="INGRESO" class="peer sr-only">
+                    <div class="px-4 py-2.5 rounded-md text-center text-sm font-medium peer-checked:bg-positive peer-checked:text-bg peer-checked:shadow text-ink-soft flex items-center justify-center gap-2">
+                        <i class="ph ph-arrow-down-left"></i> <span th:text="#{mov.form.tipo_ingreso}">Ingreso</span>
+                    </div>
+                </label>
+            </div>
+        </fieldset>
+
+        <!-- Importe -->
+        <label class="block">
+            <span class="text-sm text-ink-soft mb-1.5 block flex items-center gap-1.5">
+                <span th:text="#{mov.form.importe}">Importe</span>
+                <span class="pill bg-bg-soft text-ink-soft text-[10px]" th:text="#{foto.preview.ai_extracted}">🤖 IA</span>
+            </span>
+            <div class="relative">
+                <input name="importe" type="number" step="0.01" min="0.01" required
+                       th:value="${extraction.importe}"
+                       class="input font-mono text-3xl py-4 pr-12 text-right">
+                <span class="absolute right-4 top-1/2 -translate-y-1/2 font-mono text-2xl text-ink-soft">€</span>
+            </div>
+        </label>
+
+        <!-- Descripción (prellenada con comercio + resumen) -->
+        <label class="block">
+            <span class="text-sm text-ink-soft mb-1.5 block flex items-center gap-1.5">
+                <span th:text="#{mov.form.descripcion}">Descripción</span>
+                <span class="pill bg-bg-soft text-ink-soft text-[10px]" th:text="#{foto.preview.ai_extracted}">🤖 IA</span>
+            </span>
+            <input type="text" name="descripcion" maxlength="200"
+                   th:value="${extraction.comercio + (extraction.resumen != null and !extraction.resumen.isEmpty() ? ' · ' + extraction.resumen : '')}"
+                   class="input">
+        </label>
+
+        <!-- Categoría -->
+        <label class="block">
+            <span class="text-sm text-ink-soft mb-1.5 block flex items-center gap-1.5">
+                <span th:text="#{mov.form.categoria}">Categoría</span>
+                <span th:if="${categoriaSugerida != null}" class="pill bg-brand-soft text-brand text-[10px]"
+                      th:text="#{foto.preview.suggested}">💡 Sugerida</span>
+            </span>
+            <select name="categoriaId" class="input">
+                <option value="" th:text="#{mov.form.sin_categoria}">— Sin categoría —</option>
+                <option th:each="c : ${categorias}"
+                        th:value="${c.id}"
+                        th:text="${c.nombre}"
+                        th:selected="${categoriaSugerida != null and categoriaSugerida == c.id}"></option>
+            </select>
+        </label>
+
+        <!-- Fecha -->
+        <label class="block">
+            <span class="text-sm text-ink-soft mb-1.5 block flex items-center gap-1.5">
+                <span th:text="#{mov.form.fecha}">Fecha</span>
+                <span class="pill bg-bg-soft text-ink-soft text-[10px]" th:text="#{foto.preview.ai_extracted}">🤖 IA</span>
+            </span>
+            <input name="fecha" type="date" required
+                   th:value="${extraction.fecha}" class="input">
+        </label>
+
+        <div class="flex justify-end gap-3 pt-3 border-t border-line">
+            <a href="/movimientos/foto" class="btn btn-ghost" th:text="#{common.cancel}">Cancelar</a>
+            <button class="btn btn-primary">
+                <i class="ph ph-check"></i> <span th:text="#{foto.preview.confirm}">Guardar movimiento</span>
+            </button>
+        </div>
+    </form>
+</main>
+</body>
+</html>

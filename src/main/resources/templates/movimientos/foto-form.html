@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/head :: head(#{foto.title})}"></head>
+<body>
+<nav th:replace="~{fragments/nav :: nav('movimientos')}"></nav>
+
+<main class="max-w-2xl mx-auto px-5 py-10">
+
+    <a href="/movimientos" class="text-sm text-ink-soft hover:text-brand inline-flex items-center gap-1.5 mb-6">
+        <i class="ph ph-arrow-left"></i> <span th:text="#{common.back}">Volver</span>
+    </a>
+
+    <header class="mb-8 fade-up">
+        <p class="text-xs tracking-[0.18em] uppercase text-ink-soft mb-1" th:text="#{foto.eyebrow}">Reconocimiento con IA</p>
+        <h1 class="font-display text-4xl" th:text="#{foto.title}">Subir foto de un ticket</h1>
+        <p class="text-ink-soft mt-3 leading-relaxed" th:text="#{foto.subtitle}">
+            Haz una foto al ticket y Claude Vision extrae la fecha, el comercio y el importe.
+            Revisa antes de guardar.
+        </p>
+    </header>
+
+    <!-- Banner si no está configurado -->
+    <div th:unless="${configured}" class="bg-surface border border-warning/40 rounded-lg p-5 sm:p-6 mb-6 fade-up">
+        <div class="flex items-start gap-3">
+            <i class="ph ph-info text-2xl text-warning shrink-0"></i>
+            <div class="flex-1">
+                <p class="font-medium mb-1" th:text="#{foto.not_configured_title}">Función no configurada</p>
+                <p class="text-sm text-ink-soft mb-3" th:text="#{foto.not_configured_msg}">
+                    Añade la variable de entorno ANTHROPIC_API_KEY para activar el OCR de tickets con Claude Vision.
+                </p>
+                <p class="text-xs text-ink-soft">
+                    <i class="ph ph-book"></i>
+                    <a href="https://console.anthropic.com" target="_blank" class="text-brand hover:underline">
+                        console.anthropic.com
+                    </a> — la primera API key incluye créditos gratis.
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <div th:if="${error}" class="mb-5 p-4 rounded-lg bg-negative-soft text-negative text-sm flex items-start gap-2.5 fade-up">
+        <i class="ph ph-warning-circle text-lg shrink-0 mt-0.5"></i>
+        <span th:text="${error}">Error</span>
+    </div>
+
+    <form th:if="${configured}" method="post" enctype="multipart/form-data"
+          class="bg-surface border border-line rounded-lg p-6 sm:p-8 shadow-sm space-y-5 fade-up">
+
+        <label class="block">
+            <span class="text-sm text-ink-soft mb-1.5 block" th:text="#{foto.image}">Imagen</span>
+            <div class="border-2 border-dashed border-line rounded-xl p-8 text-center hover:border-brand transition cursor-pointer relative">
+                <input name="file" type="file" accept="image/*" required capture="environment"
+                       class="absolute inset-0 opacity-0 cursor-pointer">
+                <i class="ph ph-camera text-4xl text-ink-soft mb-2 block"></i>
+                <p class="text-sm" th:text="#{foto.drop}">Haz o elige una foto del ticket</p>
+                <p class="text-xs text-ink-soft mt-1" th:text="#{foto.size_hint}">Máximo 4 MB · JPG, PNG, WEBP</p>
+            </div>
+        </label>
+
+        <div class="bg-bg-soft rounded-lg p-4 text-xs text-ink-soft">
+            <p class="font-medium text-ink mb-2" th:text="#{foto.what_extracts}">Lo que Claude extrae:</p>
+            <ul class="space-y-1 list-disc list-inside">
+                <li th:text="#{foto.what_1}">Fecha del ticket</li>
+                <li th:text="#{foto.what_2}">Nombre del comercio</li>
+                <li th:text="#{foto.what_3}">Importe total con impuestos</li>
+                <li th:text="#{foto.what_4}">Resumen de la compra</li>
+                <li th:text="#{foto.what_5}">Categoría sugerida (por keywords del comercio)</li>
+            </ul>
+        </div>
+
+        <div class="flex justify-end gap-3 pt-3 border-t border-line">
+            <a href="/movimientos" class="btn btn-ghost" th:text="#{common.cancel}">Cancelar</a>
+            <button class="btn btn-primary">
+                <i class="ph ph-sparkle"></i> <span th:text="#{foto.submit}">Extraer datos</span>
+            </button>
+        </div>
+    </form>
+</main>
+</body>
+</html>

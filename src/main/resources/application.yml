@@ -86,3 +86,12 @@ app:
   recurrentes:
     # Cron diario para materializar movimientos recurrentes (default: 03:00 servidor)
     cron: ${RECURRENTES_CRON:0 0 3 * * *}
+
+# === OCR de tickets con Claude Vision (Anthropic) ===
+anthropic:
+  # Sin api-key la app arranca igual y /movimientos/foto muestra "no configurado"
+  api-key: ${ANTHROPIC_API_KEY:}
+  base-url: ${ANTHROPIC_BASE_URL:https://api.anthropic.com/v1}
+  model: ${ANTHROPIC_MODEL:claude-sonnet-4-5}
+  # Máximo bytes de imagen (default 4 MB — encaja en el límite multipart)
+  max-image-bytes: ${ANTHROPIC_MAX_IMAGE_BYTES:4194304}

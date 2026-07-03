@@ -92,6 +92,8 @@ En CI, GitHub Actions levanta el mismo Postgres como service container.
 | GET | `/movimientos/informe` | Informe imprimible → PDF desde navegador |
 | GET/POST | `/movimientos/import` | Subir CSV bancario → preview editable → confirmar |
 | POST | `/movimientos/import/confirm` | Guardar las filas seleccionadas tras revisar |
+| GET/POST | `/movimientos/foto` | Subir foto de ticket → Claude Vision extrae los datos → preview editable |
+| POST | `/movimientos/foto/confirmar` | Guardar el movimiento extraído de la foto |
 | GET | `/estadisticas/gastos-por-categoria` | JSON gastos del mes por categoría |
 | GET | `/estadisticas/evolucion-mensual` | JSON ingresos vs gastos últimos 6 meses |
 | GET | `/objetivos` | Lista con barra de progreso |
@@ -160,6 +162,20 @@ La versión original desarrollada durante 1ºDAM se conserva en:
 - [x] **Fase 7** — Notificaciones por email (Spring Mail + plantillas Thymeleaf): reset de contraseña real, objetivo cumplido y job @Scheduled diario de tareas vencidas. Fallback a log si no hay SMTP configurado.
 - [x] **Fase 8** — Importar CSV bancario con auto-detección (separador, decimal, fecha), preview editable y auto-sugerencia de categoría por keywords.
 - [x] **Pulido final** — Tests Fase 7+8 · Memoria técnica [ARQUITECTURA.md](ARQUITECTURA.md) · [Swagger UI](https://safeinvestor.onrender.com/swagger-ui.html) · PWA instalable · Presupuestos por categoría con alertas · Movimientos recurrentes (job @Scheduled) · Pantalla de perfil (cambio de nombre/contraseña + borrado de cuenta) · Toasts globales · Búsqueda full-text en movimientos.
+- [x] **Fase 10 — OCR de tickets con Claude Vision.** Subes una foto de un ticket y la Messages API de Anthropic (`claude-sonnet-4-5`) devuelve `{fecha, comercio, importe, resumen, confianza}`. Se muestra un preview editable con barra de confianza y sugerencia de categoría (reusando el keyword matcher del CSV import). Requiere `ANTHROPIC_API_KEY`; sin ella, `/movimientos/foto` muestra "no configurado".
+
+## OCR de tickets (Claude Vision)
+
+Para activar el reconocimiento automático de tickets:
+
+1. Consigue una API key en [console.anthropic.com](https://console.anthropic.com). La creación de cuenta incluye créditos gratis suficientes para cientos de tickets.
+2. En Render → Environment del servicio, añade:
+   ```
+   ANTHROPIC_API_KEY=sk-ant-...
+   ```
+3. Redeploy. En la app → **Movimientos** → botón **Foto** → sube o haz una foto del ticket → Claude extrae los datos en ~2 segundos → revisa el preview → guarda.
+
+El modelo por defecto es `claude-sonnet-4-5`. Cambia `ANTHROPIC_MODEL` si prefieres otro (p.ej. `claude-haiku-4-5-20251001` para más rápido/barato).
 
 ## Licencia
 
