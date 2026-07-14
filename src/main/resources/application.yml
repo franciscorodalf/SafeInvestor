@@ -87,11 +87,23 @@ app:
     # Cron diario para materializar movimientos recurrentes (default: 03:00 servidor)
     cron: ${RECURRENTES_CRON:0 0 3 * * *}
 
-# === OCR de tickets con Claude Vision (Anthropic) ===
+# === OCR de tickets: proveedores de visión intercambiables ===
+vision:
+  # auto = usa el primero configurado, con preferencia gemini > anthropic
+  # (gemini es gratuito). También se puede forzar: gemini | anthropic.
+  provider: ${VISION_PROVIDER:auto}
+  # Máximo bytes de imagen (default 4 MB — encaja en el límite multipart)
+  max-image-bytes: ${VISION_MAX_IMAGE_BYTES:4194304}
+
+gemini:
+  # API key GRATUITA (free tier con visión, sin tarjeta) en https://aistudio.google.com
+  # Sin api-key este proveedor queda deshabilitado sin romper el arranque.
+  api-key: ${GEMINI_API_KEY:}
+  base-url: ${GEMINI_BASE_URL:https://generativelanguage.googleapis.com/v1beta}
+  model: ${GEMINI_MODEL:gemini-2.5-flash}
+
 anthropic:
-  # Sin api-key la app arranca igual y /movimientos/foto muestra "no configurado"
+  # Alternativa de pago (mejor en tickets difíciles). Sin api-key, deshabilitado.
   api-key: ${ANTHROPIC_API_KEY:}
   base-url: ${ANTHROPIC_BASE_URL:https://api.anthropic.com/v1}
   model: ${ANTHROPIC_MODEL:claude-sonnet-4-5}
-  # Máximo bytes de imagen (default 4 MB — encaja en el límite multipart)
-  max-image-bytes: ${ANTHROPIC_MAX_IMAGE_BYTES:4194304}

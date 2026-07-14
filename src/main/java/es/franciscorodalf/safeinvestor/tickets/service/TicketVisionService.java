@@ -4,40 +4,33 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.boot.context.properties.EnableConfigurationProperties;
-import org.springframework.context.annotation.Configuration;
-import org.springframework.http.MediaType;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
-import org.springframework.web.client.RestClient;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
-import java.util.Base64;
+import java.util.Comparator;
 import java.util.List;
-import java.util.Map;
+import java.util.Optional;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
- * Extracción de datos estructurados de un ticket a partir de su foto usando
- * la Messages API de Anthropic (Claude con capacidades de visión).
+ * Extracción de datos estructurados de un ticket a partir de su foto.
  *
- * El flujo es:
- *   1. Recibe bytes de la imagen y su tipo MIME.
- *   2. Construye el request con dos bloques: un bloque {@code image} en base64
- *      y un bloque {@code text} con el prompt de extracción.
- *   3. Le pide a Claude que devuelva EXCLUSIVAMENTE un JSON con la estructura
- *      que le dictamos.
- *   4. Parsea el JSON (aunque venga con ruido rodeándolo) y lo convierte en
- *      un {@link TicketExtraction} manejable por el controller.
+ * El trabajo pesado (llamada HTTP al modelo multimodal) se delega en un
+ * {@link VisionProvider}. La selección del proveedor se controla con la
+ * propiedad {@code vision.provider}:
  *
- * Si {@link AnthropicProperties#isConfigured()} devuelve false, el servicio
- * lanza {@link IllegalStateException}. El controller lo captura y muestra el
- * banner de "no configurado" en la UI.
+ *   - {@code auto} (default): el primero configurado, con preferencia por
+ *     Gemini (free tier) sobre Anthropic (de pago).
+ *   - {@code gemini} | {@code anthropic}: fuerza uno concreto.
+ *
+ * Este servicio es dueño del prompt y del parseo del JSON de respuesta,
+ * que son idénticos para todos los proveedores — así añadir un proveedor
+ * nuevo (OpenAI, Mistral...) es solo implementar la interfaz.
  */
 @Service
-@Configuration
-@EnableConfigurationProperties(AnthropicProperties.class)
 public class TicketVisionService {
 
     private static final Logger log = LoggerFactory.getLogger(TicketVisionService.class);
@@ -64,71 +57,61 @@ public class TicketVisionService {
               {"error": "descripción del problema"}
             """;
 
-    private final AnthropicProperties props;
-    private final RestClient http;
+    /** Orden de preferencia en modo auto: primero los gratuitos. */
+    private static final List<String> AUTO_PREFERENCE = List.of("gemini", "anthropic");
+
+    private final List<VisionProvider> providers;
+    private final String configuredProvider;
+    private final long maxImageBytes;
     private final ObjectMapper json = new ObjectMapper();
 
-    public TicketVisionService(AnthropicProperties props) {
-        this.props = props;
-        this.http = props.isConfigured()
-                ? RestClient.builder().baseUrl(props.baseUrl()).build()
-                : null;
+    public TicketVisionService(List<VisionProvider> providers,
+                               @Value("${vision.provider:auto}") String configuredProvider,
+                               @Value("${vision.max-image-bytes:4194304}") long maxImageBytes) {
+        this.providers = providers;
+        this.configuredProvider = configuredProvider;
+        this.maxImageBytes = maxImageBytes;
+    }
+
+    /** El proveedor activo, o empty si ninguno está configurado. */
+    public Optional<VisionProvider> activeProvider() {
+        if (!"auto".equalsIgnoreCase(configuredProvider)) {
+            return providers.stream()
+                    .filter(p -> p.id().equalsIgnoreCase(configuredProvider) && p.isConfigured())
+                    .findFirst();
+        }
+        return providers.stream()
+                .filter(VisionProvider::isConfigured)
+                .min(Comparator.comparingInt(p -> {
+                    int idx = AUTO_PREFERENCE.indexOf(p.id());
+                    return idx >= 0 ? idx : Integer.MAX_VALUE;
+                }));
     }
 
     public boolean isConfigured() {
-        return props.isConfigured() && http != null;
+        return activeProvider().isPresent();
+    }
+
+    /** Nombre del proveedor activo para mostrar en la UI ("gemini"/"anthropic"), o null. */
+    public String providerName() {
+        return activeProvider().map(VisionProvider::id).orElse(null);
     }
 
     /** Extrae los datos del ticket. */
     public TicketExtraction extract(byte[] imageBytes, String mimeType) {
-        if (!isConfigured()) {
-            throw new IllegalStateException("Claude Vision no está configurado");
-        }
-        if (imageBytes.length > props.maxImageBytes()) {
+        VisionProvider provider = activeProvider()
+                .orElseThrow(() -> new IllegalStateException("Ningún proveedor de visión está configurado"));
+        if (imageBytes.length > maxImageBytes) {
             throw new IllegalArgumentException("La imagen es demasiado grande");
         }
-        String base64 = Base64.getEncoder().encodeToString(imageBytes);
-        String mt = normalizeMime(mimeType);
-
-        Map<String, Object> req = Map.of(
-                "model", props.model(),
-                "max_tokens", 512,
-                "messages", List.of(Map.of(
-                        "role", "user",
-                        "content", List.of(
-                                Map.of(
-                                        "type", "image",
-                                        "source", Map.of(
-                                                "type", "base64",
-                                                "media_type", mt,
-                                                "data", base64)),
-                                Map.of("type", "text", "text", PROMPT))
-                ))
-        );
-
-        @SuppressWarnings("unchecked")
-        Map<String, Object> res = http.post()
-                .uri("/messages")
-                .header("x-api-key", props.apiKey())
-                .header("anthropic-version", "2023-06-01")
-                .contentType(MediaType.APPLICATION_JSON)
-                .body(req)
-                .retrieve()
-                .body(Map.class);
-
-        if (res == null) throw new VisionException("Respuesta vacía de Anthropic");
-        @SuppressWarnings("unchecked")
-        List<Map<String, Object>> content = (List<Map<String, Object>>) res.get("content");
-        if (content == null || content.isEmpty()) {
-            throw new VisionException("Anthropic no devolvió contenido");
-        }
-        String text = String.valueOf(content.get(0).get("text"));
-        return parseJson(text);
+        String raw = provider.analyze(imageBytes, normalizeMime(mimeType), PROMPT);
+        log.debug("Respuesta de {}: {}", provider.id(), raw);
+        return parseJson(raw);
     }
 
     /** Extrae el JSON válido dentro de la respuesta (tolerante a texto rodeando). */
     private TicketExtraction parseJson(String raw) {
-        String jsonText = raw.trim();
+        String jsonText = raw == null ? "" : raw.trim();
         // Si el modelo devolvió con ```json ... ``` u otro wrapping, extraemos el objeto
         Matcher m = Pattern.compile("\\{[\\s\\S]*\\}").matcher(jsonText);
         if (m.find()) jsonText = m.group();

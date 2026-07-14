@@ -162,20 +162,34 @@ La versión original desarrollada durante 1ºDAM se conserva en:
 - [x] **Fase 7** — Notificaciones por email (Spring Mail + plantillas Thymeleaf): reset de contraseña real, objetivo cumplido y job @Scheduled diario de tareas vencidas. Fallback a log si no hay SMTP configurado.
 - [x] **Fase 8** — Importar CSV bancario con auto-detección (separador, decimal, fecha), preview editable y auto-sugerencia de categoría por keywords.
 - [x] **Pulido final** — Tests Fase 7+8 · Memoria técnica [ARQUITECTURA.md](ARQUITECTURA.md) · [Swagger UI](https://safeinvestor.onrender.com/swagger-ui.html) · PWA instalable · Presupuestos por categoría con alertas · Movimientos recurrentes (job @Scheduled) · Pantalla de perfil (cambio de nombre/contraseña + borrado de cuenta) · Toasts globales · Búsqueda full-text en movimientos.
-- [x] **Fase 10 — OCR de tickets con Claude Vision.** Subes una foto de un ticket y la Messages API de Anthropic (`claude-sonnet-4-5`) devuelve `{fecha, comercio, importe, resumen, confianza}`. Se muestra un preview editable con barra de confianza y sugerencia de categoría (reusando el keyword matcher del CSV import). Requiere `ANTHROPIC_API_KEY`; sin ella, `/movimientos/foto` muestra "no configurado".
+- [x] **Fase 10 — OCR de tickets con IA multimodal.** Subes una foto de un ticket y un modelo de visión devuelve `{fecha, comercio, importe, resumen, confianza}`. Preview editable con barra de confianza y sugerencia de categoría (reusando el keyword matcher del CSV import). Proveedores **intercambiables por configuración** (patrón strategy): Gemini (free tier, default) o Claude.
 
-## OCR de tickets (Claude Vision)
+## OCR de tickets (IA de visión)
 
-Para activar el reconocimiento automático de tickets:
+La integración usa una interfaz `VisionProvider` con dos implementaciones seleccionables por variable de entorno — añadir un tercer proveedor (OpenAI, Mistral...) es implementar una clase.
 
-1. Consigue una API key en [console.anthropic.com](https://console.anthropic.com). La creación de cuenta incluye créditos gratis suficientes para cientos de tickets.
+### Opción A — Google Gemini (gratis, recomendada)
+
+1. Consigue una API key gratuita en [aistudio.google.com](https://aistudio.google.com) (sin tarjeta). El free tier de los modelos Flash incluye visión: 10 peticiones/min, 1.500/día.
 2. En Render → Environment del servicio, añade:
    ```
-   ANTHROPIC_API_KEY=sk-ant-...
+   GEMINI_API_KEY=AIza...
    ```
-3. Redeploy. En la app → **Movimientos** → botón **Foto** → sube o haz una foto del ticket → Claude extrae los datos en ~2 segundos → revisa el preview → guarda.
+3. Redeploy. En la app → **Movimientos** → botón **Foto** → sube o haz una foto del ticket → la IA extrae los datos en ~2 segundos → revisa el preview → guarda.
 
-El modelo por defecto es `claude-sonnet-4-5`. Cambia `ANTHROPIC_MODEL` si prefieres otro (p.ej. `claude-haiku-4-5-20251001` para más rápido/barato).
+Modelo por defecto: `gemini-2.5-flash` (cámbialo con `GEMINI_MODEL`).
+
+### Opción B — Anthropic Claude (de pago, mejor en tickets difíciles)
+
+```
+ANTHROPIC_API_KEY=sk-ant-...
+```
+
+Modelo por defecto: `claude-sonnet-4-5` (cámbialo con `ANTHROPIC_MODEL`).
+
+### Selección de proveedor
+
+Con `VISION_PROVIDER` (default `auto`): en modo auto gana el primero configurado, con preferencia por Gemini al ser gratuito. Puedes forzar `gemini` o `anthropic` si tienes ambas keys.
 
 ## Licencia
 
