@@ -48,7 +48,8 @@ Es la evolución de [v1, una aplicación de escritorio JavaFX con SQLite](https:
 - **Por qué Java y no Node/Python**: el grado es de DAM, Java es lo que enseñan; quiero un proyecto que un examinador del propio módulo pueda leer sin sorpresas. Spring Boot además es lo que más demandan las empresas españolas en backend.
 - **Por qué Thymeleaf y no React**: el alcance del proyecto cabe en server-rendered sin perder UX. Evita complejidad de build (Vite/webpack) y problemas de hidratación. El selector de idioma y el dark mode funcionan sin JS framework.
 - **Por qué doble filter chain de Spring Security**: la web (forms + cookie de sesión) y la API REST (Bearer JWT) tienen necesidades incompatibles. Separarlas en dos chains distintos es más limpio que intentar que ambas convivan en uno.
-- **Por qué Render y no Railway/Fly.io**: Render tiene plan free con Postgres incluido y auto-deploy desde GitHub. Railway empezó a cobrar y Fly.io requiere CLI para todo.
+- **Por qué Render y no Railway/Fly.io**: Render tiene plan free con auto-deploy desde GitHub. Railway empezó a cobrar y Fly.io requiere CLI para todo.
+- **Por qué la BBDD en Neon y no en Render**: el Postgres free de Render caduca a los 30 días (la app moriría cada mes); el free tier de Neon es permanente y serverless — se autosuspende con inactividad pero despierta en ~500 ms.
 - **Por qué CDN para Tailwind/Chart.js**: para un proyecto pedagógico, el coste de mantener un pipeline de assets (Vite, Tailwind CLI) no justifica los ms ahorrados. CDN versionado evita problemas de breaking changes.
 
 ---
@@ -351,15 +352,17 @@ flowchart LR
     E --> F[Build Dockerfile multi-stage]
     F --> F1[Stage 1: mvn package]
     F1 --> F2[Stage 2: JRE + JAR + non-root user]
-    F2 --> G[Provisiona contenedor + Postgres]
-    G --> H[Flyway migra esquema al arrancar]
+    F2 --> G[Arranca contenedor en Render]
+    G --> G1[Conecta a Postgres en Neon<br/>via DB_URL con sslmode=require]
+    G1 --> H[Flyway migra esquema al arrancar]
     H --> I[App live en safeinvestor.onrender.com]
 ```
 
 - **Dockerfile multi-stage**: imagen final ~200 MB (Alpine JRE + app JAR + user no-root). El build en Render tarda ~3 min.
-- **render.yaml**: blueprint declarativo. Define el web service, la BBDD Postgres free, y las env vars (`JWT_SECRET`, `APP_BASE_URL`, etc).
+- **render.yaml**: blueprint declarativo. Define el web service y las env vars (`DB_URL`, `JWT_SECRET`, `APP_BASE_URL`, etc).
+- **BBDD en [Neon](https://neon.tech)**, no en Render: el Postgres free de Render caduca a los 30 días; el free tier de Neon (0,5 GB, serverless) no caduca nunca. Se autosuspende con inactividad pero despierta en ~500 ms al recibir conexión — invisible para el visitante. Conexión con `sslmode=require`.
 - **Migraciones automáticas**: Flyway se ejecuta al arrancar el contenedor con `baseline-on-migrate=true` para que el primer deploy a una BBDD recién creada funcione.
-- **Free tier**: el servicio se duerme tras 15 min sin tráfico. El primer hit tarda ~30 s en despertar. A partir de ahí va fluido.
+- **Free tier de Render**: el servicio web se duerme tras 15 min sin tráfico. El primer hit tarda ~30 s en despertar. A partir de ahí va fluido.
 
 ---
 

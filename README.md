@@ -43,7 +43,7 @@ curl -X POST https://safeinvestor.onrender.com/api/auth/login \
 - **BCrypt** para hashing de contraseñas
 - **JUnit 5** + **Mockito** + **MockMvc** (19 tests de integración)
 - **Maven**, **Docker** (imagen multi-stage), **GitHub Actions** (CI verde)
-- **Render** para el deploy público
+- **Render** para el deploy público + **Neon** (Postgres serverless, free tier permanente) como BBDD de producción
 
 ## Ejecutar en local
 

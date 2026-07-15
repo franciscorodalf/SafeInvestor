@@ -1,3 +1,19 @@
+# Blueprint de Render para SafeInvestor.
+#
+# La base de datos NO vive en Render: el Postgres free de Render caduca a los
+# 30 días, inaceptable para una demo pública permanente. Usamos Neon
+# (https://neon.tech) — Postgres serverless con free tier sin caducidad.
+#
+# Variables a configurar a mano en el dashboard de Render (sync: false):
+#   DB_URL       → jdbc:postgresql://<host-de-neon>/<database>?sslmode=require
+#   DB_USERNAME  → usuario de Neon
+#   DB_PASSWORD  → contraseña de Neon
+#   APP_BASE_URL → https://safeinvestor.onrender.com
+# Opcionales:
+#   GEMINI_API_KEY    → OCR de tickets (gratuita en aistudio.google.com)
+#   ANTHROPIC_API_KEY → OCR con Claude (de pago, alternativa)
+#   MAIL_* / MAIL_ENABLED=true → envío real de emails por SMTP
+
 services:
   - type: web
     name: safeinvestor
@@ -7,33 +23,15 @@ services:
     healthCheckPath: /actuator/health
     autoDeploy: true
     envVars:
-      - key: DB_HOST
-        fromDatabase:
-          name: safeinvestor-db
-          property: host
-      - key: DB_PORT
-        fromDatabase:
-          name: safeinvestor-db
-          property: port
-      - key: DB_NAME
-        fromDatabase:
-          name: safeinvestor-db
-          property: database
+      - key: DB_URL
+        sync: false
       - key: DB_USERNAME
-        fromDatabase:
-          name: safeinvestor-db
-          property: user
+        sync: false
       - key: DB_PASSWORD
-        fromDatabase:
-          name: safeinvestor-db
-          property: password
+        sync: false
       - key: JWT_SECRET
         generateValue: true
       - key: APP_BASE_URL
         sync: false
-
-databases:
-  - name: safeinvestor-db
-    plan: free
-    databaseName: safeinvestor
-    user: safeinvestor
+      - key: GEMINI_API_KEY
+        sync: false
