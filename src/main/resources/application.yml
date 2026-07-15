@@ -64,6 +64,13 @@ management:
   endpoint:
     health:
       show-details: when-authorized
+  health:
+    mail:
+      # El email es opcional (con MAIL_HOST vacío hace fallback a log), así que
+      # su indicador NO debe tumbar /actuator/health — Render usa ese endpoint
+      # como health check del deploy y un SMTP sin configurar bloquearía
+      # cualquier publicación.
+      enabled: false
 
 logging:
   level:
