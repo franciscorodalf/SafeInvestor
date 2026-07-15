@@ -212,6 +212,14 @@ window.__i18n = {
 </script>
 <script>
 (function() {
+    // Si el CDN de Chart.js no cargó (adblock, sin red), degradar con mensaje
+    // visible en vez de morir en silencio dejando paneles en blanco.
+    if (typeof Chart === 'undefined' || !window.__i18n) {
+        console.warn('Chart.js no disponible — se omiten las gráficas');
+        var emptyMsg = document.getElementById('chartCategoriaEmpty');
+        if (emptyMsg) emptyMsg.classList.remove('hidden');
+        return;
+    }
     const numLocale = window.__i18n.locale === 'en' ? 'en-US' : 'es-ES';
     const fmtMoney = (n) => n.toLocaleString(numLocale, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + ' €';
     const ink = '#1A1410';
